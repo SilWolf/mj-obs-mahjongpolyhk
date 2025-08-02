@@ -1,7 +1,8 @@
 import useRealtimeMatches from '@/hooks/useRealtimeMatches'
 import { RealtimePlayer } from '@/models'
 import { renderDate } from '@/utils/string.util'
-import { Link } from 'wouter'
+import { useCallback } from 'react'
+import { Link, useLocation } from 'wouter'
 
 function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
   return (
@@ -27,6 +28,23 @@ function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
 
 export default function RecentRealtimeMatchesSection() {
   const { rtMatches = [] } = useRealtimeMatches()
+  const [, navigate] = useLocation()
+
+  const handleClickImportToStreaming = useCallback(
+    (e: React.MouseEvent) => {
+      const targetId = e.currentTarget.getAttribute('data-id')
+      const realtimeMatch = rtMatches.find(({ _id }) => _id === targetId)
+
+      if (!realtimeMatch) {
+        return false
+      }
+
+      localStorage.setItem('cachedRealtimeMatch', JSON.stringify(realtimeMatch))
+
+      navigate('~/panel/matches/createFromCache')
+    },
+    [navigate, rtMatches]
+  )
 
   return (
     <>
@@ -70,7 +88,15 @@ export default function RecentRealtimeMatchesSection() {
               <td>
                 <RealtimePlayerMiniCard player={rtMatch.players[3]} />
               </td>
-              <td>
+              <td className="whitespace-nowrap space-x-4">
+                <a
+                  href="#"
+                  onClick={handleClickImportToStreaming}
+                  data-id={rtMatch._id}
+                  className="text-success"
+                >
+                  導入至直播系統
+                </a>
                 <Link
                   href={`/matches/${rtMatch._id}/detail`}
                   className="text-success"

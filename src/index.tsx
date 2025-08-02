@@ -7,42 +7,17 @@ import FirebaseDatabaseProvider from './providers/firebaseDatabase.provider'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { toast, ToastContainer } from 'react-toastify'
 
-import IndexPage from './pages/index.page'
-import MatchDetailPage from './pages/match/[id]/index.page'
-import MatchOBSPage from './pages/match/[id]/obs.page'
-import MatchControlPage from './pages/match/[id]/control/index.page'
 import ConfirmDialogProvider from './components/ConfirmDialog/provider'
-import ObsRoomPage from './pages/obs/[obsRoomId]/index.page'
-import ObsScorePage from './pages/obs/[obsRoomId]/socre.page'
-import ObsChartPage from './pages/obs/[obsRoomId]/chart.page'
-import ObsCarouselPage from './pages/obs/[obsRoomId]/carousel.page'
-import ObsRoomControlPage from './pages/obs/[obsRoomId]/control.page'
-import MatchStatPage from './pages/match/[id]/stat/index.page'
-import ObsStatPage from './pages/obs/[obsRoomId]/stat.page'
-import MatchExportPage from './pages/match/[id]/export/index.page'
-import MatchForecastPage from './pages/match/[id]/forecast.page'
-import ObsRoomForecastPage from './pages/obs/[obsRoomId]/forecast.page'
-import ObsRoomEndPage from './pages/obs/[obsRoomId]/ended.page'
-import MatchIntroductionPage from './pages/match/[id]/introduction.page'
-import MatchOverviewOverlayPage from './pages/match/[id]/overviewOverlay.page'
-import ObsOverviewOverlayPage from './pages/obs/[obsRoomId]/overlay.page'
-import ObsRoomExportPage from './pages/obs/[obsRoomId]/export.page'
-import RealtimeSummaryPage from './pages/realtime-summary/index.page'
-import ObsRoomIntroductionPage from './pages/obs/[obsRoomId]/introduction.page'
-import MatchSummaryPage from './pages/match/[id]/summary.page'
-import ObsRoomSummaryPage from './pages/obs/[obsRoomId]/summary.page'
-import AllNameplatesPage from './pages/nameplaces/index.page'
-import ObsRoomSceneControlPage, {
-  ObsRoomScenePage,
-} from './pages/obs/[obsRoomId]/scene/index.page'
 
 const V2PanelLayout = lazy(
   () => import('./pages/v2/layouts/V2PanelLayout.layout')
 )
-const V2IndexPage = lazy(() => import('./pages/v2/page'))
 const V2PanelPage = lazy(() => import('./pages/v2/panel/page'))
 const V2PanelMatchesByIdEditPage = lazy(
   () => import('./pages/v2/panel/matches/[matchId]/edit/page')
+)
+const V2PanelMatchCreateFromCachePage = lazy(
+  () => import('./pages/v2/panel/matches/createFromCache/page')
 )
 
 const V2PanelObsMatchControlPage = lazy(
@@ -91,12 +66,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <FirebaseDatabaseProvider>
         <ConfirmDialogProvider>
           <Switch>
-            <Route path="/nameplates" component={AllNameplatesPage} />
-
             {/* Pages for v2 site */}
             <Route path="/panel" nest>
               <V2PanelLayout>
                 <Route path="/" component={V2PanelPage} />
+
+                <Route
+                  path="/matches/createFromCache"
+                  component={V2PanelMatchCreateFromCachePage}
+                />
 
                 <Route
                   path="/matches/:matchId/edit"
