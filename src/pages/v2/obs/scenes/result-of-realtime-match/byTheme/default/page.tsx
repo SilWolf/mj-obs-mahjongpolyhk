@@ -1,14 +1,12 @@
-import {
-  getLightColorOfColor,
-  renderPercentage,
-  renderPoint,
-  renderRanking,
-} from '@/utils/string.util'
+import { renderPoint, renderRanking, renderScore } from '@/utils/string.util'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import cns from 'classnames'
-import useDbMatchWithStatistics from '@/hooks/useDbMatchWithStatistics'
-import { Player, Team } from '@/models'
+import MJMatchHistoryChart from '@/components/MJMatchHistoryChart'
 import useRealtimeMatch from '@/hooks/useRealtimeMatch'
+import { convertMatchToExportedMatch } from '@/helpers/mahjong.helper'
+import { RealtimePlayer } from '@/models'
+
+import styles from './index.module.css'
 
 type Props = {
   params: { matchId: string }
@@ -26,81 +24,66 @@ type Slide =
   | {
       _id: string
       type: 'teams'
-      teamAndPlayers: { team: Team; player: Player }[]
+      teamAndPlayers: Record<
+        'playerEast' | 'playerSouth' | 'playerWest' | 'playerNorth',
+        {
+          player: RealtimePlayer
+          result: {
+            point: number
+            ranking: string
+            score: number
+          }
+        }
+      >
       subslide: 1 | 2
     }
   | {
       _id: string
-      type: 'team'
-      team: Team
-      players: Player[]
-      focusPlayer: Player
-      subslide: 1 | 2
+      type: 'players'
+      teamAndPlayers: {
+        player: RealtimePlayer
+        result: {
+          score: number
+          point: number
+          ranking: string
+          ronCount: number
+          riichiCount: number
+          chuckCount: number
+        }
+      }[]
+      roundCount: number
+      exhaustedRoundCount: number
+      subslide: 1
+    }
+  | {
+      _id: string
+      type: 'chart'
+      rounds: {
+        name: string
+        playerEast: number
+        playerSouth: number
+        playerWest: number
+        playerNorth: number
+      }[]
+      players: Record<
+        'playerEast' | 'playerSouth' | 'playerWest' | 'playerNorth',
+        { name: string; strokeColor: string; color: string }
+      >
+      teamAndPlayers: {
+        player: RealtimePlayer
+        result: {
+          score: number
+          point: number
+          ranking: string
+          ronCount: number
+          riichiCount: number
+          chuckCount: number
+        }
+      }[]
+      subslide: 1
     }
 
-const MatchTeamPlayerDiv = ({
-  team,
-  player,
-  fadeIn,
-  fadeOut,
-  delay,
-}: {
-  team: Team
-  player: Player
-  fadeIn: boolean
-  fadeOut: boolean
-  delay: number
-}) => {
-  const lightenedColor = getLightColorOfColor(team.color)
-
-  return (
-    <div
-      key={player.name}
-      className={cns('relative aspect-18/25 rounded-[1em] overflow-hidden', {
-        'mi-team-player-in': fadeIn,
-        'mi-team-player-out': fadeOut,
-      })}
-      style={{
-        background: `linear-gradient(180deg, ${team.color}, ${lightenedColor})`,
-        animationDelay: delay + 's',
-      }}
-    >
-      <div
-        className="absolute inset-0"
-        style={{
-          background: `url(${
-            team.squareLogoImage + '?w=500&h=500&auto=format'
-          })`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center',
-          opacity: 0.2,
-        }}
-      ></div>
-      <img
-        className="relative z-10 block mx-auto w-full"
-        src={
-          player.portraitImage + '?h=500&w=360&auto=format&fit=crop&crop=top'
-        }
-        alt={player.name!}
-      />
-      <div
-        className="absolute z-20 bottom-0 left-0 right-0 text-center py-[0.25em]"
-        style={{
-          background: 'linear-gradient(to top, #00000090 80%, transparent',
-        }}
-      >
-        <div>
-          <p className="text-[1.5em] leading-[1em] font-semibold">
-            {player.nickname}
-          </p>
-          <p className="text-[0.8em]">{player.name}</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-const MatchIntroductionSlide = ({
+const MatchSummarySlide = ({
   slide,
   status,
   subslide,
@@ -119,22 +102,27 @@ const MatchIntroductionSlide = ({
       >
         <div className="flex-1"></div>
         <div className="flex-2 grid grid-cols-4 items-center">
-          {slide.teamAndPlayers.map(({ team, player }, index) => (
+          {(
+            ['playerEast', 'playerSouth', 'playerWest', 'playerNorth'] as const
+          ).map((playerKey, index) => (
             <div
-              key={team._id}
+              key={playerKey}
               className={cns('relative h-full overflow-hidden', {
                 'mi-teams-in': status === 0,
                 'mi-teams-out': status > 0,
               })}
               style={{
                 animationDelay: status === 0 ? index * 0.25 + 's' : '0s',
+                opacity:
+                  slide.teamAndPlayers[playerKey].result.ranking !== '1'
+                    ? 0.5
+                    : 1,
               }}
             >
               <div
-                key={team._id}
                 className="absolute inset-0 -z-10"
                 style={{
-                  background: `linear-gradient(to bottom, transparent, ${team.color})`,
+                  background: `linear-gradient(to bottom, transparent, ${slide.teamAndPlayers[playerKey].player.color})`,
                   opacity: 0.5,
                 }}
               ></div>
@@ -142,8 +130,9 @@ const MatchIntroductionSlide = ({
                 className="absolute inset-0 -z-10"
                 style={{
                   background: `url(${
-                    team.squareLogoImage + '?w=800&h=800&auto=format'
+                    slide.teamAndPlayers[playerKey].player.largeLogoUrl
                   })`,
+                  backgroundSize: 'contain',
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center center',
                   opacity: 0.05,
@@ -155,18 +144,139 @@ const MatchIntroductionSlide = ({
                 })}
               >
                 <img
-                  src={team.squareLogoImage + '?w=800&h=800&auto=format'}
-                  className="aspect-square w-full"
+                  src={slide.teamAndPlayers[playerKey].player.propicUrl ?? ''}
+                  className="mx-auto h-[440px]"
                   alt=""
                 />
                 <h3 className="text-[1.5em] font-semibold text-center">
-                  {team.name}
+                  {slide.teamAndPlayers[playerKey].player.primaryName}
                 </h3>
-                <h3 className="text-[1em] font-semibold text-center">
-                  {team.secondaryName}
+                <h3 className="text-[1em] h-[2em] font-semibold text-center">
+                  {slide.teamAndPlayers[playerKey].player.secondaryName}
+                </h3>
+                <h3 className="text-[1.5em] font-semibold text-center flex justify-between px-[.5em]">
+                  <span>
+                    {renderRanking(
+                      slide.teamAndPlayers[playerKey].result.ranking
+                    )}
+                  </span>
+                  <span>
+                    {renderScore(slide.teamAndPlayers[playerKey].result.score)}
+                  </span>
                 </h3>
               </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  } else if (slide.type === 'players') {
+    return (
+      <div
+        className="absolute px-24 pb-24 inset-0 flex flex-col justify-center items-stretch"
+        style={{
+          opacity: status >= 0 && status < 1 ? 1 : 0,
+        }}
+      >
+        <div className="flex-1"></div>
+        <div className="flex-3 flex flex-col items-stretch">
+          <div
+            className={cns('flex gap-x-[1em] pl-[1em] mb-[.5em] items-end', {
+              'mi-teams-in': status === 0,
+              'mi-teams-out': status > 0,
+            })}
+          >
+            <div className="flex-5 space-x-[1.5em] text-[1.1em]">
+              <span>
+                <span className="text-[1.5em]">{slide.roundCount}</span> 總局數
+              </span>
+              <span className="opacity-80">
+                （{' '}
+                <span className="text-[1.5em]">
+                  {slide.exhaustedRoundCount}
+                </span>{' '}
+                流局數 ）
+              </span>
+            </div>
+            <div className="flex-1 text-right text-[.9em] font-semibold">
+              分數
+            </div>
+            <div className="flex-1 text-right text-[.9em] font-semibold">
+              立直次數
+            </div>
+            <div className="flex-1 text-right text-[.9em] font-semibold">
+              和了次數
+            </div>
+            <div className="flex-1 text-right text-[.9em] font-semibold">
+              放銃次數
+            </div>
+          </div>
+          {slide.teamAndPlayers.map(({ player, result }, index) => (
+            <div
+              key={index}
+              className={cns('relative overflow-hidden flex-1', {
+                'mi-teams-in': status === 0,
+                'mi-teams-out': status > 0,
+              })}
+              style={{
+                animationDelay: status === 0 ? index * 0.25 + 's' : '0s',
+              }}
+            >
               <div
+                className="absolute inset-0 -z-10"
+                style={{
+                  background: `linear-gradient(to left, transparent, ${player.color})`,
+                  opacity: 0.5,
+                }}
+              ></div>
+              <div
+                className="absolute inset-0 -z-10"
+                style={{
+                  background: `url(${player.largeLogoUrl})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center center',
+                  opacity: 0.05,
+                }}
+              ></div>
+              <div
+                className={cns(
+                  'absolute inset-0 flex gap-x-[1em] items-center pl-[1em]',
+                  {
+                    'mi-teams-team-out': status >= 0 && subslide > 0,
+                  }
+                )}
+              >
+                <div className="text-left flex-5">
+                  <h3 className="text-[1.5em] font-semibold">
+                    {player.primaryName} ({player.nickname})
+                  </h3>
+                </div>
+                <div className="flex-1 text-right">
+                  <p className="text-[1.5em] leading-[1em]">
+                    {renderScore(result.score)}
+                  </p>
+                  {/* <p>{renderPoint(result.point)}</p> */}
+                </div>
+                <div className="flex-1 text-right">
+                  <span className="text-[1.5em]">
+                    {renderScore(result.riichiCount)}
+                  </span>
+                  回
+                </div>
+                <div className="flex-1 text-right">
+                  <span className="text-[1.5em]">
+                    {renderScore(result.ronCount)}
+                  </span>
+                  回
+                </div>
+                <div className="flex-1 text-right">
+                  <span className="text-[1.5em]">
+                    {renderScore(result.chuckCount)}
+                  </span>
+                  回
+                </div>
+              </div>
+              {/* <div
                 className={cns('absolute inset-0 opacity-0', {
                   'mi-teams-player-in': status >= 0 && subslide >= 1,
                   'mi-teams-player-out': status > 0,
@@ -176,21 +286,24 @@ const MatchIntroductionSlide = ({
                 }}
               >
                 <img
-                  src={player.portraitImage + '?w=360&h=500&auto=format'}
+                  src={
+                    teamPlayer.playerPortraitImageUrl +
+                    '?w=360&h=500&auto=format'
+                  }
                   className="aspect-18/25 w-full"
                   alt=""
                 />
                 <div className="font-semibold text-center">
-                  <p className="text-[1em]">{player.nickname}</p>
-                  <p className="text-[.8em]">{player.name}</p>
+                  <p className="text-[1em]">{teamPlayer.playerNickname}</p>
+                  <p className="text-[.8em]">{teamPlayer.playerName}</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>
       </div>
     )
-  } else if (slide.type === 'team') {
+  } else if (slide.type === 'chart') {
     return (
       <div
         className="absolute py-16 px-24 inset-0 flex flex-col justify-center items-stretch"
@@ -198,251 +311,59 @@ const MatchIntroductionSlide = ({
           opacity: status >= 0 && status < 1 ? 1 : 0,
         }}
       >
-        <div
-          className={cns('absolute inset-0 -z-10', {
-            'mi-team-colorBackground-in': status === 0,
-            'mi-team-colorBackground-out': status > 0,
-          })}
-          style={{
-            background: `linear-gradient(to bottom, transparent 60%, ${slide.team.color})`,
-            opacity: 0.5,
-          }}
-        ></div>
-        <div
-          className={cns('absolute inset-0 -z-10', {
-            'mi-team-logoBackground-in': status === 0,
-            'mi-team-logoBackground-out': status > 0,
-          })}
-          style={{
-            background: `url(${
-              slide.team.squareLogoImage + '?w=800&h=800&auto=format'
-            })`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center center',
-            opacity: 0.125,
-          }}
-        ></div>
-
-        <div
-          className={cns('text-right mb-[.5em]', {
-            'mi-team-team-in': status === 0,
-            'mi-team-team-out': status > 0,
-          })}
-        >
-          <div className="flex-1 flex gap-x-[1.5em] items-center justify-end">
-            <div className="text-left space-y-[.5em]">
-              <div className="flex justify-start gap-x-[1em]">
-                <p>隊伍積分</p>
-                <p>
-                  <span className="font-numeric">
-                    {renderPoint(slide.team.statistics?.point)}
-                  </span>
-                </p>
-              </div>
-              <div className="flex justify-start gap-x-[1em]">
-                <p>隊伍排名</p>
-                <p>
-                  <span className="font-numeric">
-                    {renderRanking(slide.team.statistics?.ranking)}
-                  </span>
-                </p>
-              </div>
-            </div>
-            <img
-              src={slide.team.squareLogoImage + '?w=512&h=512&auto=format'}
-              alt={slide.team.name!}
-              className="aspect-square"
-              style={{
-                width: 256,
-                height: 256,
-              }}
+        <div className="flex-1"></div>
+        <div className="flex-3 flex items-stretch gap-x-[1em]">
+          <div
+            className={cns('flex-3', {
+              'mi-chart-chart-in': status === 0,
+              'mi-chart-chart-out': status > 0,
+            })}
+          >
+            <MJMatchHistoryChart
+              rounds={slide.rounds}
+              players={slide.players}
             />
           </div>
-
-          <h3 className="inline-block font-semibold text-right text-[1.5em]">
-            {slide.team.name} {slide.team.secondaryName}
-          </h3>
-        </div>
-        <div className="flex-2 relative">
-          <div
-            className="absolute inset-0 grid grid-cols-4 items-center gap-16"
-            style={{
-              opacity: status === 0 && subslide >= 0 && subslide < 1 ? 1 : 0,
-            }}
-          >
-            {slide.players.map((player, index) => (
-              <MatchTeamPlayerDiv
-                key={player._id}
-                team={slide.team}
-                player={player}
-                fadeIn={status === 0 && subslide <= 0}
-                fadeOut={status === 0 && subslide > 0}
-                delay={(subslide <= 0 ? 0 : 0) + index * 0.25}
-              />
-            ))}
-          </div>
-          <div
-            className="absolute inset-0 grid grid-cols-4 items-center gap-16"
-            style={{
-              opacity:
-                status >= 0 && status < 1 && subslide >= 1 && subslide < 2
-                  ? 1
-                  : 0,
-            }}
-          >
-            <MatchTeamPlayerDiv
-              team={slide.team}
-              player={slide.focusPlayer}
-              fadeIn={status === 0 && subslide === 1}
-              fadeOut={status > 0}
-              delay={0}
-            />
-            <div className="col-span-3">
+          <div className="flex-1 flex flex-col pb-[1em]">
+            {[0, 1, 2, 3].map((index) => (
               <div
-                className={cns({
-                  'mi-team-activePlayerStat-in': status === 0 && subslide === 1,
-                  'mi-team-activePlayerStat-out': status > 0,
-                })}
+                key={index}
+                className={cns(
+                  'relative overflow-hidden flex-1 pl-[.5em] flex flex-col justify-center',
+                  {
+                    'mi-chart-player-in': status === 0,
+                    'mi-chart-player-out': status > 0,
+                  }
+                )}
+                style={{
+                  background: `linear-gradient(to left, transparent, ${slide.teamAndPlayers[index].player.color}C0)`,
+                  animationDelay: status === 0 ? index * 0.25 + 's' : '0s',
+                }}
               >
-                <div className="flex justify-between mb-[1em]">
-                  <p className="text-[2em] flex items-center">
-                    <span>個人總分</span>
-                    <span className="font-numeric">
-                      {renderPoint(slide.focusPlayer.statistics?.point)}
-                    </span>
-                    <span className="ml-4 font-numeric text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                      {slide.focusPlayer.statistics?.pointRanking ?? '-'}名
-                    </span>
-                  </p>
-                  <p className="text-[2em]">
-                    半莊數{' '}
-                    <span className="font-numeric">
-                      {slide.focusPlayer.statistics?.matchCount ?? '-'}
-                    </span>
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-x-[2em] text-[1.5em]">
-                  <div className="flex justify-between">
-                    <p className="text-[.9em]">四位迴避率</p>
-                    <p className="flex items-center">
-                      <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.nonFourthP
-                        )}
-                      </span>
-                      <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                        {' '}
-                        {slide.focusPlayer.statistics?.nonFourthPRanking ?? '-'}
-                        名
-                      </span>
+                <img
+                  src={slide.teamAndPlayers[index].player.logoUrl ?? ''}
+                  className="absolute left-0 opacity-10 -z-10"
+                />
+                <div className="flex justify-between">
+                  <div>
+                    <p className="text-[1.5em] leading-[1em]">
+                      {slide.teamAndPlayers[index].player.nickname}
+                    </p>
+                    <p className="text-[.75em]">
+                      {slide.teamAndPlayers[index].player.primaryName}
                     </p>
                   </div>
-                  <div className="flex justify-between">
-                    <p className="text-[.9em]">連對率</p>
-                    <p className="flex items-center">
-                      <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.firstAndSecondP
-                        )}
-                      </span>
-                      <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                        {' '}
-                        {slide.focusPlayer.statistics?.firstAndSecondPRanking ??
-                          '-'}
-                        名
-                      </span>
+                  <div className="text-right">
+                    <p className="text-[1.5em] leading-[1em]">
+                      {slide.teamAndPlayers[index].result.score}
                     </p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p className="text-[.9em]">立直率</p>
-                    <p className="flex items-center">
-                      <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.riichiP
-                        )}
-                      </span>
-                      <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                        {' '}
-                        {slide.focusPlayer.statistics?.riichiPRanking ?? '-'}名
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p className="text-[.9em]">和了率</p>
-                    <p className="flex items-center">
-                      <span className="font-numeric">
-                        {renderPercentage(slide.focusPlayer.statistics?.ronP)}
-                      </span>
-                      <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                        {' '}
-                        {slide.focusPlayer.statistics?.ronPRanking ?? '-'}名
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p className="text-[.9em]">銃和率</p>
-                    <p className="flex items-center">
-                      <span className="font-numeric">
-                        {renderPercentage(slide.focusPlayer.statistics?.chuckP)}
-                      </span>
-                      <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                        {' '}
-                        {slide.focusPlayer.statistics?.chuckPRanking ?? '-'}名
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p className="text-[.9em]">副露率</p>
-                    <p className="flex items-center">
-                      <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.revealP
-                        )}
-                      </span>
-                      <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                        {' '}
-                        {slide.focusPlayer.statistics?.revealPRanking ?? '-'}名
-                      </span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-x-[2em] text-[1.5em] mt-[.8em]">
-                  <div className="flex justify-between items-start">
-                    <p className="text-[.9em]">和了平均打點</p>
-                    <div className="text-right">
-                      <p className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.ronPureScoreAvg
-                        )}
-                      </p>
-                      <p className="font-numeric text-[.75em] min-w-[2.5em] text-cyan-400 -mt-4">
-                        {slide.focusPlayer.statistics?.ronPureScoreAvgRanking ??
-                          '-'}
-                        名
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-start">
-                    <p className="text-[.9em]">銃和平均打點</p>
-                    <div className="text-right">
-                      <p className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.chuckPureScoreAvg
-                        )}
-                      </p>
-                      <p className="font-numeric text-[.75em] min-w-[2.5em] text-cyan-400 -mt-4">
-                        {slide.focusPlayer.statistics
-                          ?.chuckPureScoreAvgRanking ?? '-'}
-                        名
-                      </p>
-                    </div>
+                    {/* <p className="text-[.75em]">
+                      {renderPoint(slide.teamAndPlayers[index].result.point)}
+                    </p> */}
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -452,79 +373,214 @@ const MatchIntroductionSlide = ({
   return <></>
 }
 
-const MatchIntroductionPage = ({
+const MatchSummaryPage = ({
   params: { matchId },
   forwardFlag,
   resetFlag,
-  disableClick,
 }: Props) => {
-  const { rtMatch } = useRealtimeMatch(matchId)
-  const { data: match } = useDbMatchWithStatistics(rtMatch?.databaseId)
+  const { rtMatch, rtMatchRounds } = useRealtimeMatch(matchId)
 
   const slides = useMemo<Slide[]>(() => {
-    if (!match) {
+    if (!rtMatch || !rtMatchRounds) {
       return [{ type: 'empty', _id: 'empty', subslide: 0 }]
     }
 
-    return [
+    const exportedMatch = convertMatchToExportedMatch(
+      Object.values(rtMatchRounds)
+    )
+
+    const resultSlides: Slide[] = [
       { type: 'empty', _id: 'empty', subslide: 0 },
       {
         type: 'teams',
         _id: 'teams',
-        teamAndPlayers: [
-          {
-            team: match.playerEastTeam,
-            player: match.playerEast,
+        teamAndPlayers: {
+          playerEast: {
+            player: rtMatch.players[0],
+            result: exportedMatch.result.playerEast,
           },
-          {
-            team: match.playerSouthTeam,
-            player: match.playerSouth,
+          playerSouth: {
+            player: rtMatch.players[1],
+            result: exportedMatch.result.playerSouth,
           },
-          {
-            team: match.playerWestTeam,
-            player: match.playerWest,
+          playerWest: {
+            player: rtMatch.players[2],
+            result: exportedMatch.result.playerWest,
           },
-          {
-            team: match.playerNorthTeam,
-            player: match.playerNorth,
+          playerNorth: {
+            player: rtMatch.players[3],
+            result: exportedMatch.result.playerNorth,
           },
-        ],
+        },
         subslide: 1,
       },
-      {
-        _id: 'team_playerEast',
-        type: 'team',
-        team: match.playerEastTeam,
-        players: match.playerEastTeam.players,
-        focusPlayer: match.playerEast,
-        subslide: 2,
-      },
-      {
-        _id: 'team_playerSouth',
-        type: 'team',
-        team: match.playerSouthTeam,
-        players: match.playerSouthTeam.players,
-        focusPlayer: match.playerSouth,
-        subslide: 2,
-      },
-      {
-        _id: 'team_playerWest',
-        type: 'team',
-        team: match.playerWestTeam,
-        players: match.playerWestTeam.players,
-        focusPlayer: match.playerWest,
-        subslide: 2,
-      },
-      {
-        _id: 'team_playerNorth',
-        type: 'team',
-        team: match.playerNorthTeam,
-        players: match.playerNorthTeam.players,
-        focusPlayer: match.playerNorth,
-        subslide: 2,
-      },
     ]
-  }, [match])
+
+    const playersStat = {
+      playerEast: {
+        score: exportedMatch.result.playerEast?.score ?? 25000,
+        point: exportedMatch.result.playerEast?.point ?? 0,
+        ranking: exportedMatch.result.playerEast?.ranking ?? '1',
+        ronCount: 0,
+        riichiCount: 0,
+        chuckCount: 0,
+        scores: [25000],
+      },
+      playerSouth: {
+        score: exportedMatch.result.playerSouth?.score ?? 25000,
+        point: exportedMatch.result.playerSouth?.point ?? 0,
+        ranking: exportedMatch.result.playerSouth?.ranking ?? '1',
+        ronCount: 0,
+        riichiCount: 0,
+        chuckCount: 0,
+        scores: [25000],
+      },
+      playerWest: {
+        score: exportedMatch.result.playerWest?.score ?? 25000,
+        point: exportedMatch.result.playerWest?.point ?? 0,
+        ranking: exportedMatch.result.playerWest?.ranking ?? '1',
+        ronCount: 0,
+        riichiCount: 0,
+        chuckCount: 0,
+        scores: [25000],
+      },
+      playerNorth: {
+        score: exportedMatch.result.playerNorth?.score ?? 25000,
+        point: exportedMatch.result.playerNorth?.point ?? 0,
+        ranking: exportedMatch.result.playerNorth?.ranking ?? '1',
+        ronCount: 0,
+        riichiCount: 0,
+        chuckCount: 0,
+        scores: [25000],
+      },
+    }
+
+    for (const round of exportedMatch.rounds) {
+      playersStat.playerEast.scores.push(round.playerEast.afterScore)
+      playersStat.playerSouth.scores.push(round.playerSouth.afterScore)
+      playersStat.playerWest.scores.push(round.playerWest.afterScore)
+      playersStat.playerNorth.scores.push(round.playerNorth.afterScore)
+
+      if (round.playerEast.status === 'isRiichied') {
+        playersStat.playerEast.riichiCount += 1
+      }
+      if (round.playerSouth.status === 'isRiichied') {
+        playersStat.playerSouth.riichiCount += 1
+      }
+      if (round.playerWest.status === 'isRiichied') {
+        playersStat.playerWest.riichiCount += 1
+      }
+      if (round.playerNorth.status === 'isRiichied') {
+        playersStat.playerNorth.riichiCount += 1
+      }
+
+      if (round.type === 'ron' || round.type === 'tsumo') {
+        if (round.playerEast.type === 'win') {
+          playersStat.playerEast.ronCount += 1
+        }
+        if (round.playerSouth.type === 'win') {
+          playersStat.playerSouth.ronCount += 1
+        }
+        if (round.playerWest.type === 'win') {
+          playersStat.playerWest.ronCount += 1
+        }
+        if (round.playerNorth.type === 'win') {
+          playersStat.playerNorth.ronCount += 1
+        }
+      }
+
+      if (round.type === 'ron') {
+        if (round.playerEast.type === 'lose') {
+          playersStat.playerEast.chuckCount += 1
+        }
+        if (round.playerSouth.type === 'lose') {
+          playersStat.playerSouth.chuckCount += 1
+        }
+        if (round.playerWest.type === 'lose') {
+          playersStat.playerWest.chuckCount += 1
+        }
+        if (round.playerNorth.type === 'lose') {
+          playersStat.playerNorth.chuckCount += 1
+        }
+      }
+    }
+
+    const sortedTeamPlayers = [
+      {
+        player: rtMatch.players[0],
+        result: playersStat.playerEast,
+      },
+      {
+        player: rtMatch.players[1],
+        result: playersStat.playerSouth,
+      },
+      {
+        player: rtMatch.players[2],
+        result: playersStat.playerWest,
+      },
+      {
+        player: rtMatch.players[3],
+        result: playersStat.playerNorth,
+      },
+    ].sort((a, b) => b.result.score - a.result.score)
+
+    resultSlides.push({
+      type: 'players',
+      _id: 'players',
+      teamAndPlayers: sortedTeamPlayers,
+      roundCount:
+        exportedMatch.rounds?.filter((round) => round.type !== 'hotfix')
+          .length ?? 0,
+      exhaustedRoundCount:
+        exportedMatch.rounds?.filter((round) => round.type === 'exhausted')
+          .length ?? 0,
+      subslide: 1,
+    })
+
+    const firstSouthRoundIndex = exportedMatch.rounds.findIndex((round) =>
+      round.code.startsWith('5.')
+    )
+
+    resultSlides.push({
+      type: 'chart',
+      _id: 'chart',
+      rounds: [
+        ...exportedMatch.rounds.map((round, roundIndex) => ({
+          name: roundIndex === firstSouthRoundIndex ? '南' : '',
+          playerEast: round.playerEast.afterScore,
+          playerSouth: round.playerSouth.afterScore,
+          playerWest: round.playerWest.afterScore,
+          playerNorth: round.playerNorth.afterScore,
+        })),
+      ],
+      players: {
+        playerEast: {
+          name: rtMatch.players[0].nickname,
+          color: rtMatch.players[0].color,
+          strokeColor: '#FFFFFF',
+        },
+        playerSouth: {
+          name: rtMatch.players[1].nickname,
+          color: rtMatch.players[1].color,
+          strokeColor: '#FFFFFF',
+        },
+        playerWest: {
+          name: rtMatch.players[2].nickname,
+          color: rtMatch.players[2].color,
+          strokeColor: '#FFFFFF',
+        },
+        playerNorth: {
+          name: rtMatch.players[3].nickname,
+          color: rtMatch.players[3].color,
+          strokeColor: '#FFFFFF',
+        },
+      },
+      teamAndPlayers: sortedTeamPlayers,
+      subslide: 1,
+    })
+
+    return resultSlides
+  }, [rtMatch, rtMatchRounds])
 
   const [slideIndex, setSlideIndex] = useState<number>(0)
   const [subSlideIndex, setSubSlideIndex] = useState<number>(0)
@@ -569,10 +625,8 @@ const MatchIntroductionPage = ({
   }, [isSlideChanging, slideIndex, slides, subSlideIndex])
 
   const handleClickScreen = useCallback(() => {
-    if (!disableClick) {
-      handleSlideForward()
-    }
-  }, [disableClick, handleSlideForward])
+    handleSlideForward()
+  }, [handleSlideForward])
 
   useEffect(() => {
     if (typeof forwardFlag !== 'undefined' && forwardFlag !== prevForwardFlag) {
@@ -595,13 +649,13 @@ const MatchIntroductionPage = ({
     resetFlag,
   ])
 
-  if (!match) {
+  if (!rtMatch || !rtMatchRounds) {
     return <></>
   }
 
   return (
     <div
-      className="match-introduction absolute inset-0 text-white text-[36px] -z-50 overflow-hidden"
+      className={`${styles['match-introduction']} absolute inset-0 text-white text-[36px]`}
       style={{
         background:
           'linear-gradient(to bottom, rgb(30, 34, 59), rgb(16, 18, 33))',
@@ -609,20 +663,15 @@ const MatchIntroductionPage = ({
       onClick={handleClickScreen}
     >
       <div className="absolute py-16 px-24 inset-0">
-        <div className="flex gap-x-[0.25em] mi-title-in">
-          <div>
-            <img
-              src={match.tournament.logoUrl + '?w=280&h=280&auto=format'}
-              alt={match.tournament.name}
-              style={{ width: '3.5em', height: '3.5em', marginTop: '0.15em' }}
-            />
+        <div className="flex items-end gap-x-[0.25em] mi-title-in">
+          <div className="flex-1">
+            <h1 className="text-[2em] leading-[1.2em] font-semibold">
+              {rtMatch.nameDisplay}
+            </h1>
           </div>
           <div>
-            <h3 className="text-[1.25em] leading-[1em]">
-              {match.tournament.name}
-            </h3>
             <h1 className="text-[2em] leading-[1.2em] font-semibold">
-              {match.name}
+              對局結果
             </h1>
           </div>
         </div>
@@ -631,7 +680,7 @@ const MatchIntroductionPage = ({
         </h1> */}
       </div>
       {slides.map((slide, index) => (
-        <MatchIntroductionSlide
+        <MatchSummarySlide
           key={slide._id}
           slide={slide}
           status={slideIndex - index}
@@ -642,4 +691,4 @@ const MatchIntroductionPage = ({
   )
 }
 
-export default MatchIntroductionPage
+export default MatchSummaryPage

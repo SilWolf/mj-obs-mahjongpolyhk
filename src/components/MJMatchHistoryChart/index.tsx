@@ -19,16 +19,21 @@ type Props = {
     playerWest: number
     playerNorth: number
   }[]
+  axisTextColor?: string
 }
 
-function MJMatchHistoryChart({ players, rounds }: Props) {
+function MJMatchHistoryChart({
+  players,
+  rounds,
+  axisTextColor = '#FFFFFF',
+}: Props) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={rounds}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis tick={{ fill: '#78012c' }} dataKey="name" />
+        <XAxis tick={{ fill: axisTextColor }} dataKey="name" />
         <YAxis
-          tick={{ fill: '#78012c' }}
+          tick={{ fill: axisTextColor }}
           tickCount={6}
           width={120}
           allowDecimals={false}

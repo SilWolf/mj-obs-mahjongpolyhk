@@ -358,6 +358,7 @@ const MatchSummarySlide = ({
             <MJMatchHistoryChart
               rounds={slide.rounds}
               players={slide.players}
+              axisTextColor="#78012C"
             />
           </div>
           <div className="flex-1 flex flex-col pb-[1em]">
