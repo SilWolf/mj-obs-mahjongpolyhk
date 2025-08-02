@@ -125,7 +125,7 @@ export default function PlayerCard({
         </div>
       </div>
 
-      <div className="flex items-end">
+      <div className="flex items-end pt-2">
         <div className="shrink-0 w-[1.83em] h-full relative -bottom-[0.085em] -left-[0.085em]">
           <div
             className="absolute w-full h-full bg-[#d1b571] overflow-hidden rounded-[0.1em]"
