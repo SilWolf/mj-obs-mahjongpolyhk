@@ -8,9 +8,9 @@ import {
   convertScoresToPointsAndRankings,
   getIsPlayerEast,
 } from '@/helpers/mahjong.helper'
-import MJPlayerCardDiv from '@/components/MJPlayerCardDiv'
 import MJHanFuTextSpecialSpan from '@/components/MJHanFuTextSpecialSpan'
-import MJReachAnimationDiv from '@/components/MJReachAnimationDiv'
+import PlayerCard from './components/PlayerCard'
+import ReachAnimation from './components/ReachAnimation'
 
 type Props = {
   params: { matchId: string }
@@ -94,14 +94,24 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
     <>
       <div
         className={
-          'absolute inset-0 mx-auto py-8 overflow-hidden text-[4.8rem] transition-opacity'
+          'absolute -z-10 inset-0 mx-auto py-8 overflow-hidden text-[4.8rem] transition-opacity'
         }
         style={{
           background:
-            'linear-gradient(transparent, transparent 73%, rgba(0, 0, 0, 0.4))',
+            'linear-gradient(transparent, transparent 73%, rgba(0, 0, 0, 0.8))',
           opacity: currentRiichiPlayerIndex !== null ? 0 : 1,
         }}
       >
+        <div className="absolute top-[1vh] right-[1vw] w-[20vw]">
+          <img
+            src="/images/logo-sakura-long.png"
+            className="opacity-0"
+            alt=""
+          />
+          {/* <div className="text-right text-[0.5em] pr-[0.5em] relative bottom-[0.5em] text-[#ec276e] font-numeric">
+            {rtMatch.nameDisplay || rtMatch.name}
+          </div> */}
+        </div>
         <div className="flex flex-row items-stretch gap-x-4 text-white">
           <div
             className="relative text-[0.6em] p-2 pl-10 pr-[1em] flex items-center gap-x-8"
@@ -161,7 +171,9 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
               ))}
             </div>
           </div>
-          <div className="flex-1" />
+          <div className="flex-1 flex items-start justify-end text-black pr-10 self-start">
+            {/* <span className="text-[.35em]">{rtMatch.name}</span> */}
+          </div>
         </div>
 
         <div className="flex items-center justify-center mt-20">
@@ -180,10 +192,9 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
           }}
         >
           {players.map((player) => (
-            <div className="w-[5.35em]" key={player.primaryName}>
-              <MJPlayerCardDiv
+            <div className="w-full" key={player.primaryName}>
+              <PlayerCard
                 player={player}
-                playerIndex={'0'}
                 score={player.currentStatus.afterScore}
                 scoreChanges={player.currentStatus.scoreChanges}
                 isEast={player.currentStatus.isEast}
@@ -191,9 +202,16 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
                   player.currentStatus.isRiichi &&
                   rtMatchCurrentRound.resultType === RoundResultTypeEnum.Unknown
                 }
+                isFuriten={player.currentStatus.isFuriten}
                 waitingTiles={
                   rtMatchCurrentRound.resultType === RoundResultTypeEnum.Unknown
                     ? player.currentStatus.waitingTiles
+                    : []
+                }
+                waitingTileRemain={player.currentStatus.waitingTileRemain}
+                reveals={
+                  rtMatchCurrentRound.resultType === RoundResultTypeEnum.Unknown
+                    ? player.currentStatus.reveals
                     : []
                 }
                 isYellowCarded={player.currentStatus.isYellowCarded}
@@ -209,13 +227,12 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
         </div>
 
         {rtMatch.activeResultDetail && (
-          <div className="absolute bottom-0 left-0 right-0 px-10 pb-6 grid grid-cols-4 gap-x-8 text-white transition-opacity animate-[fadeInFromBottom_1s_ease-in-out]">
-            <div className="w-[5.35em]">
-              <MJPlayerCardDiv
+          <div className="absolute bottom-0 left-0 right-0 px-10 pb-6 grid grid-cols-4 items-end gap-x-8 text-white transition-opacity animate-[fadeInFromBottom_1s_ease-in-out]">
+            <div className="w-full">
+              <PlayerCard
                 player={
                   rtMatch.players[rtMatch.activeResultDetail.winnerPlayerIndex]
                 }
-                playerIndex="0"
                 score={
                   rtMatchCurrentRound.playerResults[
                     rtMatch.activeResultDetail.winnerPlayerIndex
@@ -223,7 +240,7 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
                 }
               />
             </div>
-            <div className="col-span-3 bg-black/50 py-6 px-8 text-[0.5em] flex items-stretch gap-x-4">
+            <div className="col-span-3 mb-5 bg-black/50 py-6 px-8 text-[0.5em] min-h-[5.5em] flex items-stretch gap-x-4">
               <div
                 className={`flex-1 flex flex-wrap gap-x-[0.75em] ${
                   rtMatch.activeResultDetail.yakumanCount > 0
@@ -249,7 +266,7 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
       </div>
 
       <div className="absolute top-0 bottom-0 left-0 right-0 pointer-events-none">
-        <MJReachAnimationDiv
+        <ReachAnimation
           active={currentRiichiPlayerIndex !== null}
           color={
             currentRiichiPlayerIndex && players[currentRiichiPlayerIndex].color
