@@ -203,7 +203,7 @@ export default function V2PanelMatchesByIdEditPage() {
 
       await fb.push(`matchRounds`, matchRound)
       await updateObsRoom({
-        tournamentId: currentTournament?.tournament.id ?? null,
+        tournamentId: currentTournament?.tournament.id ?? '',
         matchId: newRTMatch.code,
         themeId: 'default',
       })
