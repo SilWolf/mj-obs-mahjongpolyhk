@@ -1,6 +1,4 @@
 const OSS = require('ali-oss')
-const path = require('path')
-const fs = require('fs')
 const { glob } = require('glob')
 
 const client = new OSS({
