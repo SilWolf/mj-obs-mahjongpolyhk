@@ -1,7 +1,10 @@
 import { lazy } from 'react'
 
-const PageOfSakuraTheme = lazy(() => import('./byTheme/sakura/page'))
 const PageOfDefaultTheme = lazy(() => import('./byTheme/default/page'))
+const PageOfSakuraTheme = lazy(() => import('./byTheme/sakura/page'))
+const PageOfGuoShiWuShuangTheme = lazy(
+  () => import('./byTheme/GuoShiWuShuang/page')
+)
 
 type Props = {
   themeId?: string | null
@@ -15,6 +18,9 @@ export default function V2ObsSceneOfIntroductionForMatch({
   switch (themeId) {
     case 'sakura': {
       return <PageOfSakuraTheme {...otherProps} />
+    }
+    case 'GuoShiWuShuang': {
+      return <PageOfGuoShiWuShuangTheme {...otherProps} />
     }
   }
 

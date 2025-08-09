@@ -8,6 +8,7 @@ import useAllRulesets from '../../hooks/useAllRulesets'
 import useRuleset from '../../hooks/useRuleset'
 import V2PlayerCard from '../V2PlayerCard'
 import { V2Match } from '../../models/V2Match.model'
+import PlayerCard from '../../obs/scenes/realtime/byTheme/GuoShiWuShuang/components/PlayerCard'
 
 const positionNames = ['東家', '南家', '西家', '北家']
 
@@ -146,6 +147,13 @@ export default function V2MatchForm({
                         },
                       }
                     : undefined,
+                  logo: player.imageLogoUrl
+                    ? {
+                        default: {
+                          url: player.imageLogoUrl,
+                        },
+                      }
+                    : undefined,
                   riichi: player.imageRiichiUrl
                     ? {
                         default: {
@@ -261,37 +269,19 @@ export default function V2MatchForm({
                     {watchedPlayers?.[index] && (
                       <div>
                         <div key={index} className="w-full text-[64px]">
-                          <V2PlayerCard
+                          <PlayerCard
                             score={watchedRuleset?.data.startingPoint ?? 0}
                             player={{
-                              id: '',
-                              name: {
-                                official: {
-                                  primary: watchedPlayers[index].namePrimary!,
-                                  secondary:
-                                    watchedPlayers[index].nameSecondary!,
-                                  third: watchedPlayers[index].nameThird!,
-                                },
-                                display: {
-                                  primary: watchedPlayers[index].namePrimary!,
-                                  secondary:
-                                    watchedPlayers[index].nameSecondary!,
-                                  third: watchedPlayers[index].nameThird!,
-                                },
-                              },
-                              color: {
-                                primary: watchedPlayers[index].colorPrimary!,
-                                secondary:
-                                  watchedPlayers[index].colorSecondary!,
-                              },
-                              image: {
-                                portrait: {
-                                  default: {
-                                    url: watchedPlayers[index]
-                                      .imagePortraitUrl!,
-                                  },
-                                },
-                              },
+                              primaryName: watchedPlayers[index].namePrimary!,
+                              secondaryName:
+                                watchedPlayers[index].nameSecondary!,
+                              nickname: watchedPlayers[index].nameThird!,
+                              color: watchedPlayers[index].colorPrimary!,
+                              propicUrl:
+                                watchedPlayers[index].imagePortraitUrl!,
+                              logoUrl: watchedPlayers[index].imageLogoUrl!,
+                              largeLogoUrl:
+                                watchedPlayers[index].imageRiichiUrl!,
                             }}
                           />
                         </div>
@@ -362,51 +352,52 @@ export default function V2MatchForm({
                       }
                     </p>
                   </div>
+
+                  <div className="flex-1">
+                    <label className="fieldset-label">圖片</label>
+                    <input
+                      type="text"
+                      className="input w-full"
+                      placeholder="https://....png"
+                      {...register(`players.${index}.imagePortraitUrl`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.[
+                          'imagePortraitUrl'
+                        ]?.message
+                      }
+                    </p>
+
+                    <label className="fieldset-label">隊伍圖片</label>
+                    <input
+                      type="text"
+                      className="input w-full"
+                      placeholder="https://....png"
+                      {...register(`players.${index}.imageLogoUrl`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['imageLogoUrl']
+                          ?.message
+                      }
+                    </p>
+
+                    <label className="fieldset-label">立直圖片</label>
+                    <input
+                      type="text"
+                      className="input w-full"
+                      placeholder="https://....png"
+                      {...register(`players.${index}.imageRiichiUrl`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['imageRiichiUrl']
+                          ?.message
+                      }
+                    </p>
+                  </div>
                 </div>
-
-                {/* <div>
-                  <label className="fieldset-label">圖片</label>
-                  <input
-                    type="text"
-                    className="input w-full"
-                    placeholder="https://....png"
-                    {...register(`players.${index}.imagePortraitUrl`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['imagePortraitUrl']
-                        ?.message
-                    }
-                  </p>
-
-                  <label className="fieldset-label">隊伍圖片</label>
-                  <input
-                    type="text"
-                    className="input w-full"
-                    placeholder="https://....png"
-                    {...register(`players.${index}.imageLogoUrl`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['imageLogoUrl']
-                        ?.message
-                    }
-                  </p>
-
-                  <label className="fieldset-label">立直圖片</label>
-                  <input
-                    type="text"
-                    className="input w-full"
-                    placeholder="https://....png"
-                    {...register(`players.${index}.imageRiichiUrl`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['imageRiichiUrl']
-                        ?.message
-                    }
-                  </p>
-                </div> */}
 
                 <button
                   type="button"

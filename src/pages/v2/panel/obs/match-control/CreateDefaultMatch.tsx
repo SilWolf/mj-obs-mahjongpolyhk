@@ -187,7 +187,7 @@ export default function CreateDefaultMatch() {
       await updateObsRoom({
         tournamentId: 'a',
         matchId: newRTMatch.code,
-        themeId: 'default',
+        themeId: import.meta.env.VITE_OBS_UI_THEME || 'default',
       })
     }
 
