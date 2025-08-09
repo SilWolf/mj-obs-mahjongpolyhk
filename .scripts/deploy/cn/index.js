@@ -28,7 +28,7 @@ async function uploadFile(path, filename) {
 
 async function main() {
   // 1. Load all files from ./dist
-  const files = await glob('./dist/**/*.*')
+  const files = await glob(`./${process.env.DIST_DIR || 'dist'}/**/*.*`)
 
   console.log(JSON.stringify(files, null, 2))
   console.log(`Total files: ${files.length}`)

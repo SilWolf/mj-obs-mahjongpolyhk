@@ -63,14 +63,15 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:cn": "vite --mode cn",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start:mock": "firebase emulators:start",
     "test": "vitest",
     "build": "tsc && vitest run && vite build",
     "deploy": "firebase deploy --only hosting",
-    "build:cn": "tsc && vitest run && vite build --mode cn",
-    "deploy:cn": "node --env-file=./.scripts/deploy/cn/.env ./.scripts/deploy/cn/index.js"
+    "build:cn": "tsc && vitest run && vite build --mode cn --outDir dist-cn",
+    "deploy:cn": "DIST_DIR=dist-cn node --env-file=./.scripts/deploy/cn/.env ./.scripts/deploy/cn/index.js"
   },
   "cracoConfig": "craco.config.js",
   "eslintConfig": {
