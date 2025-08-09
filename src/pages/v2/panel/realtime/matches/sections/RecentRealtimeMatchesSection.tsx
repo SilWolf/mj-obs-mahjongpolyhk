@@ -1,3 +1,4 @@
+import MJUIButton from '@/components/MJUI/MJUIButton'
 import useRealtimeMatches from '@/hooks/useRealtimeMatches'
 import { RealtimePlayer } from '@/models'
 import { renderDate } from '@/utils/string.util'
@@ -32,6 +33,7 @@ export default function RecentRealtimeMatchesSection() {
 
   const handleClickImportToStreaming = useCallback(
     (e: React.MouseEvent) => {
+      e.preventDefault()
       const targetId = e.currentTarget.getAttribute('data-id')
       const realtimeMatch = rtMatches.find(({ _id }) => _id === targetId)
 

@@ -24,15 +24,12 @@ const formSchema = zod.object({
         .string({ required_error: '玩家必須有主要顏色' })
         .regex(/^#[0-9A-F]{6}$/i, '顏色必須是 #ABCDEF 格式。'),
       colorSecondary: zod
-        .string({ required_error: '玩家必須有次要顏色' })
-        .regex(/^#[0-9A-F]{6}$/i, '顏色必須是 #ABCDEF 格式。'),
-      imagePortraitUrl: zod.string().url('玩家圖片必須是URL。').optional(),
-      imageLogoUrl: zod
         .string()
-        .url('隊伍圖片／立直圖片必須是URL。')
-        .optional(),
-      imagePortraitAltUrl: zod.string().url('玩家圖片必須是URL。').optional(),
-      imageRiichiUrl: zod.string().url('玩家圖片必須是URL。').optional(),
+        .regex(/^#[0-9A-F]{6}$/i, '顏色必須是 #ABCDEF 格式。'),
+      imagePortraitUrl: zod.string().optional(),
+      imageLogoUrl: zod.string().optional(),
+      imagePortraitAltUrl: zod.string().optional(),
+      imageRiichiUrl: zod.string().optional(),
     })
   ),
 })
@@ -101,70 +98,75 @@ export default function V2MatchForm({
 
   const handleSubmit = useMemo(
     () =>
-      handleRHFSubmit((values) => {
-        onSubmit({
-          schemaVersion: 'v20250403',
-          code: getRandomId(),
-          data: {
-            name: {
-              official: {
-                primary: values.name,
-              },
-              display: {
-                primary: values.nameAlt || values.name,
-              },
-            },
-            remark: '',
-            players: values.players.map((player) => ({
-              id: '',
+      handleRHFSubmit(
+        (values) => {
+          onSubmit({
+            schemaVersion: 'v20250403',
+            code: getRandomId(),
+            data: {
               name: {
-                display: {
-                  primary: player.namePrimary,
-                  secondary: player.nameSecondary,
-                  third: player.nameThird,
-                },
                 official: {
-                  primary: player.namePrimary,
-                  secondary: player.nameSecondary,
-                  third: player.nameThird,
+                  primary: values.name,
+                },
+                display: {
+                  primary: values.nameAlt || values.name,
                 },
               },
-              color: {
-                primary: player.colorPrimary,
-                secondary: player.colorSecondary,
-              },
-              image: {
-                portrait: player.imagePortraitUrl
-                  ? {
-                      default: {
-                        url: player.imagePortraitUrl,
-                      },
-                    }
-                  : undefined,
-                portraitAlt: player.imagePortraitAltUrl
-                  ? {
-                      default: {
-                        url: player.imagePortraitAltUrl,
-                      },
-                    }
-                  : undefined,
-                riichi: player.imageRiichiUrl
-                  ? {
-                      default: {
-                        url: player.imageRiichiUrl,
-                      },
-                    }
-                  : undefined,
-              },
-            })),
-            rulesetRef: values.rulesetId,
-          },
-          metadata: {
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          },
-        } satisfies V2Match)
-      }),
+              remark: '',
+              players: values.players.map((player) => ({
+                id: '',
+                name: {
+                  display: {
+                    primary: player.namePrimary,
+                    secondary: player.nameSecondary,
+                    third: player.nameThird,
+                  },
+                  official: {
+                    primary: player.namePrimary,
+                    secondary: player.nameSecondary,
+                    third: player.nameThird,
+                  },
+                },
+                color: {
+                  primary: player.colorPrimary,
+                  secondary: player.colorPrimary,
+                },
+                image: {
+                  portrait: player.imagePortraitUrl
+                    ? {
+                        default: {
+                          url: player.imagePortraitUrl,
+                        },
+                      }
+                    : undefined,
+                  portraitAlt: player.imagePortraitAltUrl
+                    ? {
+                        default: {
+                          url: player.imagePortraitAltUrl,
+                        },
+                      }
+                    : undefined,
+                  riichi: player.imageRiichiUrl
+                    ? {
+                        default: {
+                          url: player.imageRiichiUrl,
+                        },
+                      }
+                    : undefined,
+                },
+              })),
+              rulesetRef: values.rulesetId,
+            },
+            metadata: {
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+          } satisfies V2Match)
+        },
+        (error) => {
+          console.log(error)
+        }
+      ),
     [handleRHFSubmit, onSubmit]
   )
 
@@ -198,39 +200,52 @@ export default function V2MatchForm({
         {...register('name')}
       />
 
-      <label className="fieldset-label mt-8">直播顯示名稱</label>
-      <input
-        type="text"
-        className="input"
-        placeholder="直播顯示名稱"
-        {...register('nameAlt')}
-      />
-      <p className="fieldset-label text-error">
-        {formState.errors['nameAlt']?.message}
-      </p>
-
-      <h4 className="mt-4">規則</h4>
-      <fieldset className="fieldset">
-        <select className="select" {...register('rulesetId')}>
-          {rulesets.map((ruleset) => (
-            <option value={ruleset.id}>{ruleset.metadata.name.display}</option>
-          ))}
-        </select>
-        <p className="fieldset-label text-error">
-          {formState.errors['rulesetId']?.message}
-        </p>
-      </fieldset>
+      <div className="grid grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
+        <div>
+          <label className="fieldset-label">直播顯示名稱</label>
+          <fieldset className="fieldset">
+            <input
+              type="text"
+              className="input w-full"
+              placeholder="直播顯示名稱"
+              {...register('nameAlt')}
+            />
+            <p className="fieldset-label text-error">
+              {formState.errors['nameAlt']?.message}
+            </p>
+          </fieldset>
+        </div>
+        <div>
+          <label className="fieldset-label">規則</label>
+          <fieldset className="fieldset">
+            <select className="select w-full" {...register('rulesetId')}>
+              {rulesets.map((ruleset) => (
+                <option value={ruleset.id}>
+                  {ruleset.metadata.name.display}
+                </option>
+              ))}
+            </select>
+            <p className="fieldset-label text-error">
+              {formState.errors['rulesetId']?.message}
+            </p>
+          </fieldset>
+        </div>
+        <div>
+          <label className="fieldset-label">佈局風格</label>
+          <p className="leading-10">默認：國士無雙</p>
+        </div>
+      </div>
 
       <div className="divider"></div>
 
       <h4>玩家</h4>
-      <div className="flex gap-x-4">
+      <div>
         {new Array(watchedRuleset?.data.playerCount)
           .fill(undefined)
           .map((_, index) => (
-            <div key={index} className="flex-1">
+            <div key={index}>
               <fieldset
-                className="relative fieldset border-2 border-base-300 p-4 rounded-box"
+                className="relative fieldset border-2 border-base-300 px-4 pb-4 rounded-box"
                 style={{
                   borderColor: watchedPlayers?.[index]?.colorPrimary,
                   backgroundColor: `${watchedPlayers?.[index]?.colorPrimary}20`,
@@ -240,183 +255,166 @@ export default function V2MatchForm({
                   {positionNames[index]}
                 </legend>
 
-                <label className="fieldset-label">名稱</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="玩家名稱"
-                  {...register(`players.${index}.namePrimary`)}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['namePrimary']
-                      ?.message
-                  }
-                </p>
-
-                <label className="fieldset-label">稱號</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="玩家名稱"
-                  {...register(`players.${index}.nameSecondary`)}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['nameSecondary']
-                      ?.message
-                  }
-                </p>
-
-                <label className="fieldset-label">暱稱</label>
-                <input
-                  type="text"
-                  className="input"
-                  placeholder="玩家名稱"
-                  {...register(`players.${index}.nameThird`)}
-                />
-                <p className="fieldset-label text-error">
-                  {formState.errors['players']?.[index]?.['nameThird']?.message}
-                </p>
-
-                <label className="fieldset-label">顏色</label>
-                <Controller
-                  control={control}
-                  name={`players.${index}.colorPrimary`}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <InputColor
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched/blur
-                      value={value}
-                    />
-                  )}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['colorPrimary']
-                      ?.message
-                  }
-                </p>
-
-                <label className="fieldset-label">次顏色</label>
-                <Controller
-                  control={control}
-                  name={`players.${index}.colorSecondary`}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <InputColor
-                      onChange={onChange} // send value to hook form
-                      onBlur={onBlur} // notify when input is touched/blur
-                      value={value}
-                    />
-                  )}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['colorSecondary']
-                      ?.message
-                  }
-                </p>
-
-                <label className="fieldset-label">圖片</label>
-                <input
-                  type="text"
-                  className="input w-full"
-                  placeholder="https://....png"
-                  {...register(`players.${index}.imagePortraitUrl`)}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['imagePortraitUrl']
-                      ?.message
-                  }
-                </p>
-
-                <label className="fieldset-label">隊伍圖片</label>
-                <input
-                  type="text"
-                  className="input w-full"
-                  placeholder="https://....png"
-                  {...register(`players.${index}.imageLogoUrl`)}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['imageLogoUrl']
-                      ?.message
-                  }
-                </p>
-
-                <label className="fieldset-label">立直圖片</label>
-                <input
-                  type="text"
-                  className="input w-full"
-                  placeholder="https://....png"
-                  {...register(`players.${index}.imageRiichiUrl`)}
-                />
-                <p className="fieldset-label text-error">
-                  {
-                    formState.errors['players']?.[index]?.['imageRiichiUrl']
-                      ?.message
-                  }
-                </p>
-
-                <div className="divider"></div>
-
-                <label className="fieldset-label">預覽</label>
-                {watchedPlayers?.[index] && (
+                <div className="flex gap-4">
                   <div>
-                    <div key={index} className="w-full text-[48px]">
-                      <V2PlayerCard
-                        score={watchedRuleset?.data.startingPoint ?? 0}
-                        player={{
-                          id: '',
-                          name: {
-                            official: {
-                              primary: watchedPlayers[index].namePrimary!,
-                              secondary: watchedPlayers[index].nameSecondary!,
-                              third: watchedPlayers[index].nameThird!,
-                            },
-                            display: {
-                              primary: watchedPlayers[index].namePrimary!,
-                              secondary: watchedPlayers[index].nameSecondary!,
-                              third: watchedPlayers[index].nameThird!,
-                            },
-                          },
-                          color: {
-                            primary: watchedPlayers[index].colorPrimary!,
-                            secondary: watchedPlayers[index].colorSecondary!,
-                          },
-                          image: {
-                            portrait: {
-                              default: {
-                                url: watchedPlayers[index].imagePortraitUrl!,
+                    <label className="fieldset-label">預覽</label>
+                    {watchedPlayers?.[index] && (
+                      <div>
+                        <div key={index} className="w-full text-[64px]">
+                          <V2PlayerCard
+                            score={watchedRuleset?.data.startingPoint ?? 0}
+                            player={{
+                              id: '',
+                              name: {
+                                official: {
+                                  primary: watchedPlayers[index].namePrimary!,
+                                  secondary:
+                                    watchedPlayers[index].nameSecondary!,
+                                  third: watchedPlayers[index].nameThird!,
+                                },
+                                display: {
+                                  primary: watchedPlayers[index].namePrimary!,
+                                  secondary:
+                                    watchedPlayers[index].nameSecondary!,
+                                  third: watchedPlayers[index].nameThird!,
+                                },
                               },
-                            },
-                          },
-                        }}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2">
-                      <img
-                        className="w-full aspect-square"
-                        src={watchedPlayers[index].imageLogoUrl}
-                        alt=""
-                      />
-                      <img
-                        className="w-full aspect-square"
-                        src={watchedPlayers[index].imageRiichiUrl}
-                        alt=""
-                      />
-                    </div>
+                              color: {
+                                primary: watchedPlayers[index].colorPrimary!,
+                                secondary:
+                                  watchedPlayers[index].colorSecondary!,
+                              },
+                              image: {
+                                portrait: {
+                                  default: {
+                                    url: watchedPlayers[index]
+                                      .imagePortraitUrl!,
+                                  },
+                                },
+                              },
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div>
+                    <label className="fieldset-label">玩家名稱</label>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="玩家名稱"
+                      {...register(`players.${index}.namePrimary`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['namePrimary']
+                          ?.message
+                      }
+                    </p>
+
+                    <label className="fieldset-label">稱號</label>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="玩家名稱"
+                      {...register(`players.${index}.nameSecondary`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['nameSecondary']
+                          ?.message
+                      }
+                    </p>
+
+                    <label className="fieldset-label">暱稱</label>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="玩家名稱"
+                      {...register(`players.${index}.nameThird`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['nameThird']
+                          ?.message
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="fieldset-label">顏色</label>
+                    <Controller
+                      control={control}
+                      name={`players.${index}.colorPrimary`}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <InputColor
+                          onChange={onChange} // send value to hook form
+                          onBlur={onBlur} // notify when input is touched/blur
+                          value={value}
+                        />
+                      )}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['colorPrimary']
+                          ?.message
+                      }
+                    </p>
+                  </div>
+                </div>
+
+                {/* <div>
+                  <label className="fieldset-label">圖片</label>
+                  <input
+                    type="text"
+                    className="input w-full"
+                    placeholder="https://....png"
+                    {...register(`players.${index}.imagePortraitUrl`)}
+                  />
+                  <p className="fieldset-label text-error">
+                    {
+                      formState.errors['players']?.[index]?.['imagePortraitUrl']
+                        ?.message
+                    }
+                  </p>
+
+                  <label className="fieldset-label">隊伍圖片</label>
+                  <input
+                    type="text"
+                    className="input w-full"
+                    placeholder="https://....png"
+                    {...register(`players.${index}.imageLogoUrl`)}
+                  />
+                  <p className="fieldset-label text-error">
+                    {
+                      formState.errors['players']?.[index]?.['imageLogoUrl']
+                        ?.message
+                    }
+                  </p>
+
+                  <label className="fieldset-label">立直圖片</label>
+                  <input
+                    type="text"
+                    className="input w-full"
+                    placeholder="https://....png"
+                    {...register(`players.${index}.imageRiichiUrl`)}
+                  />
+                  <p className="fieldset-label text-error">
+                    {
+                      formState.errors['players']?.[index]?.['imageRiichiUrl']
+                        ?.message
+                    }
+                  </p>
+                </div> */}
 
                 <button
                   type="button"
-                  className="z-10 absolute btn rounded-full -right-8 -top-4 shadow"
+                  className="z-10 absolute btn rounded-full -bottom-8 left-24 shadow bg-base-100"
                   onClick={handleClickSwap}
                   data-player-index={index}
                 >
-                  <i className="bi bi-arrow-left-right"></i>
+                  <i className="bi bi-arrow-up-down"></i> 調位
                 </button>
               </fieldset>
             </div>

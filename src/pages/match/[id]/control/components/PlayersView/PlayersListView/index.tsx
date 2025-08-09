@@ -384,7 +384,7 @@ const PlayersListView = ({
                       </div>
                     )}
                 </div>
-                <div className="tablet:flex items-center gap-x-2">
+                <div className="lg:flex items-center gap-x-2">
                   <div className="flex-1">
                     <button
                       className="flex h-12 items-center gap-x-2 hover:bg-base-200 px-2 cursor-pointer min-w-16"

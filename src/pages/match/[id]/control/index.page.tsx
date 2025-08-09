@@ -45,6 +45,7 @@ import MJMatchRoundEditForm, {
 import MJPlayersForm from '@/components/MJPlayersForm'
 import MJTileKeyboardForWaitingTileDiv from '@/components/MJTileKeyboardForWaitingTileDiv'
 import useObsRoom from '@/pages/v2/hooks/useObsRoom'
+import { useLocation } from 'wouter'
 
 function MJMatchHistoryAmountSpan({ value }: { value: number }) {
   return (
@@ -1147,13 +1148,22 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
     setMatchHidePlayersDisplay(false)
   }, [setMatchHidePlayersDisplay])
 
+  const [, navigate] = useLocation()
+  const handleClickStartNewMatch = useCallback(
+    (e: React.MouseEvent) => {
+      localStorage.setItem('cachedRealtimeMatch', JSON.stringify(rtMatch))
+      navigate('~/panel/matches/createFromCache')
+    },
+    [navigate, rtMatch]
+  )
+
   if (!rtMatch || !rtMatchCurrentRound) {
     return <div>對局讀取失敗。</div>
   }
 
   return (
     <div>
-      <div className="container mx-auto my-8 tablet:px-8 space-y-24 pb-48">
+      <div className="container mx-auto my-8 lg:px-8 space-y-24 pb-48">
         <div className="space-y-6">
           <div className="flex justify-between items-end">
             <div className="flex flex-row items-center gap-x-4 text-white">
@@ -1652,6 +1662,17 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
             </MJUIButton>
           </div> */}
         </div>
+
+        <div className="space-y-6">
+          <h4 className="text-3xl">
+            <i className="bi bi-bar-chart-steps"></i> 其他操作
+          </h4>
+          <div>
+            <MJUIButton color="secondary" onClick={handleClickStartNewMatch}>
+              開新對局
+            </MJUIButton>
+          </div>
+        </div>
       </div>
 
       <MJUIDialogV2
@@ -1881,18 +1902,6 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
                   <i className="bi bi-play-fill"></i>
                 </button>
               )}
-
-            {rtMatchCurrentRound.nextRoundType === NextRoundTypeEnum.End && (
-              <a
-                href={`/panel/realtime/matches/${rtMatch.code}/detail`}
-                target="_blank"
-              >
-                <button className="text-6xl p-4 text-yellow-800 bg-yellow-400 border-4 border-yellow-600 rounded-lg">
-                  上傳成績
-                  <i className="bi bi-cloud-upload"></i>
-                </button>
-              </a>
-            )}
           </div>
           <div className="flex gap-x-6 items-end justify-end">
             {!rtMatch.hideHeader && (

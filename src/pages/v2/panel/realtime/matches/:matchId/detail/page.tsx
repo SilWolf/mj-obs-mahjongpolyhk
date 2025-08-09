@@ -75,53 +75,6 @@ export default function MatchExportPage({ params: { matchId } }: Props) {
           matchRounds={rtMatchRounds}
           className="w-full table-auto"
         />
-
-        <div className="text-center max-w-[600px] mx-auto bg-amber-100 text-black p-4 space-y-6">
-          <div>
-            <label className="label">
-              <input
-                type="checkbox"
-                className="checkbox"
-                checked={isCheckConfirmedResult}
-                onChange={toggleCheckConfirmedResult}
-              />
-              已確認成績正確
-            </label>
-          </div>
-
-          <div>
-            <label className="label">
-              <input
-                type="checkbox"
-                className="checkbox"
-                checked={isCheckPPTCompleted}
-                onChange={toggleCheckPPTCompleted}
-              />
-              已播完賽後結果簡報
-            </label>
-          </div>
-
-          {!isExported && (
-            <button
-              className="btn btn-primary btn-lg"
-              disabled={
-                isExporting || !isCheckConfirmedResult || !isCheckPPTCompleted
-              }
-              onClick={handleClickExport}
-            >
-              {isExporting ? '上傳中…' : '上傳成績'}
-            </button>
-          )}
-          {isExported && (
-            <a
-              href={`${
-                import.meta.env.VITE_CMS_HOST
-              }/structure/general-list-matches-past;${matchId}`}
-            >
-              <MJUIButton color="secondary">在資料庫上查看</MJUIButton>
-            </a>
-          )}
-        </div>
       </div>
     </div>
   )

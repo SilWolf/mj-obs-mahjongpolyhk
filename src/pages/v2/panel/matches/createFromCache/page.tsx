@@ -245,7 +245,7 @@ export default function V2PanelMatchesByIdEditPage() {
 
   return (
     <>
-      <section className="container mx-6 my-4">
+      <section className="container mx-auto p-8">
         <V2MatchForm defaultValues={defaultValues} onSubmit={handleSubmit} />
       </section>
     </>
