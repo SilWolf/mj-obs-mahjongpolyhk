@@ -26,7 +26,6 @@ import MJMatchCounterSpan from '@/components/MJMatchCounterSpan'
 import MJTileKeyboardDiv from '@/components/MJTileKeyboardDiv'
 import MJUIDialogV2 from '@/components/MJUI/MJUIDialogV2'
 import MJUIButton from '@/components/MJUI/MJUIButton'
-import { useFirebaseDatabaseByKey } from '@/providers/firebaseDatabase.provider'
 import PlayersListView from './components/PlayersView/PlayersListView'
 import { PlayersViewAction } from './components/PlayersView'
 import {
@@ -45,6 +44,7 @@ import MJMatchRoundEditForm, {
 } from '@/components/MJMatchRoundEditForm'
 import MJPlayersForm from '@/components/MJPlayersForm'
 import MJTileKeyboardForWaitingTileDiv from '@/components/MJTileKeyboardForWaitingTileDiv'
+import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 
 function MJMatchHistoryAmountSpan({ value }: { value: number }) {
   return (
@@ -119,8 +119,7 @@ type Props = {
 }
 
 export default function MatchControlPage({ params: { matchId } }: Props) {
-  const { data: obsInfo, set: setObsInfo } =
-    useFirebaseDatabaseByKey<string>('obs/1')
+  const { data: obsInfo, set: setObsInfo } = useObsRoom()
 
   const {
     rtMatch,
@@ -1151,6 +1150,8 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
   const handleClickShowPlayers = useCallback(() => {
     setMatchHidePlayersDisplay(false)
   }, [setMatchHidePlayersDisplay])
+
+  console.log(rtMatch, rtMatchCurrentRound)
 
   if (!rtMatch || !rtMatchCurrentRound) {
     return <div>對局讀取失敗。</div>

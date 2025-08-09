@@ -1,8 +1,5 @@
-import React, { useCallback, useMemo } from 'react'
-import {
-  useFirebaseDatabase,
-  useFirebaseDatabaseByKey,
-} from '@/providers/firebaseDatabase.provider'
+import React, { useCallback } from 'react'
+import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { generateMatchRoundCode } from '@/helpers/mahjong.helper'
 import V2MatchForm from '../../widgets/V2MatchForm'
 import { useToggle } from 'react-use'
@@ -10,16 +7,13 @@ import { useLocation } from 'wouter'
 import { apiGetRulesetById } from '../../services/ruleset.service'
 import { V2Match } from '../../models/V2Match.model'
 import { V2MatchRound } from '../../models/V2MatchRound.model'
-import { V2ObsRoom } from '../../models/V2ObsRoom.model'
+import useObsRoom from '../../hooks/useObsRoom'
 
 export default function V2CreateMatchPage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, navigate] = useLocation()
   const fb = useFirebaseDatabase()
-  const { data: obsRoom, update: updateObsRoom } = useFirebaseDatabaseByKey<
-    string,
-    V2ObsRoom
-  >(`obs/1`)
+  const { update: updateObsRoom } = useObsRoom()
 
   const [isCreating, toggleIsCreating] = useToggle(false)
 

@@ -1,6 +1,7 @@
 import { generateMatchRoundCode } from '@/helpers/mahjong.helper'
 import { RealtimeMatch, RealtimeMatchRound } from '@/models'
 import useCurrentTournament from '@/pages/v2/hooks/useCurrentTournament'
+import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 import { V2Match } from '@/pages/v2/models/V2Match.model'
 import V2MatchForm from '@/pages/v2/widgets/V2MatchForm'
 import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
@@ -11,6 +12,7 @@ import { useLocation } from 'wouter'
 
 export default function V2PanelMatchesByIdEditPage() {
   const fb = useFirebaseDatabase()
+  const { update: updateObsRoom } = useObsRoom()
   const [, navigate] = useLocation()
 
   const [cachedRealtimeMatch] = useLocalStorage<RealtimeMatch>(
@@ -200,14 +202,14 @@ export default function V2PanelMatchesByIdEditPage() {
       }
 
       await fb.push(`matchRounds`, matchRound)
-      await fb.update(`obs/1`, {
+      await updateObsRoom({
         tournamentId: currentTournament?.tournament.id ?? null,
         matchId: newRTMatch.code,
         themeId: 'default',
       })
       navigate('/obs/match-control')
     },
-    [currentTournament, fb, navigate]
+    [currentTournament?.tournament.id, fb, navigate, updateObsRoom]
   )
 
   const defaultValues = useMemo(() => {

@@ -40,37 +40,6 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
       <div className="drawer lg:drawer-open">
         <input id="layout-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
-          <div className="navbar bg-base-100 w-full border-b-1 border-base-300">
-            <div>
-              {/* Page content here */}
-              <label
-                htmlFor="layout-drawer"
-                className="btn btn-ghost rounded-full text-lg drawer-button lg:hidden"
-              >
-                <i className="bi bi-list"></i>
-              </label>
-            </div>
-
-            <div className="mx-2 flex-1 px-2 flex gap-x-2 items-center">
-              <div className="flex gap-x-2 items-center">
-                <img
-                  src={currentTournament?.image.logo?.default.url}
-                  className="w-8 h-8"
-                />
-                <span>{currentTournament?.name}</span>
-              </div>
-              <div>
-                {allTournaments.length > 1 && (
-                  <button
-                    onClick={() => openDialog('tournament-selector-dialog')}
-                    className="btn btn-xs btn-ghost text-primary"
-                  >
-                    切換
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
           <main>{children}</main>
         </div>
         <div className="drawer-side  border-r-1 bg-base-100 border-base-300">
@@ -82,22 +51,6 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
               <i className="bi bi-list"></i>
             </label>
             <div className="p-4 w-full text-lg text-center">日麻直播系統</div>
-
-            <h5 className="text-sm font-bold px-4">聯賽控制</h5>
-            <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
-              {/* Sidebar content here */}
-              <li>
-                <Link href="/">賽事</Link>
-              </li>
-              <li>
-                <a>隊伍／選手</a>
-              </li>
-              <li>
-                <a>風格</a>
-              </li>
-            </ul>
-
-            <div className="divider"></div>
 
             <h5 className="text-sm font-bold px-4">OBS 控制</h5>
 

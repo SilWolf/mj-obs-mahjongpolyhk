@@ -227,7 +227,7 @@ export type RealtimeMatch = {
   name: string
   nameDisplay?: string
   code: string
-  databaseId: string
+  databaseId?: string
   remark: string
   createdAt: string
   createdBy: string

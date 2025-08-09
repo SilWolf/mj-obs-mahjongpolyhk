@@ -5,15 +5,16 @@ import {
 import { V2ObsRoom } from '../models/V2ObsRoom.model'
 
 export default function useObsRoom() {
+  const obsRoomId = import.meta.env.VITE_OBS_ROOM_ID || 'default'
+
   const fb = useFirebaseDatabase()
-  const obsRoomId = import.meta.env.VITE_OBS_ROOM_ID
-  const { data } = useFirebaseDatabaseByKey<string, V2ObsRoom>(
-    `obs/${obsRoomId}`
-  )
+  const res = useFirebaseDatabaseByKey<string, V2ObsRoom>(`obs/${obsRoomId}`)
 
   return {
-    data,
+    ...res,
     actions: {
+      setActiveMatchId: (newMatchId: string) =>
+        fb.set(`obs/${obsRoomId}/activeMatch/id`, newMatchId),
       setHidingHeader: (newValue: boolean) =>
         fb.set(`obs/${obsRoomId}/props/isHidingHeader`, newValue),
       setHidingPlayers: (newValue: boolean) =>

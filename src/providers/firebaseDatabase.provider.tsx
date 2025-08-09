@@ -51,7 +51,10 @@ const contextDefaultValue = {
   get: <T extends Record<string, unknown>>(
     key: string
   ): Promise<T | undefined> => {
-    const ref = fbRef(firebaseDatabase, key)
+    const ref = fbRef(
+      firebaseDatabase,
+      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+    )
     return fbGet(ref)
       .then((snapshot) => {
         if (snapshot.exists()) {
@@ -65,21 +68,30 @@ const contextDefaultValue = {
       })
   },
   set: (key: string, payload: unknown) => {
-    const ref = fbRef(firebaseDatabase, key)
+    const ref = fbRef(
+      firebaseDatabase,
+      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+    )
     return fbSet(ref, payload).catch((error) => {
       console.error(error)
       throw error
     })
   },
   update: (key: string, payload: unknown) => {
-    const ref = fbRef(firebaseDatabase, key)
+    const ref = fbRef(
+      firebaseDatabase,
+      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+    )
     return fbUpdate(ref, payload as object).catch((error) => {
       console.error(error)
       throw error
     })
   },
   push: (key: string, payload: unknown) => {
-    const ref = fbRef(firebaseDatabase, key)
+    const ref = fbRef(
+      firebaseDatabase,
+      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+    )
     return fbPush(ref, payload).catch((error) => {
       console.error(error)
       throw error
@@ -126,10 +138,13 @@ export const useFirebaseDatabaseByKey = <
 ) => {
   const { database } = useContext(FirebaseDatabaseContext)
   const ref = useMemo(() => {
-    return fbRef(database, key)
+    return fbRef(
+      database,
+      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+    )
   }, [database, key])
 
-  const [rawData, setRawData] = useState<UData>()
+  const [rawData, setRawData] = useState<UData | undefined>(undefined)
   const [lastOptions, setLastOptions] = useState<
     UseFirebaseDatabaseByKeyOptions | undefined
   >(options)
@@ -203,9 +218,5 @@ export const useFirebaseDatabaseByKey = <
     }
   }, [lastOptions, ref])
 
-  const returnData = useMemo(() => {
-    return rawData
-  }, [rawData])
-
-  return { data: returnData, set, update, push }
+  return { data: rawData, isFetching: rawData === undefined, set, update, push }
 }
