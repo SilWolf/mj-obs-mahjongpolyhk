@@ -46,14 +46,14 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
             <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
               {/* Sidebar content here */}
               <li>
-                <a>如何設置 OBS</a>
-              </li>
-              <li>
                 <Link href="/obs/match-control">分數控制台</Link>
               </li>
               <li>
-                <Link href="/obs/scene-control">多合一場景控制台</Link>
+                <Link href="/obs/setup">設置 OBS</Link>
               </li>
+              {/* <li>
+                <Link href="/obs/scene-control">多合一場景控制台</Link>
+              </li> */}
             </ul>
 
             <div className="divider"></div>

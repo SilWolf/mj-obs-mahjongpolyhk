@@ -22,6 +22,10 @@ const V2PanelMatchCreateFromCachePage = lazy(
   () => import('./pages/v2/panel/matches/createFromCache/page')
 )
 
+const V2PanelObsSetupPage = lazy(
+  () => import('./pages/v2/panel/wiki/setup-obs/page')
+)
+
 const V2PanelObsMatchControlPage = lazy(
   () => import('./pages/v2/panel/obs/match-control/page')
 )
@@ -84,6 +88,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     component={V2PanelMatchesByIdEditPage}
                   />
 
+                  <Route path="/obs/setup" component={V2PanelObsSetupPage} />
                   <Route
                     path="/obs/match-control"
                     component={V2PanelObsMatchControlPage}
@@ -92,6 +97,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     path="/obs/scene-control"
                     component={V2PanelObsSceneControlPage}
                   />
+
                   <Route path="/realtime" nest>
                     <Route
                       path="/matches"

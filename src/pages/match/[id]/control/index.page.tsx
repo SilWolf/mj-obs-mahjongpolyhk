@@ -1149,13 +1149,10 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
   }, [setMatchHidePlayersDisplay])
 
   const [, navigate] = useLocation()
-  const handleClickStartNewMatch = useCallback(
-    (e: React.MouseEvent) => {
-      localStorage.setItem('cachedRealtimeMatch', JSON.stringify(rtMatch))
-      navigate('~/panel/matches/createFromCache')
-    },
-    [navigate, rtMatch]
-  )
+  const handleClickStartNewMatch = useCallback(() => {
+    localStorage.setItem('cachedRealtimeMatch', JSON.stringify(rtMatch))
+    navigate('~/panel/matches/createFromCache')
+  }, [navigate, rtMatch])
 
   if (!rtMatch || !rtMatchCurrentRound) {
     return <div>對局讀取失敗。</div>
