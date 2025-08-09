@@ -24,6 +24,10 @@ export default function MJReachAnimationDiv({
             }}
           ></div>
           <div
+            className="reach-animation-logo"
+            style={{ backgroundImage: `url("${largeLogoUrl}")` }}
+          ></div>
+          <div
             className="reach-animation-bar"
             style={{ backgroundImage: 'url("/images/score-thousand.png")' }}
           ></div>
