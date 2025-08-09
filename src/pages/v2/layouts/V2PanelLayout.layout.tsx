@@ -1,10 +1,9 @@
 'use client'
 
-import { PropsWithChildren, useCallback, useEffect, useMemo } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 import { CurrentTournamentIdContext } from '../hooks/useCurrentTournament'
 import useAllTournaments from '../hooks/useAllTournaments'
 import { useLocalStorage } from 'react-use'
-import { closeDialog, openDialog } from '@/components/Dialog'
 import CurrentLiveMatchWidget from '../widgets/CurrentLiveMatchWidget'
 import { Link } from 'wouter'
 
@@ -15,25 +14,11 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
     ''
   )
 
-  const currentTournament = useMemo(
-    () => allTournaments?.find(({ id }) => id === currentTournamentId),
-    [allTournaments, currentTournamentId]
-  )
-
   useEffect(() => {
     if (!currentTournamentId && allTournaments[0]) {
       setCurrentTournamentId(allTournaments[0].id)
     }
   }, [allTournaments, currentTournamentId, setCurrentTournamentId])
-
-  const handleSwitchTournament = useCallback(
-    (e: React.MouseEvent) => {
-      const newTournamentId = e.currentTarget.getAttribute('data-tournament-id')
-      setCurrentTournamentId(newTournamentId as string)
-      closeDialog('tournament-selector-dialog')
-    },
-    [setCurrentTournamentId]
-  )
 
   return (
     <CurrentTournamentIdContext.Provider value={currentTournamentId!}>
@@ -83,33 +68,6 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
           </div>
         </div>
       </div>
-
-      <dialog id="tournament-selector-dialog" className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">切換聯賽</h3>
-          <ul className="menu w-full">
-            {allTournaments.map((tournament) => (
-              <li key={tournament.id}>
-                <a
-                  className="flex gap-x-2"
-                  onClick={handleSwitchTournament}
-                  data-tournament-id={tournament.id}
-                >
-                  <img
-                    src={tournament.image.logo?.default.url}
-                    className="w-8 h-8"
-                    alt=""
-                  />
-                  <span className="flex-1">{tournament.name}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
     </CurrentTournamentIdContext.Provider>
   )
 }

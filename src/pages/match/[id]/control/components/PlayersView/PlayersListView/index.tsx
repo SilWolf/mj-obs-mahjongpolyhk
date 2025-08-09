@@ -101,9 +101,9 @@ const PlayersListView = ({
   )
 
   return (
-    <div className="space-y-2">
+    <div>
       {(['0', '1', '2', '3'] as PlayerIndex[]).map((index) => (
-        <div className="flex gap-2 py-8 border-t border-t-base-300">
+        <div className="flex gap-2 py-2 border-t border-t-base-300 even:bg-neutral-100">
           <div className="shrink-0 flex flex-col gap-1">
             <button
               className="text-gray-900 text-xs px-1 rounded-sm"
@@ -203,7 +203,7 @@ const PlayersListView = ({
                       碰
                     </button>
                     <div
-                      className="dropdown dropdown-center dropdown-top rounded-box bg-base-100 shadow-sm"
+                      className="dropdown dropdown-center dropdown-bottom rounded-box shadow-sm"
                       popover="auto"
                       id={`player${index}-popover-pon-keyboard`}
                       style={
@@ -212,7 +212,7 @@ const PlayersListView = ({
                         } as React.CSSProperties
                       }
                     >
-                      <div className="card border border-base-300 shadow mb-1">
+                      <div className="card bg-base-100 border border-base-300 shadow mb-1">
                         <div className="card-content p-2 text-[32px]">
                           <RevealPonKeyboard
                             onClick={handleClickAddReveal(index)}
@@ -233,7 +233,7 @@ const PlayersListView = ({
                       吃
                     </button>
                     <div
-                      className="dropdown dropdown-center dropdown-top rounded-box bg-base-100 shadow-sm"
+                      className="dropdown dropdown-center dropdown-bottom rounded-box shadow-sm"
                       popover="auto"
                       id={`player${index}-popover-chi-keyboard`}
                       style={
@@ -242,7 +242,7 @@ const PlayersListView = ({
                         } as React.CSSProperties
                       }
                     >
-                      <div className="card border border-base-300 shadow mb-1">
+                      <div className="card bg-base-100 border border-base-300 shadow mb-1">
                         <div className="card-content p-2 text-[32px]">
                           <RevealChiKeyboard
                             onClick={handleClickAddReveal(index)}
@@ -265,7 +265,7 @@ const PlayersListView = ({
                   槓
                 </button>
                 <div
-                  className="dropdown dropdown-center dropdown-top rounded-box bg-base-100 shadow-sm"
+                  className="dropdown dropdown-center dropdown-bottom rounded-box shadow-sm"
                   popover="auto"
                   id={`player${index}-popover-kanng-keyboard`}
                   style={
@@ -274,7 +274,7 @@ const PlayersListView = ({
                     } as React.CSSProperties
                   }
                 >
-                  <div className="card border border-base-300 shadow mb-1">
+                  <div className="card bg-base-100 border border-base-300 shadow mb-1">
                     <div className="card-content p-2 text-[32px]">
                       <RevealKanngKeyboard
                         onClick={handleClickAddReveal(index)}
@@ -299,7 +299,7 @@ const PlayersListView = ({
                         <MJTileCombinationDiv value={combination} />
                       </button>
                       <div
-                        className="dropdown dropdown-center dropdown-top rounded-box bg-base-100 shadow-sm"
+                        className="dropdown dropdown-center dropdown-bottom rounded-box shadow-sm"
                         popover="auto"
                         id={`player${index}-reveal-${ci}-popover-edit-keyboard`}
                         style={
@@ -308,7 +308,7 @@ const PlayersListView = ({
                           } as React.CSSProperties
                         }
                       >
-                        <div className="card border border-base-300 shadow mb-1">
+                        <div className="card bg-base-100 border border-base-300 shadow mb-1">
                           <div className="card-content p-2 text-[32px]">
                             <RevealEditKeyboard
                               value={combination}
@@ -337,7 +337,7 @@ const PlayersListView = ({
               <div className="flex-1 flex flex-col justify-around gap-1">
                 <div className="flex items-center gap-x-2">
                   <button
-                    className="flex h-12 items-center gap-x-2 bg-base-100 data-[is-furiten=true]:data-[is-waiting]:bg-red-500/50 data-[is-waiting]:bg-green-500/50 px-2 min-w-[200px] cursor-pointer"
+                    className="flex h-12 items-center gap-x-2 hover:bg-base-200 data-[is-furiten=true]:data-[is-waiting]:bg-red-500/50 data-[is-waiting]:bg-green-500/50 px-2 cursor-pointer min-w-16"
                     data-player-index={index}
                     data-action="waitingTile"
                     data-is-waiting={
@@ -384,42 +384,48 @@ const PlayersListView = ({
                       </div>
                     )}
                 </div>
-                <div className="flex items-center gap-x-2">
-                  <button
-                    className="flex-1 flex h-12 items-center gap-x-2cursor-pointer bg-base-100 hover:bg-base-200 px-2 cursor-pointer"
-                    data-player-index={index}
-                    data-action="yaku"
-                    onClick={handleAction}
-                  >
-                    <div>役</div>
-                    {currentRound.playerResults[index].detail.yakus?.map(
-                      ({ label }) => <span key={label}>{label}</span>
-                    )}
-                  </button>
-
-                  <div className="flex gap-x-1">
-                    <div className="inline-flex items-stretch gap-x-2 border-4 border-yellow-300 bg-yellow-300 pr-1">
-                      <span className="content-center px-2">寶牌</span>
-                      <span className="text-[40px]">
-                        <SelectNumber
-                          value={currentRound.playerResults[index].detail.dora}
-                          onClick={handleClickDora(index)}
-                        />
-                      </span>
-                    </div>
+                <div className="tablet:flex items-center gap-x-2">
+                  <div className="flex-1">
+                    <button
+                      className="flex h-12 items-center gap-x-2 hover:bg-base-200 px-2 cursor-pointer min-w-16"
+                      data-player-index={index}
+                      data-action="yaku"
+                      onClick={handleAction}
+                    >
+                      <div>役</div>
+                      {currentRound.playerResults[index].detail.yakus?.map(
+                        ({ label }) => <span key={label}>{label}</span>
+                      )}
+                    </button>
                   </div>
 
-                  <div className="flex gap-x-1">
-                    <div className="inline-flex items-stretch gap-x-2 border-4 border-red-300 bg-red-300 pr-1">
-                      <span className="content-center px-2">赤牌</span>
-                      <span className="text-[40px]">
-                        <SelectNumber
-                          value={
-                            currentRound.playerResults[index].detail.redDora
-                          }
-                          onClick={handleClickRedDora(index)}
-                        />
-                      </span>
+                  <div className="flex">
+                    <div className="flex gap-x-1">
+                      <div className="inline-flex items-stretch gap-x-2 border-4 border-yellow-300 bg-yellow-300 pr-1">
+                        <span className="content-center px-2">寶牌</span>
+                        <span className="text-[40px]">
+                          <SelectNumber
+                            value={
+                              currentRound.playerResults[index].detail.dora
+                            }
+                            onClick={handleClickDora(index)}
+                          />
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-x-1">
+                      <div className="inline-flex items-stretch gap-x-2 border-4 border-red-300 bg-red-300 pr-1">
+                        <span className="content-center px-2">赤牌</span>
+                        <span className="text-[40px]">
+                          <SelectNumber
+                            value={
+                              currentRound.playerResults[index].detail.redDora
+                            }
+                            onClick={handleClickRedDora(index)}
+                          />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>

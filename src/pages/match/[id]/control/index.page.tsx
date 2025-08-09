@@ -272,10 +272,6 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
         prevRound = newNextMatchRound
       }
       toggleEditDialog(false)
-
-      setTimeout(() => {
-        alert('「下次小心d喇屌 :)」')
-      }, 0)
     },
     [
       editDialogProps.id,
@@ -1151,172 +1147,173 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
     setMatchHidePlayersDisplay(false)
   }, [setMatchHidePlayersDisplay])
 
-  console.log(rtMatch, rtMatchCurrentRound)
-
   if (!rtMatch || !rtMatchCurrentRound) {
     return <div>對局讀取失敗。</div>
   }
 
   return (
     <div>
-      <div className="container mx-auto my-8 px-8 space-y-24 pb-48">
+      <div className="container mx-auto my-8 tablet:px-8 space-y-24 pb-48">
         <div className="space-y-6">
-          <div className="flex flex-row items-center gap-x-4 text-white">
-            <div
-              className="p-2 pl-4 pr-10 flex items-center gap-x-8 transition-[width] text-[4rem]"
-              style={{
-                background: `linear-gradient(280deg, transparent, transparent 22px, #00000080 23px, #00000080 100%)`,
-              }}
-            >
-              <div className="text-[0.5em] relative">
-                <div className="text-[0.5em]">
-                  <button type="button" onClick={handleClickEditMatchName}>
-                    {rtMatch.name} <i className="bi bi-pencil"></i>
-                  </button>
-                </div>
-                <div className="flex gap-x-8 items-center">
-                  <div>
-                    <MJMatchCounterSpan
-                      roundCount={rtMatchCurrentRound.roundCount}
-                      max={8}
-                    />
+          <div className="flex justify-between items-end">
+            <div className="flex flex-row items-center gap-x-4 text-white">
+              <div
+                className="p-2 pl-4 pr-10 flex items-center gap-x-8 transition-[width] text-[4rem]"
+                style={{
+                  background: `linear-gradient(280deg, transparent, transparent 22px, #00000080 23px, #00000080 100%)`,
+                }}
+              >
+                <div className="text-[0.5em] relative">
+                  <div className="text-[0.5em]">
+                    <button type="button" onClick={handleClickEditMatchName}>
+                      {rtMatch.name} <i className="bi bi-pencil"></i>
+                    </button>
                   </div>
+                  <div className="flex gap-x-8 items-center">
+                    <div>
+                      <MJMatchCounterSpan
+                        roundCount={rtMatchCurrentRound.roundCount}
+                        max={8}
+                      />
+                    </div>
 
-                  <div className="flex flex-col justify-around">
-                    <div className="flex-1 flex flex-row items-center gap-x-3">
-                      <div className="flex-1">
-                        <img
-                          src="/images/score-hundred.png"
-                          alt="hundred"
-                          className="h-2"
-                        />
+                    <div className="flex flex-col justify-around">
+                      <div className="flex-1 flex flex-row items-center gap-x-3">
+                        <div className="flex-1">
+                          <img
+                            src="/images/score-hundred.png"
+                            alt="hundred"
+                            className="h-2"
+                          />
+                        </div>
+                        <div className="text-[0.4em] pb-1.5 leading-none">
+                          {rtMatchCurrentRound.extendedRoundCount ?? 0}
+                        </div>
                       </div>
-                      <div className="text-[0.4em] pb-1.5 leading-none">
-                        {rtMatchCurrentRound.extendedRoundCount ?? 0}
+                      <div className="flex-1 flex flex-row items-center gap-x-3">
+                        <div className="flex-1">
+                          <img
+                            src="/images/score-thousand.png"
+                            alt="thousand"
+                            className="h-2"
+                          />
+                        </div>
+                        <div className="text-[0.4em] pb-1.5 leading-none">
+                          {rtMatchCurrentRound.cumulatedThousands ?? 0}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex-1 flex flex-row items-center gap-x-3">
-                      <div className="flex-1">
-                        <img
-                          src="/images/score-thousand.png"
-                          alt="thousand"
-                          className="h-2"
-                        />
-                      </div>
-                      <div className="text-[0.4em] pb-1.5 leading-none">
-                        {rtMatchCurrentRound.cumulatedThousands ?? 0}
-                      </div>
+                  </div>
+                  {rtMatch.hideHeader && (
+                    <div className="absolute inset-0 opacity-100 bg-red-800 text-center">
+                      隱藏中
                     </div>
-                  </div>
+                  )}
                 </div>
-                {rtMatch.hideHeader && (
-                  <div className="absolute inset-0 opacity-100 bg-red-800 text-center">
-                    隱藏中
-                  </div>
-                )}
-              </div>
 
-              <div className="flex items-center gap-x-2">
-                {rtMatchCurrentRoundDoras.map((dora, index) => (
-                  <button
-                    data-index={index}
-                    onClick={handleClickDora}
-                    className="hover:opacity-80"
-                  >
-                    <MJTileDiv
-                      key={dora}
-                      className="w-12! animate-[fadeInFromLeft_0.5s_ease-in-out]"
+                <div className="flex items-center gap-x-2">
+                  {rtMatchCurrentRoundDoras.map((dora, index) => (
+                    <button
+                      data-index={index}
+                      onClick={handleClickDora}
+                      className="hover:opacity-80"
                     >
-                      {dora}
-                    </MJTileDiv>
-                  </button>
-                ))}
+                      <MJTileDiv
+                        key={dora}
+                        className="w-12! animate-[fadeInFromLeft_0.5s_ease-in-out]"
+                      >
+                        {dora}
+                      </MJTileDiv>
+                    </button>
+                  ))}
 
-                <MJUIButton
-                  type="button"
-                  color={
-                    rtMatchCurrentRoundDoras.length === 0
-                      ? 'danger'
-                      : 'secondary'
-                  }
-                  className={`${
-                    rtMatchCurrentRoundDoras.length === 0 && 'animate-bounce'
-                  }`}
-                  data-index="-1"
-                  onClick={handleClickDora}
-                >
-                  +懸賞
-                </MJUIButton>
+                  <MJUIButton
+                    type="button"
+                    color={
+                      rtMatchCurrentRoundDoras.length === 0
+                        ? 'danger'
+                        : 'secondary'
+                    }
+                    className={`${
+                      rtMatchCurrentRoundDoras.length === 0 && 'animate-bounce'
+                    }`}
+                    data-index="-1"
+                    onClick={handleClickDora}
+                  >
+                    +懸賞
+                  </MJUIButton>
+                </div>
               </div>
-            </div>
 
-            <div className="flex-1" />
+              <div className="flex-1" />
 
-            <div className="shrink-0">
-              {obsInfo?.matchId !== matchId && (
-                <MJUIButton
-                  color="success"
-                  type="button"
-                  className="animate-pulse"
-                  onClick={handleClickStartOBS}
-                >
-                  開始OBS
-                </MJUIButton>
-              )}
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-x-8 ">
-            <div className="text-right space-x-4">
-              {rtMatch.activeResultDetail && (
-                <MJUIButton
-                  color="secondary"
-                  type="button"
-                  onClick={handleClickClearActiveResult}
-                >
-                  結束播放中的和牌詳情
-                  <br />
-                  <span className="text-xs">(或最多10秒後自動結束)</span>
-                </MJUIButton>
-              )}
-              {rtMatchCurrentRound.nextRoundType !==
-                NextRoundTypeEnum.Unknown &&
-                rtMatchCurrentRound.nextRoundType !== NextRoundTypeEnum.End && (
+              <div className="shrink-0">
+                {obsInfo?.matchId !== matchId && (
                   <MJUIButton
                     color="success"
                     type="button"
                     className="animate-pulse"
-                    onClick={handleClickGoNextRound}
+                    onClick={handleClickStartOBS}
                   >
-                    進入
-                    <MJMatchCounterSpan
-                      roundCount={
-                        rtMatchCurrentRound.nextRoundType ===
-                          NextRoundTypeEnum.NextRound ||
-                        rtMatchCurrentRound.nextRoundType ===
-                          NextRoundTypeEnum.NextRoundAndExtended
-                          ? rtMatchCurrentRound.roundCount + 1
-                          : rtMatchCurrentRound.roundCount
-                      }
-                      extendedRoundCount={
-                        rtMatchCurrentRound.nextRoundType ===
-                          NextRoundTypeEnum.Extended ||
-                        rtMatchCurrentRound.nextRoundType ===
-                          NextRoundTypeEnum.NextRoundAndExtended
-                          ? rtMatchCurrentRound.extendedRoundCount + 1
-                          : 0
-                      }
-                    />
+                    開始OBS
                   </MJUIButton>
                 )}
+              </div>
+            </div>
 
-              <MJUIButton
-                color="secondary"
-                type="button"
-                onClick={handleClickExhausted}
-              >
-                流局
-              </MJUIButton>
+            <div className="flex justify-end gap-x-8 ">
+              <div className="text-right space-x-4">
+                {rtMatch.activeResultDetail && (
+                  <MJUIButton
+                    color="secondary"
+                    type="button"
+                    onClick={handleClickClearActiveResult}
+                  >
+                    結束播放中的和牌詳情
+                    <br />
+                    <span className="text-xs">(或最多10秒後自動結束)</span>
+                  </MJUIButton>
+                )}
+                {rtMatchCurrentRound.nextRoundType !==
+                  NextRoundTypeEnum.Unknown &&
+                  rtMatchCurrentRound.nextRoundType !==
+                    NextRoundTypeEnum.End && (
+                    <MJUIButton
+                      color="success"
+                      type="button"
+                      className="animate-pulse"
+                      onClick={handleClickGoNextRound}
+                    >
+                      進入
+                      <MJMatchCounterSpan
+                        roundCount={
+                          rtMatchCurrentRound.nextRoundType ===
+                            NextRoundTypeEnum.NextRound ||
+                          rtMatchCurrentRound.nextRoundType ===
+                            NextRoundTypeEnum.NextRoundAndExtended
+                            ? rtMatchCurrentRound.roundCount + 1
+                            : rtMatchCurrentRound.roundCount
+                        }
+                        extendedRoundCount={
+                          rtMatchCurrentRound.nextRoundType ===
+                            NextRoundTypeEnum.Extended ||
+                          rtMatchCurrentRound.nextRoundType ===
+                            NextRoundTypeEnum.NextRoundAndExtended
+                            ? rtMatchCurrentRound.extendedRoundCount + 1
+                            : 0
+                        }
+                      />
+                    </MJUIButton>
+                  )}
+
+                <MJUIButton
+                  color="secondary"
+                  type="button"
+                  onClick={handleClickExhausted}
+                >
+                  流局
+                </MJUIButton>
+              </div>
             </div>
           </div>
 

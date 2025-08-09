@@ -43,13 +43,13 @@ function MJUIDialogV2({
       onClose={handleDialogClose}
     >
       <div className="p-6">
-        <div className="flex mb-4">
+        <div className="flex pt-4 mb-4">
           <div className="flex-1 items-center font-bold text-lg">{title}</div>
           {!hideCloseButton && (
             <div className="shrink-0">
               <button
                 type="button"
-                className="absolute top-4 right-4"
+                className="absolute top-4 right-4 text-[32px] cursor-pointer"
                 onClick={handleDialogClose}
               >
                 <i className="bi bi-x"></i>
