@@ -10,7 +10,7 @@ import {
 type Props = {
   players: Record<
     'playerEast' | 'playerSouth' | 'playerWest' | 'playerNorth',
-    { name: string; color: string }
+    { name: string; color: string; strokeColor?: string }
   >
   rounds: {
     name: string
@@ -19,56 +19,46 @@ type Props = {
     playerWest: number
     playerNorth: number
   }[]
+  axisTextColor?: string
 }
 
-function MJMatchHistoryChart({ players, rounds }: Props) {
+function MJMatchHistoryChart({
+  players,
+  rounds,
+  axisTextColor = '#FFFFFF',
+}: Props) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={rounds}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis tick={{ fill: 'white' }} dataKey="name" />
+        <XAxis tick={{ fill: axisTextColor }} dataKey="name" />
         <YAxis
-          tick={{ fill: 'white' }}
+          tick={{ fill: axisTextColor }}
+          tickCount={6}
           width={120}
           allowDecimals={false}
-          tickCount={5}
         />
         {/* <Legend /> */}
+
         <Line
           type="linear"
-          stroke="#FFF"
+          stroke={players.playerNorth.strokeColor ?? '#FFF'}
           strokeWidth={10}
           isAnimationActive={false}
-          dataKey="playerEast"
+          dataKey="playerNorth"
         />
         <Line
           type="linear"
-          stroke={players.playerEast.color}
+          stroke={players.playerNorth.color}
           strokeWidth={8}
           isAnimationActive={false}
-          name={players.playerEast.name}
-          dataKey="playerEast"
+          name={players.playerNorth.name}
+          dataKey="playerNorth"
         />
 
         <Line
           type="linear"
-          stroke="#FFF"
-          strokeWidth={10}
-          isAnimationActive={false}
-          dataKey="playerSouth"
-        />
-        <Line
-          type="linear"
-          stroke={players.playerSouth.color}
-          strokeWidth={8}
-          isAnimationActive={false}
-          name={players.playerSouth.name}
-          dataKey="playerSouth"
-        />
-
-        <Line
-          type="linear"
-          stroke="#FFF"
+          stroke={players.playerWest.strokeColor ?? '#FFF'}
           strokeWidth={10}
           isAnimationActive={false}
           dataKey="playerWest"
@@ -84,18 +74,34 @@ function MJMatchHistoryChart({ players, rounds }: Props) {
 
         <Line
           type="linear"
-          stroke="#FFF"
+          stroke={players.playerSouth.strokeColor ?? '#FFF'}
           strokeWidth={10}
           isAnimationActive={false}
-          dataKey="playerNorth"
+          dataKey="playerSouth"
         />
         <Line
           type="linear"
-          stroke={players.playerNorth.color}
+          stroke={players.playerSouth.color}
           strokeWidth={8}
           isAnimationActive={false}
-          name={players.playerNorth.name}
-          dataKey="playerNorth"
+          name={players.playerSouth.name}
+          dataKey="playerSouth"
+        />
+
+        <Line
+          type="linear"
+          stroke={players.playerEast.strokeColor ?? '#FFF'}
+          strokeWidth={10}
+          isAnimationActive={false}
+          dataKey="playerEast"
+        />
+        <Line
+          type="linear"
+          stroke={players.playerEast.color}
+          strokeWidth={8}
+          isAnimationActive={false}
+          name={players.playerEast.name}
+          dataKey="playerEast"
         />
       </LineChart>
     </ResponsiveContainer>

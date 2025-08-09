@@ -54,7 +54,6 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
   })
 
   useEffect(() => {
-    // eslint-disable-next-line no-extra-semi
     ;(['0', '1', '2', '3'] as PlayerIndex[]).forEach((index) => {
       if (
         typeof rtMatchCurrentRound?.playerResults[index].isRiichi !==
@@ -155,7 +154,7 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
               {rtMatchCurrentRoundDoras.map((dora) => (
                 <MJTileDiv
                   key={dora}
-                  className="w-[1.4em] animate-[fadeInFromLeft_0.5s_ease-in-out]"
+                  className="w-[1.4em]! animate-[fadeInFromLeft_0.5s_ease-in-out]"
                 >
                   {dora}
                 </MJTileDiv>

@@ -1,0 +1,128 @@
+import React, { useCallback, useState } from 'react'
+import useRealtimeMatch from '@/hooks/useRealtimeMatch'
+import { convertMatchToExportedMatch } from '@/helpers/mahjong.helper'
+import MJMatchHistoryTable from '@/components/MJMatchHistoryTable'
+import MJUIButton from '@/components/MJUI/MJUIButton'
+import { useToggle } from 'react-use'
+
+type Props = {
+  params: { matchId: string }
+}
+
+export default function MatchExportPage({ params: { matchId } }: Props) {
+  const { rtMatch, rtMatchRounds, rtMatchCurrentRound } =
+    useRealtimeMatch(matchId)
+
+  const [isCheckConfirmedResult, toggleCheckConfirmedResult] = useToggle(false)
+  const [isCheckPPTCompleted, toggleCheckPPTCompleted] = useToggle(false)
+
+  const [isExported, setIsExported] = useState<boolean>(false)
+  const [isExporting, setIsExporting] = useState<boolean>(false)
+
+  const handleClickExport = useCallback(() => {
+    if (!rtMatch || !rtMatchRounds) {
+      return
+    }
+
+    const exportedMatch = {
+      _id: rtMatch.databaseId || matchId,
+      ...convertMatchToExportedMatch(Object.values(rtMatchRounds)),
+    }
+
+    setIsExporting(true)
+    fetch(
+      `${import.meta.env.VITE_HOMEPAGE_HOST}/api/match/${
+        exportedMatch._id
+      }/result`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify(exportedMatch),
+        headers: {
+          Accept: 'application/json',
+        },
+      }
+    ).then(() => {
+      setIsExported(true)
+      setIsExporting(false)
+      alert(
+        '上傳完畢。計算數據及更新官網需時幾分鐘，請等待一會後再到官網查看成績。\n\n（強調：不需要去資料庫點擊更新成績的按鈕，這已經自動化了。）'
+      )
+    })
+  }, [rtMatch, matchId, rtMatchRounds])
+
+  if (!rtMatch || !rtMatchCurrentRound) {
+    return <div>對局讀取失敗。</div>
+  }
+
+  return (
+    <div>
+      <div className="container mx-auto my-8 px-8 space-y-6">
+        <div>
+          <h3 className="text-2xl text-center">{rtMatch.name}</h3>
+        </div>
+
+        <div>
+          <p className="text-sm">
+            暫存資料庫ID: <strong>{matchId}</strong>
+          </p>
+          <p className="text-sm">
+            長久資料庫ID: <strong>{rtMatch.databaseId}</strong>
+          </p>
+        </div>
+
+        <MJMatchHistoryTable
+          players={rtMatch.players}
+          matchRounds={rtMatchRounds}
+          className="w-full table-auto"
+        />
+
+        <div className="text-center max-w-[600px] mx-auto bg-amber-100 text-black p-4 space-y-6">
+          <div>
+            <label className="label">
+              <input
+                type="checkbox"
+                className="checkbox"
+                checked={isCheckConfirmedResult}
+                onChange={toggleCheckConfirmedResult}
+              />
+              已確認成績正確
+            </label>
+          </div>
+
+          <div>
+            <label className="label">
+              <input
+                type="checkbox"
+                className="checkbox"
+                checked={isCheckPPTCompleted}
+                onChange={toggleCheckPPTCompleted}
+              />
+              已播完賽後結果簡報
+            </label>
+          </div>
+
+          {!isExported && (
+            <button
+              className="btn btn-primary btn-lg"
+              disabled={
+                isExporting || !isCheckConfirmedResult || !isCheckPPTCompleted
+              }
+              onClick={handleClickExport}
+            >
+              {isExporting ? '上傳中…' : '上傳成績'}
+            </button>
+          )}
+          {isExported && (
+            <a
+              href={`${
+                import.meta.env.VITE_CMS_HOST
+              }/structure/general-list-matches-past;${matchId}`}
+            >
+              <MJUIButton color="secondary">在資料庫上查看</MJUIButton>
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

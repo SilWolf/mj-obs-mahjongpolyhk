@@ -1,6 +1,13 @@
 import { PlayerIndex } from '@/models'
 import { nanoid } from 'nanoid'
 
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-hk'
+import LocalizedFormat from 'dayjs/plugin/localizedFormat'
+
+dayjs.extend(LocalizedFormat)
+dayjs.locale('zh-hk')
+
 export const getRandomId = (length = 12) => nanoid(length)
 
 export const getYearString = () => {
@@ -109,16 +116,16 @@ export const getYakumanMaxLabel = (value: '13' | '26' | '39' | '130') => {
   return '(未知)'
 }
 
-export const renderPoint = (value: number | undefined | null) => {
+export const renderPoint = (value = 0) => {
   if (typeof value === 'undefined' || value === null) {
     return '-'
   }
 
   if (value >= 0) {
-    return `+${value.toFixed(1)}`
+    return `+ ${value.toFixed(1)}`
   }
 
-  return `▲${Math.abs(value).toFixed(1)}`
+  return `▲ ${Math.abs(value).toFixed(1)}`
 }
 
 export const renderRanking = (
@@ -139,7 +146,7 @@ export const renderRanking = (
   return `${i}th`
 }
 
-export const renderPercentage = (value: number | undefined | null) => {
+export const renderPercentage = (value = 0) => {
   if (typeof value === 'undefined' || value === null) {
     return '-'
   }
@@ -186,4 +193,8 @@ export const renderMatchCode = (code: string) => {
   } catch (_) {
     return '-'
   }
+}
+
+export function renderDate(str: dayjs.ConfigType) {
+  return dayjs(str).format('lll')
 }

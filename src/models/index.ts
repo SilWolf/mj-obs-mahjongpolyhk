@@ -34,6 +34,8 @@ export type RawMatch = {
     _id: string
     name: string
     logoUrl: string
+    rulesetId?: string
+    themeId?: string
   }
 }
 
@@ -71,6 +73,7 @@ export type Player = {
   nickname: string | null
   designation: string | null
   portraitImage: string | null
+  fullBodyImage: string | null
   introduction: string
   statistics?: PlayerStatistic
 }
@@ -174,7 +177,10 @@ export type PlayerResult = {
   isYellowCarded?: boolean
   isRedCarded?: boolean
   isRonDisallowed?: boolean
+  isFuriten?: boolean
   waitingTiles?: string[]
+  waitingTileRemain?: number
+  reveals?: string[]
   detail: {
     han: number
     fu: number
@@ -219,7 +225,9 @@ export type Team = {
 
 export type RealtimeMatch = {
   name: string
+  nameDisplay?: string
   code: string
+  databaseId: string
   remark: string
   createdAt: string
   createdBy: string
@@ -237,6 +245,9 @@ export type RealtimeMatch = {
   showPoints?: boolean | null
   hideHeader?: boolean | null
   hidePlayers?: boolean | null
+  flag?: {
+    isUploaded?: boolean | null
+  }
 }
 
 export type RealtimePlayer = {
