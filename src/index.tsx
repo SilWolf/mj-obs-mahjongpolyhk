@@ -1,6 +1,8 @@
 import React, { lazy } from 'react'
 import ReactDOM from 'react-dom/client'
-import { Redirect, Route, Switch } from 'wouter'
+import { Redirect, Route, Router, Switch } from 'wouter'
+
+import { useHashLocation } from 'wouter/use-hash-location'
 import './index.css'
 import FirebaseDatabaseProvider from './providers/firebaseDatabase.provider'
 
@@ -65,53 +67,55 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <FirebaseDatabaseProvider>
         <ConfirmDialogProvider>
-          <Switch>
-            {/* Pages for v2 site */}
-            <Route path="/panel" nest>
-              <V2PanelLayout>
-                <Route path="/" component={V2PanelPage} />
+          <Router hook={useHashLocation}>
+            <Switch>
+              {/* Pages for v2 site */}
+              <Route path="/panel" nest>
+                <V2PanelLayout>
+                  <Route path="/" component={V2PanelPage} />
 
-                <Route
-                  path="/matches/createFromCache"
-                  component={V2PanelMatchCreateFromCachePage}
-                />
-
-                <Route
-                  path="/matches/:matchId/edit"
-                  component={V2PanelMatchesByIdEditPage}
-                />
-
-                <Route
-                  path="/obs/match-control"
-                  component={V2PanelObsMatchControlPage}
-                />
-                <Route
-                  path="/obs/scene-control"
-                  component={V2PanelObsSceneControlPage}
-                />
-                <Route path="/realtime" nest>
                   <Route
-                    path="/matches"
-                    component={V2PanelRealtimeMatchesPage}
+                    path="/matches/createFromCache"
+                    component={V2PanelMatchCreateFromCachePage}
                   />
-                  <Route path="/matches/:matchId" nest>
+
+                  <Route
+                    path="/matches/:matchId/edit"
+                    component={V2PanelMatchesByIdEditPage}
+                  />
+
+                  <Route
+                    path="/obs/match-control"
+                    component={V2PanelObsMatchControlPage}
+                  />
+                  <Route
+                    path="/obs/scene-control"
+                    component={V2PanelObsSceneControlPage}
+                  />
+                  <Route path="/realtime" nest>
                     <Route
-                      path="/detail"
-                      component={V2PanelRealtimeMatchDetailPage}
+                      path="/matches"
+                      component={V2PanelRealtimeMatchesPage}
                     />
+                    <Route path="/matches/:matchId" nest>
+                      <Route
+                        path="/detail"
+                        component={V2PanelRealtimeMatchDetailPage}
+                      />
+                    </Route>
                   </Route>
-                </Route>
-              </V2PanelLayout>
-            </Route>
+                </V2PanelLayout>
+              </Route>
 
-            <Route path="/obs/scene" nest>
-              <Route path="/master" component={V2ObsSceneMasterPage} />
-            </Route>
+              <Route path="/obs/scene" nest>
+                <Route path="/master" component={V2ObsSceneMasterPage} />
+              </Route>
 
-            <Route>
-              <Redirect to="/panel" />
-            </Route>
-          </Switch>
+              <Route>
+                <Redirect to="/panel" />
+              </Route>
+            </Switch>
+          </Router>
         </ConfirmDialogProvider>
       </FirebaseDatabaseProvider>
     </QueryClientProvider>
