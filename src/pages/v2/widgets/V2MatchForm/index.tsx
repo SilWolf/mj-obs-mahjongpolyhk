@@ -26,13 +26,10 @@ const formSchema = zod.object({
       colorSecondary: zod
         .string({ required_error: '玩家必須有次要顏色' })
         .regex(/^#[0-9A-F]{6}$/i, '顏色必須是 #ABCDEF 格式。'),
-      imagePortraitUrl: zod.string().url('玩家圖片必須是URL。').optional(),
-      imageLogoUrl: zod
-        .string()
-        .url('隊伍圖片／立直圖片必須是URL。')
-        .optional(),
-      imagePortraitAltUrl: zod.string().url('玩家圖片必須是URL。').optional(),
-      imageRiichiUrl: zod.string().url('玩家圖片必須是URL。').optional(),
+      imagePortraitUrl: zod.string().optional(),
+      imageLogoUrl: zod.string().optional(),
+      imagePortraitAltUrl: zod.string().optional(),
+      imageRiichiUrl: zod.string().optional(),
     })
   ),
 })
