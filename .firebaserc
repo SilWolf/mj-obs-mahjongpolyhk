@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "mj-obs-v2"
-  }
+    "default": "hkmjbs-streaming",
+    "v1": "hkmjbs-streaming"
+  },
+  "targets": {},
+  "etags": {}
 }
