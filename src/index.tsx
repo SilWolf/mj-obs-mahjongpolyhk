@@ -16,6 +16,9 @@ const V2PanelPage = lazy(() => import('./pages/v2/panel/page'))
 const V2PanelMatchesByIdEditPage = lazy(
   () => import('./pages/v2/panel/matches/[matchId]/edit/page')
 )
+const V2PanelMatchesByIdNameplatePage = lazy(
+  () => import('./pages/v2/panel/matches/[matchId]/nameplate/page')
+)
 const V2PanelMatchCreateFromCachePage = lazy(
   () => import('./pages/v2/panel/matches/createFromCache/page')
 )
@@ -79,6 +82,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route
                   path="/matches/:matchId/edit"
                   component={V2PanelMatchesByIdEditPage}
+                />
+
+                <Route
+                  path="/matches/:matchId/nameplate"
+                  component={V2PanelMatchesByIdNameplatePage}
                 />
 
                 <Route

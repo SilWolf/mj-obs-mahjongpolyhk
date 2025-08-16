@@ -40,7 +40,7 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
       <div className="drawer lg:drawer-open">
         <input id="layout-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
-          <div className="navbar bg-base-100 w-full border-b-1 border-base-300">
+          <div className="navbar bg-base-100 w-full border-b-1 border-base-300 print:hidden">
             <div>
               {/* Page content here */}
               <label

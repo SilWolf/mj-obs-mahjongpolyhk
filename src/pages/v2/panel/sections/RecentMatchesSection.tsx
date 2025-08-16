@@ -25,10 +25,9 @@ function PlayerMiniCard({ player }: { player: V2MatchPlayer }) {
         alt=""
       />
       <div>
-        <p>{player.name.display.third}</p>
-        <p className="text-sm leading-4 opacity-50">
-          {player.name.display.primary}
-        </p>
+        <p className="font-bold">{player.name.display.primary}</p>
+        <p className="text-sm">{player.name.display.secondary}</p>
+        <p className="text-xs">{player.name.display.third}</p>
       </div>
     </div>
   )
@@ -113,12 +112,23 @@ export default function RecentMatchesSection() {
                 />
               </td>
               <td>
-                <Link
-                  href={`/matches/${match.code}/edit?autoSubmit`}
-                  className="text-success"
-                >
-                  導入至直播系統
-                </Link>
+                <p>
+                  <Link
+                    href={`/matches/${match.code}/edit?autoSubmit`}
+                    className="text-success"
+                  >
+                    導入至直播系統
+                  </Link>
+                </p>
+                <p>
+                  <Link
+                    href={`/matches/${match.code}/nameplate`}
+                    className="text-success"
+                    target="_blank"
+                  >
+                    名牌
+                  </Link>
+                </p>
               </td>
             </tr>
           ))}
