@@ -1,9 +1,23 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useCallback } from 'react'
 
-export function Dialog({ id, children }: PropsWithChildren<{ id: string }>) {
+export function Dialog({
+  id,
+  children,
+  className = 'max-w-3xl',
+  onOpen,
+}: PropsWithChildren<{ id: string; className?: string; onOpen?: () => void }>) {
+  const handleToggle = useCallback(
+    (e: React.ToggleEvent<HTMLDialogElement>) => {
+      if (e.newState === 'open') {
+        onOpen?.()
+      }
+    },
+    [onOpen]
+  )
+
   return (
-    <dialog id={id} className="modal">
-      <div className="modal-box max-w-3xl w-full">
+    <dialog id={id} className="modal" onToggle={handleToggle}>
+      <div className={`modal-box w-full ${className}`}>
         <form method="dialog">
           {/* if there is a button in form, it will close the modal */}
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

@@ -128,7 +128,7 @@ export default function V2MatchForm({
               },
               color: {
                 primary: player.colorPrimary,
-                secondary: player.colorSecondary,
+                secondary: player.colorPrimary,
               },
               image: {
                 portrait: player.imagePortraitUrl
@@ -142,6 +142,13 @@ export default function V2MatchForm({
                   ? {
                       default: {
                         url: player.imagePortraitAltUrl,
+                      },
+                    }
+                  : undefined,
+                logo: player.imageLogoUrl
+                  ? {
+                      default: {
+                        url: player.imageLogoUrl,
                       },
                     }
                   : undefined,
@@ -164,10 +171,6 @@ export default function V2MatchForm({
       }),
     [handleRHFSubmit, onSubmit]
   )
-
-  const handleClickReset = useCallback(() => {
-    reset(defaultValues)
-  }, [defaultValues, reset])
 
   useEffect(() => {
     if (defaultValues) {
@@ -294,7 +297,7 @@ export default function V2MatchForm({
                       ?.message
                   }
                 </p>
-
+                {/* 
                 <label className="fieldset-label">次顏色</label>
                 <Controller
                   control={control}
@@ -312,7 +315,7 @@ export default function V2MatchForm({
                     formState.errors['players']?.[index]?.['colorSecondary']
                       ?.message
                   }
-                </p>
+                </p> */}
 
                 <label className="fieldset-label">圖片</label>
                 <input
@@ -380,7 +383,7 @@ export default function V2MatchForm({
                           },
                           color: {
                             primary: watchedPlayers[index].colorPrimary!,
-                            secondary: watchedPlayers[index].colorSecondary!,
+                            secondary: watchedPlayers[index].colorPrimary!,
                           },
                           image: {
                             portrait: {
@@ -420,15 +423,15 @@ export default function V2MatchForm({
           ))}
       </div>
       <div className="text-center mt-8 space-x-8">
-        <button
+        {/* <button
           type="button"
           onClick={handleClickReset}
           className="btn btn-lg btn-ghost"
         >
           重置
-        </button>
+        </button> */}
         <button type="submit" className="btn btn-primary btn-lg">
-          建立對局
+          儲存
         </button>
       </div>
     </form>

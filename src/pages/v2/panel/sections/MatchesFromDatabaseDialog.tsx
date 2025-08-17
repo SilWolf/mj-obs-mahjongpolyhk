@@ -1,10 +1,12 @@
+import { Dialog, openDialog } from '@/components/Dialog'
 import { useQuery } from '@tanstack/react-query'
-import useCurrentTournament from '../../hooks/useCurrentTournament'
-import { useState } from 'react'
 import { apiQueryMatchesByTournamentId } from '../../services/match.service'
 import { V2MatchPlayer } from '../../models/V2Match.model'
-import { Link } from 'wouter'
 import { renderDate } from '@/utils/string.util'
+import useCurrentTournament from '../../hooks/useCurrentTournament'
+import { Link } from 'wouter'
+
+const dialogId = 'matches-from-database-dialog'
 
 function PlayerMiniCard({ player }: { player: V2MatchPlayer }) {
   return (
@@ -33,21 +35,17 @@ function PlayerMiniCard({ player }: { player: V2MatchPlayer }) {
   )
 }
 
-export default function RecentMatchesSection() {
+export const openMatchesFromDatabaseDialog = () => {
+  openDialog(dialogId)
+}
+
+export default function MatchesFromDatabaseDialog() {
   const { data } = useCurrentTournament()
-
-  const [selectedCriteria, setSelectedCriteria] = useState<'recent'>('recent')
-
-  const { data: matches = [] } = useQuery({
-    queryKey: [
-      'v2-tournaments',
-      data?.tournament.id,
-      'matches',
-      selectedCriteria,
-    ],
+  const { data: matches = [], refetch: refetchMatchesFromDatabase } = useQuery({
+    queryKey: ['v2-tournaments', data?.tournament.id, 'matches'],
     queryFn: ({ queryKey }) =>
       apiQueryMatchesByTournamentId(queryKey[1]!, { recent: true }),
-    enabled: !!data?.tournament.id,
+    enabled: false,
   })
 
   if (!data) {
@@ -55,8 +53,12 @@ export default function RecentMatchesSection() {
   }
 
   return (
-    <>
-      <h2 className="text-2xl">近期賽事</h2>
+    <Dialog
+      id={dialogId}
+      className="max-w-6xl"
+      onOpen={refetchMatchesFromDatabase}
+    >
+      <h2 className="text-2xl mb-4">從資料庫導入</h2>
       <table className="table">
         {/* head */}
         <thead>
@@ -112,28 +114,16 @@ export default function RecentMatchesSection() {
                 />
               </td>
               <td>
-                <p>
-                  <Link
-                    href={`/matches/${match.code}/edit?autoSubmit`}
-                    className="text-success"
-                  >
-                    導入至直播系統
-                  </Link>
-                </p>
-                <p>
-                  <Link
-                    href={`/matches/${match.code}/nameplate`}
-                    className="text-success"
-                    target="_blank"
-                  >
-                    名牌
-                  </Link>
-                </p>
+                <Link
+                  href={`/draft-matches/import-from-database/${match.code}`}
+                >
+                  <button className="btn w-16">導入</button>
+                </Link>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+    </Dialog>
   )
 }
