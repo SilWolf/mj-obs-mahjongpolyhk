@@ -1,6 +1,7 @@
 import { generateMatchRoundCode } from '@/helpers/mahjong.helper'
 import useDraftMatch from '@/hooks/useDraftMatch'
 import { RealtimeMatch, RealtimeMatchRound, RealtimePlayer } from '@/models'
+import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { getRandomId } from '@/utils/string.util'
 import { useCallback } from 'react'
@@ -31,6 +32,7 @@ function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
 
 export default function V2PanelMatchDraftByIdStartPage() {
   const fb = useFirebaseDatabase()
+  const { update: updateObsRoom } = useObsRoom()
 
   const { matchId } = useParams<{ matchId: string }>()
   const { data: draftMatch } = useDraftMatch(matchId)
@@ -147,13 +149,14 @@ export default function V2PanelMatchDraftByIdStartPage() {
     }
 
     await fb.push(`matchRounds`, matchRound)
-    await fb.update(`obs/1`, {
-      tournamentId: newRTMatch.databaseTournamentId,
+    await updateObsRoom({
+      tournamentId: newRTMatch.databaseTournamentId ?? '',
       matchId: newRTMatch.code,
-      themeId: 'default',
+      themeId:
+        newRTMatch.themeRef || import.meta.env.VITE_OBS_UI_THEME || 'default',
     })
     navigate('~/panel/obs/match-control')
-  }, [draftMatch, fb, navigate])
+  }, [draftMatch, fb, navigate, updateObsRoom])
 
   if (!draftMatch) {
     return <p>找不到草稿</p>

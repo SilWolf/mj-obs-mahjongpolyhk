@@ -324,9 +324,10 @@ export default function PlayerCard({
         </div>
       </div>
       <div
-        className={`mt-[0.2em] h-[0.075em] rounded-full ${
-          isEast && 'bg-red-500'
-        }`}
+        className={`mt-[0.2em] h-[0.075em] rounded-full`}
+        style={{
+          background: isEast ? '#fb2c36' : 'transparent',
+        }}
       />
     </div>
   )

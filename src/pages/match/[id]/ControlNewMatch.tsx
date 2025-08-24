@@ -179,7 +179,9 @@ const ControlNewMatch = ({ match }: Props) => {
     }
 
     await fb.push(`matchRounds`, matchRound)
-    await fb.update(`obs/1`, { matchId: match._id })
+    updateObsRoom({
+      activeMatchId: match._id,
+    })
   }, [
     fb,
     match._id,
@@ -273,3 +275,6 @@ const ControlNewMatch = ({ match }: Props) => {
 }
 
 export default ControlNewMatch
+function updateObsRoom(arg0: { activeMatchId: string }) {
+  throw new Error('Function not implemented.')
+}

@@ -161,25 +161,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     />
                   </Route>
 
-                  <Route
-                    path="/matches/createFromCache"
-                    component={V2PanelMatchCreateFromCachePage}
-                  />
-
-                  <Route
-                    path="/matches/:matchId/edit"
-                    component={V2PanelMatchesByIdEditPage}
-                  />
-
                   <Route path="/obs/setup" component={V2PanelObsSetupPage} />
-                  <Route
-                    path="/obs/match-control"
-                    component={V2PanelObsMatchControlPage}
-                  />
-                  <Route
-                    path="/obs/scene-control"
-                    component={V2PanelObsSceneControlPage}
-                  />
 
                   <Route path="/realtime" nest>
                     <Route
