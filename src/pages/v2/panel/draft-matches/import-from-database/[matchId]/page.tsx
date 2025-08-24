@@ -38,6 +38,7 @@ export default function V2PanelMatchesByIdEditPage() {
         nameDisplay: (newMatch.data.name.display ?? newMatch.data.name.official)
           .primary,
         databaseId: matchId,
+        databaseTournamentId: match.data.tournamentId,
         remark: '',
         createdAt: new Date().toISOString(),
         createdBy: 'Dicky',

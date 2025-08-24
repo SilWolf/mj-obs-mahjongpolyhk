@@ -148,7 +148,7 @@ export default function V2PanelMatchDraftByIdStartPage() {
 
     await fb.push(`matchRounds`, matchRound)
     await fb.update(`obs/1`, {
-      tournamentId: null,
+      tournamentId: newRTMatch.databaseTournamentId,
       matchId: newRTMatch.code,
       themeId: 'default',
     })
