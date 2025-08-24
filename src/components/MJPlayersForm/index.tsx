@@ -1,12 +1,6 @@
 import { RealtimePlayer, PlayerIndex } from '@/models'
 import { MouseEvent, useCallback, useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  OnDragEndResponder,
-} from '@hello-pangea/dnd'
 import MJUIButton from '../MJUI/MJUIButton'
 
 const indexes = ['0', '1', '2', '3'] as const
@@ -39,28 +33,6 @@ const MJPlayersForm = ({ defaultPlayers, onSubmit }: Props) => {
     control,
     name: ['0.color', '1.color', '2.color', '3.color'],
   })
-
-  const handleDragEnd = useCallback<OnDragEndResponder>(
-    (result) => {
-      // dropped outside the list
-      if (!result.destination) {
-        return
-      }
-
-      const orders = ['0', '1', '2', '3']
-
-      const [removed] = orders.splice(result.source.index, 1)
-      orders.splice(result.destination.index, 0, removed)
-
-      reset({
-        '0': getValues(orders[0] as PlayerIndex),
-        '1': getValues(orders[1] as PlayerIndex),
-        '2': getValues(orders[2] as PlayerIndex),
-        '3': getValues(orders[3] as PlayerIndex),
-      })
-    },
-    [getValues, reset]
-  )
 
   const handleClickImage = useCallback(
     (e: MouseEvent) => {
@@ -132,87 +104,64 @@ const MJPlayersForm = ({ defaultPlayers, onSubmit }: Props) => {
           <div>北</div>
         </div>
         <div className="flex-1">
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {indexes.map((playerIndex, index) => (
-                    <Draggable
-                      key={playerIndex}
-                      draggableId={playerIndex}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                        >
-                          <div className="flex gap-2 py-1 items-center">
-                            <div className="flex-1">
-                              <div
-                                className="text-2xl"
-                                {...provided.dragHandleProps}
-                              >
-                                <i className="bi bi-grip-vertical"></i>
-                              </div>
-                            </div>
-                            <div className="flex-2 border border-neutral-400">
-                              <img
-                                className="aspect-18/25 w-full cursor-pointer"
-                                src={imageUrls[2 * index] as string}
-                                onClick={handleClickImage}
-                                data-type="propicUrl"
-                                data-index={index}
-                                alt=""
-                              />
-                            </div>
-                            <div className="flex-2 border border-neutral-400">
-                              <img
-                                className="aspect-square w-full cursor-pointer"
-                                src={imageUrls[2 * index + 1] as string}
-                                onClick={handleClickImage}
-                                data-type="teamPicUrl"
-                                data-index={index}
-                                alt=""
-                              />
-                            </div>
-                            <div className="flex-5">
-                              <input
-                                className="w-full"
-                                {...register(`${playerIndex}.secondaryName`)}
-                              />
-                            </div>
-                            <div className="flex-5">
-                              <input
-                                className="w-full"
-                                {...register(`${playerIndex}.primaryName`)}
-                              />
-                            </div>
-                            <div className="flex-3">
-                              <input
-                                className="w-full"
-                                {...register(`${playerIndex}.nickname`)}
-                              />
-                            </div>
-                            <div className="flex-3">
-                              <input
-                                className="w-full text-white"
-                                {...register(`${playerIndex}.color`)}
-                                style={{
-                                  background: colors[index],
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
+          <div>
+            {indexes.map((playerIndex, index) => (
+              <div key={index} className="flex gap-2 py-1 items-center">
+                <div className="flex-1">
+                  <div className="text-2xl">
+                    <i className="bi bi-grip-vertical"></i>
+                  </div>
                 </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+                <div className="flex-2 border border-neutral-400">
+                  <img
+                    className="aspect-18/25 w-full cursor-pointer"
+                    src={imageUrls[2 * index] as string}
+                    onClick={handleClickImage}
+                    data-type="propicUrl"
+                    data-index={index}
+                    alt=""
+                  />
+                </div>
+                <div className="flex-2 border border-neutral-400">
+                  <img
+                    className="aspect-square w-full cursor-pointer"
+                    src={imageUrls[2 * index + 1] as string}
+                    onClick={handleClickImage}
+                    data-type="teamPicUrl"
+                    data-index={index}
+                    alt=""
+                  />
+                </div>
+                <div className="flex-5">
+                  <input
+                    className="w-full"
+                    {...register(`${playerIndex}.secondaryName`)}
+                  />
+                </div>
+                <div className="flex-5">
+                  <input
+                    className="w-full"
+                    {...register(`${playerIndex}.primaryName`)}
+                  />
+                </div>
+                <div className="flex-3">
+                  <input
+                    className="w-full"
+                    {...register(`${playerIndex}.nickname`)}
+                  />
+                </div>
+                <div className="flex-3">
+                  <input
+                    className="w-full text-white"
+                    {...register(`${playerIndex}.color`)}
+                    style={{
+                      background: colors[index],
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

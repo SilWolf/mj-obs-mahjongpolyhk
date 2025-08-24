@@ -5,7 +5,7 @@ import { renderPoint, renderRanking } from '@/utils/string.util'
 import styles from './index.module.css'
 import MJTileCombinationDiv from '@/components/MJTileCombinationDiv'
 import useDebounce from '@/hooks/useDebounce'
-import MJTileV2Div from '@/components/MJTileV2Div'
+import MJTileV2XSDiv from '@/components/MJTileV2XSDiv'
 import StrokeSvg from './StrokeSvg'
 import { PlayerCardBaseProps } from '../../../PlayerCard/type'
 
@@ -162,27 +162,49 @@ export default function PlayerCard({
                   alt={player.primaryName}
                 />
               )}
-              {player.nickname && (
+              {player.nickname && !isRiichi && (
                 <div
                   className="absolute bottom-[0.085em] left-[0.085em] right-[0.085em] rounded-b-[0.08em] text-white z-20"
                   style={{
-                    background: isRiichi
-                      ? `${player.color ?? '#000000'}`
-                      : 'linear-gradient(to top,#00000060,#00000050 70%,transparent)',
+                    background:
+                      'linear-gradient(to top,#00000060,#00000050 70%,transparent)',
+                    textShadow:
+                      '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
                   }}
                 >
-                  <p className="text-center text-[0.25em] font-semibold pb-[0.25em] pt-[0.5em]">
-                    {player.nickname}
+                  {!isRiichi && (
+                    <p className="text-center text-[0.25em] font-semibold pb-[0.25em] pt-[0.5em]">
+                      {player.nickname}
+                    </p>
+                  )}
+                </div>
+              )}
+              {isRiichi && (
+                <div
+                  className="absolute bottom-[0.085em] left-[0.085em] right-[0.085em] rounded-b-[0.08em] text-white z-20"
+                  style={{
+                    background:
+                      'linear-gradient(to top,#00000060,#00000050 70%,transparent)',
+                  }}
+                >
+                  <p
+                    className="text-center text-[0.5em] font-semibold pb-[0.1em] pt-[0.1em]"
+                    style={{
+                      textShadow:
+                        '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
+                    }}
+                  >
+                    立直
                   </p>
                 </div>
               )}
-              <div
+              {/* <div
                 className="absolute bottom-[0.55em] left-[0.08em] w-[1.68em] h-[1.68em] bg-no-repeat bg-contain bg-bottom z-20"
                 style={{
                   backgroundImage: 'url("/images/score-thousand.png")',
-                  opacity: isRiichi ? 0.75 : 0,
+                  opacity: isRiichi ? 1 : 0,
                 }}
-              ></div>
+              ></div> */}
             </div>
           </div>
         </div>
@@ -224,7 +246,7 @@ export default function PlayerCard({
                       key={tile}
                       className="animate-[fadeInFromLeft_1s_ease-in-out]"
                     >
-                      <MJTileV2Div value={tile} />
+                      <MJTileV2XSDiv value={tile} />
                     </div>
                   ))}
                 </div>

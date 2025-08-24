@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { TILE_H, TILE_W } from '../MJTileDiv'
-import MJTileV2XSDiv from '../MJTileV2XSDiv'
+import MJTileV2Div from '../MJTileV2Div'
 
 type TilePlacement = {
   tile: string
@@ -56,7 +56,7 @@ export default function MJTileCombinationDiv({ value }: { value: string }) {
       style={{ width: `${width}em`, height: `${height}em` }}
     >
       {tilePlacements.map(({ tile, x, y, isRotate }) => (
-        <MJTileV2XSDiv
+        <MJTileV2Div
           value={tile}
           style={{
             position: 'absolute',

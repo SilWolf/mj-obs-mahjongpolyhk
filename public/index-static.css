@@ -53,3 +53,15 @@
   font-size: inherit;
   transform-origin: bottom left;
 }
+
+.mahjong-tile-v2-xs {
+  background-image: url('images/mahjong-tiles-xs.png');
+  background-origin: padding-box;
+  background-size: 1100% 600%;
+  background-color: #ff0000;
+  width: 1em;
+  aspect-ratio: 5 / 7;
+  height: auto;
+  font-size: inherit;
+  transform-origin: bottom left;
+}

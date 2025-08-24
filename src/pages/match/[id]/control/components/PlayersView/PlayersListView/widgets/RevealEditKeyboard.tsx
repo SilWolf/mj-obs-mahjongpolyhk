@@ -21,7 +21,7 @@ export default function RevealEditKeyboard({
     }
 
     if (matches[0][1] === matches[1][1] && matches[0][1] === matches[2][1]) {
-      if (matches[0][1] === '5') {
+      if (matches[0][1] === '5' && matches[0][2] !== 'z') {
         return value.replace('-', `-0${matches[0][2]}=`)
       } else {
         return value.replace('-', `-${matches[0][0]}=`)
