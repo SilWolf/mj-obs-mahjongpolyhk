@@ -18,6 +18,9 @@ const V2PanelPage = lazy(() => import('./pages/v2/panel/page'))
 const V2PanelMatchesByIdEditPage = lazy(
   () => import('./pages/v2/panel/matches/[matchId]/edit/page')
 )
+const V2PanelMatchesByIdNameplatePage = lazy(
+  () => import('./pages/v2/panel/matches/[matchId]/nameplate/page')
+)
 const V2PanelMatchCreateFromCachePage = lazy(
   () => import('./pages/v2/panel/matches/createFromCache/page')
 )
@@ -39,6 +42,31 @@ const V2PanelRealtimeMatchesPage = lazy(
 
 const V2PanelRealtimeMatchDetailPage = lazy(
   () => import('./pages/v2/panel/realtime/matches/:matchId/detail/page')
+)
+
+const V2PanelDraftMatchesCreatePage = lazy(
+  () => import('./pages/v2/panel/draft-matches/create/page')
+)
+
+const V2PanelDraftMatchesImportFromDatabasePage = lazy(
+  () =>
+    import('./pages/v2/panel/draft-matches/import-from-database/[matchId]/page')
+)
+
+const V2PanelDraftMatchEditPage = lazy(
+  () => import('./pages/v2/panel/draft-matches/[matchId]/edit/page')
+)
+
+const V2PanelDraftMatchCopyPage = lazy(
+  () => import('./pages/v2/panel/draft-matches/[matchId]/copy/page')
+)
+
+const V2PanelDraftMatchStartPage = lazy(
+  () => import('./pages/v2/panel/draft-matches/[matchId]/start/page')
+)
+
+const V2PanelDraftMatchNameplatePage = lazy(
+  () => import('./pages/v2/panel/draft-matches/[matchId]/nameplate/page')
 )
 
 const V2ObsSceneMasterPage = lazy(
@@ -77,6 +105,59 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <Route path="/panel" nest>
                 <V2PanelLayout>
                   <Route path="/" component={V2PanelObsMatchControlPage} />
+
+                  <Route
+                    path="/matches/createFromCache"
+                    component={V2PanelMatchCreateFromCachePage}
+                  />
+
+                  <Route
+                    path="/matches/:matchId/edit"
+                    component={V2PanelMatchesByIdEditPage}
+                  />
+
+                  <Route
+                    path="/matches/:matchId/nameplate"
+                    component={V2PanelMatchesByIdNameplatePage}
+                  />
+
+                  <Route
+                    path="/obs/match-control"
+                    component={V2PanelObsMatchControlPage}
+                  />
+                  <Route
+                    path="/obs/scene-control"
+                    component={V2PanelObsSceneControlPage}
+                  />
+
+                  <Route path="/draft-matches" nest>
+                    <Route path="/:matchId" nest>
+                      <Route
+                        path="/edit"
+                        component={V2PanelDraftMatchEditPage}
+                      />
+                      <Route
+                        path="/copy"
+                        component={V2PanelDraftMatchCopyPage}
+                      />
+                      <Route
+                        path="/start"
+                        component={V2PanelDraftMatchStartPage}
+                      />
+                      <Route
+                        path="/nameplate"
+                        component={V2PanelDraftMatchNameplatePage}
+                      />
+                    </Route>
+                    <Route
+                      path="/create"
+                      component={V2PanelDraftMatchesCreatePage}
+                    />
+                    <Route
+                      path="/import-from-database/:matchId"
+                      component={V2PanelDraftMatchesImportFromDatabasePage}
+                    />
+                  </Route>
 
                   <Route
                     path="/matches/createFromCache"

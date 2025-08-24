@@ -16,7 +16,7 @@ export const v2TournamentSchema = zod.object({
   image: zod.object({
     logo: zod
       .object({
-        default: zod.object({ url: zod.string().url('玩家圖片必須是URL。') }),
+        default: zod.object({ url: zod.string() }),
       })
       .optional(),
   }),

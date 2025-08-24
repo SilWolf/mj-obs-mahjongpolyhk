@@ -1,10 +1,12 @@
+import { Dialog, openDialog } from '@/components/Dialog'
 import { useQuery } from '@tanstack/react-query'
-import useCurrentTournament from '../../hooks/useCurrentTournament'
-import { useState } from 'react'
 import { apiQueryMatchesByTournamentId } from '../../services/match.service'
 import { V2MatchPlayer } from '../../models/V2Match.model'
-import { Link } from 'wouter'
 import { renderDate } from '@/utils/string.util'
+import useCurrentTournament from '../../hooks/useCurrentTournament'
+import { Link } from 'wouter'
+
+const dialogId = 'matches-from-database-dialog'
 
 function PlayerMiniCard({ player }: { player: V2MatchPlayer }) {
   return (
@@ -25,30 +27,25 @@ function PlayerMiniCard({ player }: { player: V2MatchPlayer }) {
         alt=""
       />
       <div>
-        <p>{player.name.display.third}</p>
-        <p className="text-sm leading-4 opacity-50">
-          {player.name.display.primary}
-        </p>
+        <p className="font-bold">{player.name.display.primary}</p>
+        <p className="text-sm">{player.name.display.secondary}</p>
+        <p className="text-xs">{player.name.display.third}</p>
       </div>
     </div>
   )
 }
 
-export default function RecentMatchesSection() {
+export const openMatchesFromDatabaseDialog = () => {
+  openDialog(dialogId)
+}
+
+export default function MatchesFromDatabaseDialog() {
   const { data } = useCurrentTournament()
-
-  const [selectedCriteria, setSelectedCriteria] = useState<'recent'>('recent')
-
-  const { data: matches = [] } = useQuery({
-    queryKey: [
-      'v2-tournaments',
-      data?.tournament.id,
-      'matches',
-      selectedCriteria,
-    ],
+  const { data: matches = [], refetch: refetchMatchesFromDatabase } = useQuery({
+    queryKey: ['v2-tournaments', data?.tournament.id, 'matches'],
     queryFn: ({ queryKey }) =>
       apiQueryMatchesByTournamentId(queryKey[1]!, { recent: true }),
-    enabled: !!data?.tournament.id,
+    enabled: false,
   })
 
   if (!data) {
@@ -56,8 +53,12 @@ export default function RecentMatchesSection() {
   }
 
   return (
-    <>
-      <h2 className="text-2xl">近期賽事</h2>
+    <Dialog
+      id={dialogId}
+      className="max-w-6xl"
+      onOpen={refetchMatchesFromDatabase}
+    >
+      <h2 className="text-2xl mb-4">從資料庫導入</h2>
       <table className="table">
         {/* head */}
         <thead>
@@ -114,16 +115,16 @@ export default function RecentMatchesSection() {
               </td>
               <td>
                 <Link
-                  href={`/matches/${match.code}/edit`}
+                  href={`/draft-matches/import-from-database/${match.code}`}
                   className="text-success"
                 >
-                  導入至直播系統
+                  <button className="btn w-16">導入</button>
                 </Link>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+    </Dialog>
   )
 }

@@ -8,6 +8,21 @@ type InputColorProps = {
   onBlur?: () => void
 }
 
+const presetColors = [
+  {
+    color: '#4269F5',
+  },
+  {
+    color: '#E01616',
+  },
+  {
+    color: '#078700',
+  },
+  {
+    color: '#F19F00',
+  },
+]
+
 function InputColor({ value, onChange, onBlur }: InputColorProps) {
   const handleChange = useCallback(
     (newColorResult: ColorResult) => {
@@ -22,6 +37,7 @@ function InputColor({ value, onChange, onBlur }: InputColorProps) {
       onChange={handleChange}
       onBlur={onBlur}
       color={value}
+      presetColors={presetColors}
     />
   )
 }
