@@ -4,8 +4,11 @@ import MatchesFromDatabaseDialog, {
 } from './MatchesFromDatabaseDialog'
 import DraftMatchesTable from './DraftMatchesTable'
 import { Link } from 'wouter'
+import useCurrentTournament from '../../hooks/useCurrentTournament'
 
 export default function DraftMatchesSection() {
+  const { data: currentTournament } = useCurrentTournament()
+
   const handleClickOpenImportDialog = useCallback(() => {
     openMatchesFromDatabaseDialog()
   }, [])
@@ -18,12 +21,14 @@ export default function DraftMatchesSection() {
           <Link href="/draft-matches/create">
             <button className="btn btn-success">建立對局草稿</button>
           </Link>
-          <button
-            className="btn btn-outline"
-            onClick={handleClickOpenImportDialog}
-          >
-            <i className="bi bi-cloud-download"></i> 從資料庫導入
-          </button>
+          {currentTournament && (
+            <button
+              className="btn btn-outline"
+              onClick={handleClickOpenImportDialog}
+            >
+              <i className="bi bi-cloud-download"></i> 從資料庫導入
+            </button>
+          )}
         </div>
       </div>
 

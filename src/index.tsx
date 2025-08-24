@@ -104,7 +104,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               {/* Pages for v2 site */}
               <Route path="/panel" nest>
                 <V2PanelLayout>
-                  <Route path="/" component={V2PanelObsMatchControlPage} />
+                  <Route path="/" component={V2PanelPage} />
 
                   <Route
                     path="/matches/createFromCache"

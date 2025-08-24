@@ -199,7 +199,7 @@ export default function V2MatchForm({
       <input
         type="text"
         className="bg-base-200 input input-xl input-ghost w-full"
-        placeholder="玩家名稱"
+        placeholder="對局名稱"
         {...register('name')}
       />
 
@@ -283,66 +283,71 @@ export default function V2MatchForm({
                       </div>
                     )}
                   </div>
-                  <label className="fieldset-label">名稱</label>
-                  <input
-                    type="text"
-                    className="input"
-                    placeholder="玩家名稱"
-                    {...register(`players.${index}.namePrimary`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['namePrimary']
-                        ?.message
-                    }
-                  </p>
 
-                  <label className="fieldset-label">稱號</label>
-                  <input
-                    type="text"
-                    className="input"
-                    placeholder="玩家名稱"
-                    {...register(`players.${index}.nameSecondary`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['nameSecondary']
-                        ?.message
-                    }
-                  </p>
+                  <div>
+                    <label className="fieldset-label">名稱</label>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="玩家名稱"
+                      {...register(`players.${index}.namePrimary`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['namePrimary']
+                          ?.message
+                      }
+                    </p>
 
-                  <label className="fieldset-label">暱稱</label>
-                  <input
-                    type="text"
-                    className="input"
-                    placeholder="玩家名稱"
-                    {...register(`players.${index}.nameThird`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['nameThird']
-                        ?.message
-                    }
-                  </p>
+                    <label className="fieldset-label">稱號</label>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="玩家名稱"
+                      {...register(`players.${index}.nameSecondary`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['nameSecondary']
+                          ?.message
+                      }
+                    </p>
 
-                  <label className="fieldset-label">顏色</label>
-                  <Controller
-                    control={control}
-                    name={`players.${index}.colorPrimary`}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <InputColor
-                        onChange={onChange} // send value to hook form
-                        onBlur={onBlur} // notify when input is touched/blur
-                        value={value}
-                      />
-                    )}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['colorPrimary']
-                        ?.message
-                    }
-                  </p>
+                    <label className="fieldset-label">暱稱</label>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="玩家名稱"
+                      {...register(`players.${index}.nameThird`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['nameThird']
+                          ?.message
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="fieldset-label">顏色</label>
+                    <Controller
+                      control={control}
+                      name={`players.${index}.colorPrimary`}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <InputColor
+                          onChange={onChange} // send value to hook form
+                          onBlur={onBlur} // notify when input is touched/blur
+                          value={value}
+                        />
+                      )}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['colorPrimary']
+                          ?.message
+                      }
+                    </p>
+                  </div>
                   {/* 
                 <label className="fieldset-label">次顏色</label>
                 <Controller
@@ -363,49 +368,50 @@ export default function V2MatchForm({
                   }
                 </p> */}
 
-                  <label className="fieldset-label">圖片</label>
-                  <input
-                    type="text"
-                    className="input w-full"
-                    placeholder="https://....png"
-                    {...register(`players.${index}.imagePortraitUrl`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['imagePortraitUrl']
-                        ?.message
-                    }
-                  </p>
+                  <div>
+                    <label className="fieldset-label">圖片</label>
+                    <input
+                      type="text"
+                      className="input w-full"
+                      placeholder="https://....png"
+                      {...register(`players.${index}.imagePortraitUrl`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.[
+                          'imagePortraitUrl'
+                        ]?.message
+                      }
+                    </p>
 
-                  <label className="fieldset-label">隊伍圖片</label>
-                  <input
-                    type="text"
-                    className="input w-full"
-                    placeholder="https://....png"
-                    {...register(`players.${index}.imageLogoUrl`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['imageLogoUrl']
-                        ?.message
-                    }
-                  </p>
+                    <label className="fieldset-label">隊伍圖片</label>
+                    <input
+                      type="text"
+                      className="input w-full"
+                      placeholder="https://....png"
+                      {...register(`players.${index}.imageLogoUrl`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['imageLogoUrl']
+                          ?.message
+                      }
+                    </p>
 
-                  <label className="fieldset-label">立直圖片</label>
-                  <input
-                    type="text"
-                    className="input w-full"
-                    placeholder="https://....png"
-                    {...register(`players.${index}.imageRiichiUrl`)}
-                  />
-                  <p className="fieldset-label text-error">
-                    {
-                      formState.errors['players']?.[index]?.['imageRiichiUrl']
-                        ?.message
-                    }
-                  </p>
-
-                  <div className="divider"></div>
+                    <label className="fieldset-label">立直圖片</label>
+                    <input
+                      type="text"
+                      className="input w-full"
+                      placeholder="https://....png"
+                      {...register(`players.${index}.imageRiichiUrl`)}
+                    />
+                    <p className="fieldset-label text-error">
+                      {
+                        formState.errors['players']?.[index]?.['imageRiichiUrl']
+                          ?.message
+                      }
+                    </p>
+                  </div>
                 </div>
 
                 <button

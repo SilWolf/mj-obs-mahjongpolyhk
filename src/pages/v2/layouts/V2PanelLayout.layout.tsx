@@ -77,6 +77,9 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
             <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
               {/* Sidebar content here */}
               <li>
+                <Link href="~/panel">對局</Link>
+              </li>
+              <li>
                 <Link href="/obs/match-control">分數控制台</Link>
               </li>
               <li>
