@@ -1,12 +1,13 @@
 'use client'
 
-import { PropsWithChildren, useEffect } from 'react'
+import { MouseEvent, PropsWithChildren, useCallback, useEffect } from 'react'
 import { CurrentTournamentIdContext } from '../hooks/useCurrentTournament'
 import useAllTournaments from '../hooks/useAllTournaments'
 import { useLocalStorage } from 'react-use'
 import CurrentLiveMatchWidget from '../widgets/CurrentLiveMatchWidget'
 import { Link } from 'wouter'
 import { useTranslation } from 'react-i18next'
+import GlobeIcon from '@/components/icons/GlobeIcon'
 
 export default function V2PanelLayout({ children }: PropsWithChildren) {
   const { data: allTournaments = [] } = useAllTournaments()
@@ -16,6 +17,15 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
   )
 
   const { t, i18n } = useTranslation()
+
+  const handleClickChangeLanguage = useCallback(
+    (e: MouseEvent) => {
+      i18n.changeLanguage(
+        e.currentTarget.getAttribute('data-language') as string
+      )
+    },
+    [i18n]
+  )
 
   useEffect(() => {
     if (!currentTournamentId && allTournaments[0]) {
@@ -39,8 +49,8 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
               </label>
             </div>
 
-            {/* <div className="mx-2 flex-1 px-2 flex gap-x-2 items-center">
-              <div className="flex gap-x-2 items-center">
+            <div className="mx-2 flex-1 px-2 flex gap-x-2 items-center">
+              {/* <div className="flex gap-x-2 items-center">
                 <img
                   src={currentTournament?.image.logo?.default.url}
                   className="w-8 h-8"
@@ -56,8 +66,61 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
                     切換
                   </button>
                 )}
-              </div>
-            </div> */}
+              </div> */}
+            </div>
+
+            <div>
+              <button
+                className="btn btn-ghost text-lg"
+                popoverTarget="i18n-dropdown"
+                style={
+                  {
+                    anchorName: '--anchor-i18n-dropdown',
+                  } as React.CSSProperties
+                }
+              >
+                <GlobeIcon />
+              </button>
+
+              <ul
+                className="dropdown dropdown-end menu rounded-box bg-base-100 shadow-sm"
+                popover="auto"
+                id="i18n-dropdown"
+                style={
+                  {
+                    positionAnchor: '--anchor-i18n-dropdown',
+                  } as React.CSSProperties
+                }
+              >
+                <li>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={handleClickChangeLanguage}
+                    data-language="zhTW"
+                  >
+                    繁體中文
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={handleClickChangeLanguage}
+                    data-language="zhCN"
+                  >
+                    简体中文
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="btn btn-ghost"
+                    onClick={handleClickChangeLanguage}
+                    data-language="en"
+                  >
+                    English
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
           <main>{children}</main>
         </div>
@@ -69,9 +132,13 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
             >
               <i className="bi bi-list"></i>
             </label>
-            <div className="p-4 w-full text-lg text-center">日麻直播系統</div>
+            <div className="p-4 w-full text-lg text-center">
+              {t('layout.menu.appName')}
+            </div>
 
-            <h5 className="text-sm font-bold px-4">OBS 控制</h5>
+            <h5 className="text-sm font-bold px-4">
+              {t('layout.menu.obsControl')}
+            </h5>
 
             <div className="px-4 py-2">
               <CurrentLiveMatchWidget />
@@ -80,13 +147,15 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
             <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
               {/* Sidebar content here */}
               <li>
-                <Link href="~/panel">對局</Link>
+                <Link href="~/panel">{t('layout.menu.matches')}</Link>
               </li>
               <li>
-                <Link href="/obs/match-control">分數控制台</Link>
+                <Link href="/obs/match-control">
+                  {t('layout.menu.matchControl')}
+                </Link>
               </li>
               <li>
-                <Link href="/obs/setup">設置 OBS</Link>
+                <Link href="/obs/setup">{t('layout.menu.obsSetup')}</Link>
               </li>
               {/* <li>
                 <Link href="/obs/scene-control">多合一場景控制台</Link>
@@ -95,11 +164,15 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
 
             <div className="divider"></div>
 
-            <h5 className="text-sm font-bold px-4">暫存資料庫</h5>
+            <h5 className="text-sm font-bold px-4">
+              {t('layout.menu.obsTempDB')}
+            </h5>
 
             <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
               <li>
-                <Link href="/realtime/matches">已結束賽事</Link>
+                <Link href="/realtime/matches">
+                  {t('layout.menu.completedMatches')}
+                </Link>
               </li>
             </ul>
           </div>

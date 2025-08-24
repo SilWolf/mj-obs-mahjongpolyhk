@@ -1,7 +1,14 @@
 {
-  "title": "Welcome to react using react-i18next",
-  "description": {
-    "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
-    "part2": "Switch language between english and german using buttons above."
+  "appName": "Riichi Mahjong Broadcast System",
+  "layout": {
+    "menu": {
+      "appName": "Riichi Mahjong Broadcast System",
+      "obsControl": "OBS Control",
+      "matches": "Matchups",
+      "matchControl": "Match Control",
+      "obsSetup": "OBS Setup",
+      "obsTempDB": "Temp. Databse",
+      "completedMatches": "Completed Matchups"
+    }
   }
 }

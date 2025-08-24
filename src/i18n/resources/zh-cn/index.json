@@ -1,7 +1,14 @@
 {
-  "title": "Welcome to react using react-i18next",
-  "description": {
-    "part1": "To get started, edit <1>src/App.js</1> and save to reload.",
-    "part2": "Switch language between english and german using buttons above."
+  "appName": "日麻直播系统",
+  "layout": {
+    "menu": {
+      "appName": "日麻直播系统",
+      "obsControl": "OBS 控制",
+      "matches": "对局",
+      "matchControl": "分数控制台",
+      "obsSetup": "设置 OBS",
+      "obsTempDB": "暂存资料库",
+      "completedMatches": "已结束赛事"
+    }
   }
 }
