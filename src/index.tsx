@@ -11,6 +11,8 @@ import { toast, ToastContainer } from 'react-toastify'
 
 import ConfirmDialogProvider from './components/ConfirmDialog/provider'
 
+import './i18n'
+
 const V2PanelLayout = lazy(
   () => import('./pages/v2/layouts/V2PanelLayout.layout')
 )

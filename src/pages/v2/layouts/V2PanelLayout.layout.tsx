@@ -6,6 +6,7 @@ import useAllTournaments from '../hooks/useAllTournaments'
 import { useLocalStorage } from 'react-use'
 import CurrentLiveMatchWidget from '../widgets/CurrentLiveMatchWidget'
 import { Link } from 'wouter'
+import { useTranslation } from 'react-i18next'
 
 export default function V2PanelLayout({ children }: PropsWithChildren) {
   const { data: allTournaments = [] } = useAllTournaments()
@@ -13,6 +14,8 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
     'v2-current-tournament-id',
     ''
   )
+
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
     if (!currentTournamentId && allTournaments[0]) {
