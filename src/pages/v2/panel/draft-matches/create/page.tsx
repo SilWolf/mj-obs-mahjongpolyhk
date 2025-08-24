@@ -5,12 +5,14 @@ import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { getRandomId } from '@/utils/string.util'
 
 import { useCallback } from 'react'
+import useLocalStorage from 'react-use/lib/useLocalStorage'
 import { useLocation } from 'wouter'
 
 const defaultValues = {
   name: '新的對局',
   nameAlt: '新的對局',
   rulesetId: 'hkleague-4p',
+  themeId: 'default',
   players: [
     {
       namePrimary: '玩家甲',
@@ -56,6 +58,10 @@ const defaultValues = {
 }
 
 export default function V2PanelDraftMatchCreatePage() {
+  const [lastCreatedDraftedMatch, storeMatch] = useLocalStorage<RealtimeMatch>(
+    'lastCreatedDraftedMatch'
+  )
+
   const fb = useFirebaseDatabase()
 
   const [, navigate] = useLocation()
@@ -75,6 +81,8 @@ export default function V2PanelDraftMatchCreatePage() {
         createdBy: 'Dicky',
         updatedAt: new Date().toISOString(),
         updatedBy: 'Dicky',
+        rulesetRef: newMatch.data.rulesetRef,
+        themeRef: newMatch.data.themeRef,
         setting: {
           startingScore: '25000',
           isManganRoundUp: '1',
@@ -143,16 +151,26 @@ export default function V2PanelDraftMatchCreatePage() {
       }
 
       await fb.set(`draft-matches/${newDraftMatch.code}`, newDraftMatch)
+      storeMatch(newDraftMatch)
 
       navigate('~/panel')
     },
-    [fb, navigate]
+    [fb, navigate, storeMatch]
   )
+
+  const formattedDefaultValues = {
+    ...defaultValues,
+    rulesetId: lastCreatedDraftedMatch?.rulesetRef ?? 'hkleague-4p',
+    themeId: lastCreatedDraftedMatch?.themeRef ?? 'hkleague-4p',
+  }
 
   return (
     <>
       <section className="container mx-6 my-4">
-        <V2MatchForm defaultValues={defaultValues} onSubmit={handleSubmit} />
+        <V2MatchForm
+          defaultValues={formattedDefaultValues}
+          onSubmit={handleSubmit}
+        />
       </section>
     </>
   )

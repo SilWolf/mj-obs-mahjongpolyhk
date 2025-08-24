@@ -76,6 +76,7 @@ export const v2MatchSchema = zod
       remark: zod.string().optional(),
       players: zod.array(v2MatchPlayerSchema),
       rulesetRef: zod.string(),
+      themeRef: zod.string(),
       startAt: zod.string().nullish(),
     }),
     metadata: zod.object({

@@ -31,6 +31,8 @@ export default function V2PanelMatchDraftByIdEditPage() {
         createdBy: 'Dicky',
         updatedAt: new Date().toISOString(),
         updatedBy: 'Dicky',
+        rulesetRef: newMatch.data.rulesetRef,
+        themeRef: newMatch.data.themeRef,
         setting: {
           startingScore: '25000',
           isManganRoundUp: '1',
@@ -114,6 +116,7 @@ export default function V2PanelMatchDraftByIdEditPage() {
       name: `${draftMatch.name} - 複製`,
       nameAlt: draftMatch.nameDisplay || '',
       rulesetId: 'hkleague-4p',
+      themeId: 'default',
       players: [
         draftMatch.players[0],
         draftMatch.players[1],

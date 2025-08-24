@@ -42,6 +42,8 @@ export default function CreateDefaultMatch() {
         createdBy: 'Dicky',
         updatedAt: new Date().toISOString(),
         updatedBy: 'Dicky',
+        rulesetRef: 'hkleague-4p',
+        themeRef: 'default',
         setting: {
           startingScore: '25000',
           isManganRoundUp: '1',

@@ -1,40 +1,22 @@
 import MJAmountSpan from '@/components/MJAmountSpan'
-import React, { HTMLAttributes, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   getLightColorOfColor,
   renderPoint,
   renderRanking,
 } from '@/utils/string.util'
-import { RealtimePlayer } from '@/models'
 
 import styles from './index.module.css'
 import MJTileCombinationDiv from '@/components/MJTileCombinationDiv'
 import useDebounce from '@/hooks/useDebounce'
 import MJTileV2Div from '@/components/MJTileV2Div'
+import { PlayerCardBaseProps } from '../../../PlayerCard/type'
 
-type Props = HTMLAttributes<HTMLDivElement> & {
-  score: number
-  scoreChanges?: number[]
-  point?: number
-  ranking?: number
-  isEast?: boolean
-  isFuriten?: boolean
-  isRiichi?: boolean
-  isYellowCarded?: boolean
-  isRedCarded?: boolean
-  isRonDisallowed?: boolean
-  animated?: boolean
-  waitingTiles?: string[]
-  waitingTileRemain?: number | null | undefined
-  reveals?: string[]
-  showPointAndRanking?: boolean | null
-
-  player: RealtimePlayer
-}
+type Props = PlayerCardBaseProps
 
 export default function PlayerCard({
   score,
-  scoreChanges = [],
+  scoreChanges,
   point,
   ranking,
   isEast,
@@ -53,9 +35,9 @@ export default function PlayerCard({
   ...props
 }: Props) {
   const [storedScore, setStoredScore] = useState<number>(score)
-  const [storedScoreChanges, setStoredScoreChanges] = useState<number[] | null>(
-    null
-  )
+  const [storedScoreChanges, setStoredScoreChanges] = useState<
+    number[] | null | undefined
+  >(null)
   const debouncedWaitingTileRemain = useDebounce(waitingTileRemain, 800)
 
   const lightenedColor = useMemo(

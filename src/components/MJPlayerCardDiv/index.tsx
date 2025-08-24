@@ -30,7 +30,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
 
 export default function MJPlayerCardDiv({
   score,
-  scoreChanges = [],
+  scoreChanges,
   point,
   ranking,
   isEast,
@@ -50,9 +50,9 @@ export default function MJPlayerCardDiv({
   ...props
 }: Props) {
   const [storedScore, setStoredScore] = useState<number>(score)
-  const [storedScoreChanges, setStoredScoreChanges] = useState<number[] | null>(
-    null
-  )
+  const [storedScoreChanges, setStoredScoreChanges] = useState<
+    number[] | null | undefined
+  >(null)
 
   const lightenedColor = useMemo(
     () => getLightColorOfColor(player.color ?? '#000000'),

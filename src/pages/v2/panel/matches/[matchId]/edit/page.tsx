@@ -50,6 +50,8 @@ export default function V2PanelMatchesByIdEditPage() {
         createdBy: 'Dicky',
         updatedAt: new Date().toISOString(),
         updatedBy: 'Dicky',
+        rulesetRef: newMatch.data.rulesetRef,
+        themeRef: newMatch.data.themeRef,
         setting: {
           startingScore: '25000',
           isManganRoundUp: '1',
@@ -237,6 +239,7 @@ export default function V2PanelMatchesByIdEditPage() {
       name: match.data.name.official.primary,
       nameAlt: match.data.name.display?.primary || '',
       rulesetId: match.data.rulesetRef,
+      themeId: match.data.themeRef,
       players: [
         data.playersMap[match.data.players[0].id] ?? match.data.players[0],
         data.playersMap[match.data.players[1].id] ?? match.data.players[1],

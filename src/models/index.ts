@@ -249,6 +249,8 @@ export type RealtimeMatch = {
   flag?: {
     isUploaded?: boolean | null
   }
+  rulesetRef: string
+  themeRef: string
 }
 
 export type RealtimePlayer = {

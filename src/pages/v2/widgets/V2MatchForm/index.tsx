@@ -7,14 +7,42 @@ import { getRandomId } from '@/utils/string.util'
 import useAllRulesets from '../../hooks/useAllRulesets'
 import useRuleset from '../../hooks/useRuleset'
 import { V2Match } from '../../models/V2Match.model'
-import PlayerCard from '../../obs/scenes/realtime/byTheme/GuoShiWuShuang/components/PlayerCard'
+import PlayerCardByTheme from '../../obs/scenes/realtime/PlayerCard/PlayerCardByTheme'
 
 const positionNames = ['東家', '南家', '西家', '北家']
+
+const themes = [
+  {
+    id: 'default',
+    metadata: {
+      name: {
+        display: 'HK-League 風格',
+      },
+    },
+  },
+  {
+    id: 'sakura',
+    metadata: {
+      name: {
+        display: 'Sukura League 風格',
+      },
+    },
+  },
+  {
+    id: 'GuoShiWuShuang',
+    metadata: {
+      name: {
+        display: '国士无双风格',
+      },
+    },
+  },
+]
 
 const formSchema = zod.object({
   name: zod.string({ required_error: '必須填寫對局名稱。' }),
   nameAlt: zod.string().optional(),
   rulesetId: zod.string({ required_error: '必須選擇其中一套規則。' }),
+  themeId: zod.string({ required_error: '必須選擇其中一套風格。' }),
   players: zod.array(
     zod.object({
       namePrimary: zod.string({ required_error: '玩家必須有名稱' }),
@@ -61,6 +89,7 @@ export default function V2MatchForm({
   const watchedRulesetId = useWatch({ name: 'rulesetId', control })
   const { data: watchedRuleset } = useRuleset(watchedRulesetId)
 
+  const watchedThemeId = useWatch({ name: 'themeId', control })
   const watchedPlayers = useWatch({ name: 'players', control })
 
   const handleClickSwap = useCallback(
@@ -163,6 +192,7 @@ export default function V2MatchForm({
                 },
               })),
               rulesetRef: values.rulesetId,
+              themeRef: values.themeId,
             },
             metadata: {
               createdAt: new Date().toISOString(),
@@ -223,7 +253,7 @@ export default function V2MatchForm({
           <fieldset className="fieldset">
             <select className="select w-full" {...register('rulesetId')}>
               {rulesets.map((ruleset) => (
-                <option value={ruleset.id}>
+                <option key={ruleset.id} value={ruleset.id}>
                   {ruleset.metadata.name.display}
                 </option>
               ))}
@@ -235,7 +265,18 @@ export default function V2MatchForm({
         </div>
         <div>
           <label className="fieldset-label">佈局風格</label>
-          <p className="leading-10">默認：國士無雙</p>
+          <fieldset className="fieldset">
+            <select className="select w-full" {...register('themeId')}>
+              {themes.map((theme) => (
+                <option key={theme.id} value={theme.id}>
+                  {theme.metadata.name.display}
+                </option>
+              ))}
+            </select>
+            <p className="fieldset-label text-error">
+              {formState.errors['themeId']?.message}
+            </p>
+          </fieldset>
         </div>
       </div>
 
@@ -263,8 +304,9 @@ export default function V2MatchForm({
                     <label className="fieldset-label">預覽</label>
                     {watchedPlayers?.[index] && (
                       <div>
-                        <div key={index} className="w-full text-[64px]">
-                          <PlayerCard
+                        <div className="w-full text-[64px]">
+                          <PlayerCardByTheme
+                            themeId={watchedThemeId}
                             score={watchedRuleset?.data.startingPoint ?? 0}
                             player={{
                               primaryName: watchedPlayers[index].namePrimary!,

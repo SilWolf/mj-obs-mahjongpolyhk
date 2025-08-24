@@ -40,6 +40,8 @@ export default function V2PanelMatchesByIdEditPage() {
         createdBy: 'Dicky',
         updatedAt: new Date().toISOString(),
         updatedBy: 'Dicky',
+        rulesetRef: newMatch.data.rulesetRef,
+        themeRef: newMatch.data.themeRef,
         setting: {
           startingScore: '25000',
           isManganRoundUp: '1',
@@ -221,6 +223,7 @@ export default function V2PanelMatchesByIdEditPage() {
       name: cachedRealtimeMatch.name,
       nameAlt: cachedRealtimeMatch.nameDisplay,
       rulesetId: 'hkleague-4p',
+      themeId: 'default',
       players: [
         cachedRealtimeMatch.players[0],
         cachedRealtimeMatch.players[1],

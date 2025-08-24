@@ -188,6 +188,7 @@ export const apiQueryMatchesByTournamentId = async (
             formatPlayer(match.playerNorth, match.playerNorthTeam),
           ],
           rulesetRef: 'hkleague-4p',
+          themeRef: 'default',
           startAt: match.startAt,
         },
         metadata: {
@@ -285,6 +286,7 @@ export const apiGetMatchById = async (matchId: string) => {
           formatPlayer(matches[0].playerNorth, matches[0].playerNorthTeam),
         ],
         rulesetRef: 'hkleague-4p',
+        themeRef: 'default',
       },
       metadata: {
         createdAt: matches[0]._createdAt,

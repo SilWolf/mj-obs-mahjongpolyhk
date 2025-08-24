@@ -25,7 +25,7 @@ type Props = HTMLAttributes<HTMLDivElement> & {
 
 export default function V2PlayerCard({
   score,
-  scoreChanges = [],
+  scoreChanges,
   point,
   ranking,
   isEast,
@@ -42,9 +42,9 @@ export default function V2PlayerCard({
   ...props
 }: Props) {
   const [storedScore, setStoredScore] = useState<number>(score)
-  const [storedScoreChanges, setStoredScoreChanges] = useState<number[] | null>(
-    null
-  )
+  const [storedScoreChanges, setStoredScoreChanges] = useState<
+    number[] | null | undefined
+  >(null)
 
   const isScoreChanging = useMemo(
     () => !!storedScoreChanges,

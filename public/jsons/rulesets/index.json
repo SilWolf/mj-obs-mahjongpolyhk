@@ -18,5 +18,15 @@
       "description": "切上滿貫、雙役滿役種視作單役滿、累計最高三倍滿、本場300點、負點續行。"
     },
     "src": "./summer-3p.json"
+  },
+  {
+    "id": "GuoShiWuShuang-4p",
+    "metadata": {
+      "name": {
+        "display": "国士无双四麻规则"
+      },
+      "description": "MLeague规则。切上满贯、双役满役种视作单役满、累计最高三倍满、本场300点、负点续行。"
+    },
+    "src": "./GuoShiWuShuang-4p.json"
   }
 ]
