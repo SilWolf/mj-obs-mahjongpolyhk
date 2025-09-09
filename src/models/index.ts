@@ -34,6 +34,7 @@ export type RawMatch = {
     _id: string
     name: string
     logoUrl: string
+    statisticReferenceTournamentId: string | null
   }
 }
 
@@ -73,6 +74,7 @@ export type Player = {
   portraitImage: string | null
   introduction: string
   statistics?: PlayerStatistic
+  oldStatistics?: PlayerStatistic | null | undefined
 }
 
 export type PlayerStatistic = {

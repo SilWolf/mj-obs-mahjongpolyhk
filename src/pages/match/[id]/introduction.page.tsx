@@ -190,6 +190,10 @@ const MatchIntroductionSlide = ({
       </div>
     )
   } else if (slide.type === 'team') {
+    const focusPlayerStatistics =
+      slide.focusPlayer.oldStatistics ?? slide.focusPlayer.statistics
+    const isFocusPlayerUsingOldStatistics = !!slide.focusPlayer.oldStatistics
+
     return (
       <div
         className="absolute py-16 px-24 inset-0 flex flex-col justify-center items-stretch"
@@ -281,7 +285,7 @@ const MatchIntroductionSlide = ({
             ))}
           </div>
           <div
-            className="absolute inset-0 grid grid-cols-4 items-center gap-16"
+            className="absolute inset-0 grid grid-cols-4 items-start gap-16"
             style={{
               opacity:
                 status >= 0 && status < 1 && subslide >= 1 && subslide < 2
@@ -289,13 +293,15 @@ const MatchIntroductionSlide = ({
                   : 0,
             }}
           >
-            <MatchTeamPlayerDiv
-              team={slide.team}
-              player={slide.focusPlayer}
-              fadeIn={status === 0 && subslide === 1}
-              fadeOut={status > 0}
-              delay={0}
-            />
+            <div className="pt-[0.8em]">
+              <MatchTeamPlayerDiv
+                team={slide.team}
+                player={slide.focusPlayer}
+                fadeIn={status === 0 && subslide === 1}
+                fadeOut={status > 0}
+                delay={0}
+              />
+            </div>
             <div className="col-span-3">
               <div
                 className={cns({
@@ -307,16 +313,16 @@ const MatchIntroductionSlide = ({
                   <p className="text-[2em] flex items-center">
                     <span>個人總分</span>
                     <span className="font-numeric">
-                      {renderPoint(slide.focusPlayer.statistics?.point)}
+                      {renderPoint(focusPlayerStatistics?.point)}
                     </span>
                     <span className="ml-4 font-numeric text-[.75em] min-w-[2.5em] text-right text-cyan-400">
-                      {slide.focusPlayer.statistics?.pointRanking ?? '-'}名
+                      {focusPlayerStatistics?.pointRanking ?? '-'}名
                     </span>
                   </p>
                   <p className="text-[2em]">
                     半莊數{' '}
                     <span className="font-numeric">
-                      {slide.focusPlayer.statistics?.matchCount ?? '-'}
+                      {focusPlayerStatistics?.matchCount ?? '-'}
                     </span>
                   </p>
                 </div>
@@ -326,14 +332,11 @@ const MatchIntroductionSlide = ({
                     <p className="text-[.9em]">四位迴避率</p>
                     <p className="flex items-center">
                       <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.nonFourthP
-                        )}
+                        {renderPercentage(focusPlayerStatistics?.nonFourthP)}
                       </span>
                       <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
                         {' '}
-                        {slide.focusPlayer.statistics?.nonFourthPRanking ?? '-'}
-                        名
+                        {focusPlayerStatistics?.nonFourthPRanking ?? '-'}名
                       </span>
                     </p>
                   </div>
@@ -342,14 +345,12 @@ const MatchIntroductionSlide = ({
                     <p className="flex items-center">
                       <span className="font-numeric">
                         {renderPercentage(
-                          slide.focusPlayer.statistics?.firstAndSecondP
+                          focusPlayerStatistics?.firstAndSecondP
                         )}
                       </span>
                       <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
                         {' '}
-                        {slide.focusPlayer.statistics?.firstAndSecondPRanking ??
-                          '-'}
-                        名
+                        {focusPlayerStatistics?.firstAndSecondPRanking ?? '-'}名
                       </span>
                     </p>
                   </div>
@@ -357,13 +358,11 @@ const MatchIntroductionSlide = ({
                     <p className="text-[.9em]">立直率</p>
                     <p className="flex items-center">
                       <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.riichiP
-                        )}
+                        {renderPercentage(focusPlayerStatistics?.riichiP)}
                       </span>
                       <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
                         {' '}
-                        {slide.focusPlayer.statistics?.riichiPRanking ?? '-'}名
+                        {focusPlayerStatistics?.riichiPRanking ?? '-'}名
                       </span>
                     </p>
                   </div>
@@ -371,11 +370,11 @@ const MatchIntroductionSlide = ({
                     <p className="text-[.9em]">和了率</p>
                     <p className="flex items-center">
                       <span className="font-numeric">
-                        {renderPercentage(slide.focusPlayer.statistics?.ronP)}
+                        {renderPercentage(focusPlayerStatistics?.ronP)}
                       </span>
                       <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
                         {' '}
-                        {slide.focusPlayer.statistics?.ronPRanking ?? '-'}名
+                        {focusPlayerStatistics?.ronPRanking ?? '-'}名
                       </span>
                     </p>
                   </div>
@@ -383,11 +382,11 @@ const MatchIntroductionSlide = ({
                     <p className="text-[.9em]">銃和率</p>
                     <p className="flex items-center">
                       <span className="font-numeric">
-                        {renderPercentage(slide.focusPlayer.statistics?.chuckP)}
+                        {renderPercentage(focusPlayerStatistics?.chuckP)}
                       </span>
                       <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
                         {' '}
-                        {slide.focusPlayer.statistics?.chuckPRanking ?? '-'}名
+                        {focusPlayerStatistics?.chuckPRanking ?? '-'}名
                       </span>
                     </p>
                   </div>
@@ -395,13 +394,11 @@ const MatchIntroductionSlide = ({
                     <p className="text-[.9em]">副露率</p>
                     <p className="flex items-center">
                       <span className="font-numeric">
-                        {renderPercentage(
-                          slide.focusPlayer.statistics?.revealP
-                        )}
+                        {renderPercentage(focusPlayerStatistics?.revealP)}
                       </span>
                       <span className="font-numeric ml-2 text-[.75em] min-w-[2.5em] text-right text-cyan-400">
                         {' '}
-                        {slide.focusPlayer.statistics?.revealPRanking ?? '-'}名
+                        {focusPlayerStatistics?.revealPRanking ?? '-'}名
                       </span>
                     </p>
                   </div>
@@ -413,13 +410,11 @@ const MatchIntroductionSlide = ({
                     <div className="text-right">
                       <p className="font-numeric">
                         {renderPercentage(
-                          slide.focusPlayer.statistics?.ronPureScoreAvg
+                          focusPlayerStatistics?.ronPureScoreAvg
                         )}
                       </p>
                       <p className="font-numeric text-[.75em] min-w-[2.5em] text-cyan-400 -mt-4">
-                        {slide.focusPlayer.statistics?.ronPureScoreAvgRanking ??
-                          '-'}
-                        名
+                        {focusPlayerStatistics?.ronPureScoreAvgRanking ?? '-'}名
                       </p>
                     </div>
                   </div>
@@ -429,7 +424,7 @@ const MatchIntroductionSlide = ({
                     <div className="text-right">
                       <p className="font-numeric">
                         {renderPercentage(
-                          slide.focusPlayer.statistics?.chuckPureScoreAvg
+                          focusPlayerStatistics?.chuckPureScoreAvg
                         )}
                       </p>
                       <p className="font-numeric text-[.75em] min-w-[2.5em] text-cyan-400 -mt-4">
@@ -440,6 +435,12 @@ const MatchIntroductionSlide = ({
                     </div>
                   </div>
                 </div>
+
+                {isFocusPlayerUsingOldStatistics && (
+                  <p className="text-left text-[0.9em] italic mt-4">
+                    * 上述個人數據均為常規賽數據
+                  </p>
+                )}
               </div>
             </div>
           </div>

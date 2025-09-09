@@ -326,42 +326,69 @@ export const apiGetMatchById = async (matchId: string) => {
     })
 }
 
-export const apiGetMatchByIdWithStatistics = async (
-  matchId: string,
-  statisticTournamentId?: string
-) => {
+export const apiGetMatchByIdWithStatistics = async (matchId: string) => {
   const rawMatch = await client
     .fetch<
       RawMatch[]
-    >(`*[_type == "match" && _id == "${matchId}"]{ tournament->{_id, name, "logoUrl": logo.asset->url}, _id, name, playerEast, playerSouth, playerWest, playerNorth, playerEastTeam, playerSouthTeam, playerWestTeam, playerNorthTeam, startAt }`)
+    >(`*[_type == "match" && _id == "${matchId}"]{ tournament->{_id, name, "logoUrl": logo.asset->url, "statisticReferenceTournamentId": statisticReferenceTournament._ref }, _id, name, playerEast, playerSouth, playerWest, playerNorth, playerEastTeam, playerSouthTeam, playerWestTeam, playerNorthTeam, startAt }`)
     .then((rawMatches) => rawMatches[0])
+
+  const hasOldStatistic =
+    !!rawMatch.tournament.statisticReferenceTournamentId &&
+    rawMatch.tournament.statisticReferenceTournamentId !==
+      rawMatch.tournament._id
 
   const regularTeams = await getRegularTeamsWithPlayersWithStatistics(
     rawMatch.tournament._id
   )
+  const oldRegularTeams = hasOldStatistic
+    ? await getRegularTeamsWithPlayersWithStatistics(
+        rawMatch.tournament.statisticReferenceTournamentId as string
+      )
+    : null
 
-  const teamEast = regularTeams.find(
-    ({ team }) => rawMatch.playerEastTeam?._ref === team._id
-  )
-  const playerEast = teamEast?.players.find(
+  const teamEast = {
+    current: regularTeams.find(
+      ({ team }) => rawMatch.playerEastTeam?._ref === team._id
+    ),
+    old: oldRegularTeams?.find(
+      ({ team }) => rawMatch.playerEastTeam?._ref === team._id
+    ),
+  }
+  const playerEast = teamEast.current?.players.find(
     ({ _id }) => _id === rawMatch.playerEast?._ref
   )
-  const teamSouth = regularTeams.find(
-    ({ team }) => rawMatch.playerSouthTeam?._ref === team._id
-  )
-  const playerSouth = teamSouth?.players.find(
+  const teamSouth = {
+    current: regularTeams.find(
+      ({ team }) => rawMatch.playerSouthTeam?._ref === team._id
+    ),
+    old: oldRegularTeams?.find(
+      ({ team }) => rawMatch.playerSouthTeam?._ref === team._id
+    ),
+  }
+  const playerSouth = teamSouth.current?.players.find(
     ({ _id }) => _id === rawMatch.playerSouth?._ref
   )
-  const teamWest = regularTeams.find(
-    ({ team }) => rawMatch.playerWestTeam?._ref === team._id
-  )
-  const playerWest = teamWest?.players.find(
+  const teamWest = {
+    current: regularTeams.find(
+      ({ team }) => rawMatch.playerWestTeam?._ref === team._id
+    ),
+    old: oldRegularTeams?.find(
+      ({ team }) => rawMatch.playerWestTeam?._ref === team._id
+    ),
+  }
+  const playerWest = teamWest.current?.players.find(
     ({ _id }) => _id === rawMatch.playerWest?._ref
   )
-  const teamNorth = regularTeams.find(
-    ({ team }) => rawMatch.playerNorthTeam?._ref === team._id
-  )
-  const playerNorth = teamNorth?.players.find(
+  const teamNorth = {
+    current: regularTeams.find(
+      ({ team }) => rawMatch.playerNorthTeam?._ref === team._id
+    ),
+    old: oldRegularTeams?.find(
+      ({ team }) => rawMatch.playerNorthTeam?._ref === team._id
+    ),
+  }
+  const playerNorth = teamNorth.current?.players.find(
     ({ _id }) => _id === rawMatch.playerNorth?._ref
   )
 
@@ -374,46 +401,60 @@ export const apiGetMatchByIdWithStatistics = async (
 
   const playerStatisticMap = await getStatisticsByPlayerIds(
     playerIds,
-    statisticTournamentId || rawMatch.tournament._id
+    rawMatch.tournament._id
   )
+  const playerOldStatisticMap = hasOldStatistic
+    ? await getStatisticsByPlayerIds(
+        playerIds,
+        rawMatch.tournament.statisticReferenceTournamentId as string
+      )
+    : null
 
   return {
     ...rawMatch,
     playerEast: {
       ...playerEast!,
       statistics: playerStatisticMap[playerEast!._id],
+      oldStatistics: playerOldStatisticMap?.[playerEast!._id],
     },
     playerSouth: {
       ...playerSouth!,
       statistics: playerStatisticMap[playerSouth!._id],
+      oldStatistics: playerOldStatisticMap?.[playerSouth!._id],
     },
     playerWest: {
       ...playerWest!,
       statistics: playerStatisticMap[playerWest!._id],
+      oldStatistics: playerOldStatisticMap?.[playerWest!._id],
     },
     playerNorth: {
       ...playerNorth!,
       statistics: playerStatisticMap[playerNorth!._id],
+      oldStatistics: playerOldStatisticMap?.[playerNorth!._id],
     },
     playerEastTeam: {
-      ...teamEast!.team,
-      statistics: teamEast!.statistics,
-      players: teamEast!.players,
+      ...teamEast.current!.team,
+      statistics: teamEast.current!.statistics,
+      oldStatistics: teamEast.old?.statistics,
+      players: teamEast.current!.players,
     },
     playerSouthTeam: {
-      ...teamSouth!.team,
-      statistics: teamSouth!.statistics,
-      players: teamSouth!.players,
+      ...teamSouth.current!.team,
+      statistics: teamSouth.current!.statistics,
+      oldStatistics: teamSouth.old?.statistics,
+      players: teamSouth.current!.players,
     },
     playerWestTeam: {
-      ...teamWest!.team,
-      statistics: teamWest!.statistics,
-      players: teamWest!.players,
+      ...teamWest.current!.team,
+      statistics: teamWest.current!.statistics,
+      oldStatistics: teamWest.old?.statistics,
+      players: teamWest.current!.players,
     },
     playerNorthTeam: {
-      ...teamNorth!.team,
-      statistics: teamNorth!.statistics,
-      players: teamNorth!.players,
+      ...teamNorth.current!.team,
+      statistics: teamNorth.current!.statistics,
+      oldStatistics: teamNorth.old?.statistics,
+      players: teamNorth.current!.players,
     },
   }
 }
@@ -539,10 +580,10 @@ export const apiGetTeamPlayersOfTournament = async (tournamentId: string) => {
   return teamPlayers
 }
 
-export const getRegularTeamsWithStatistics = async () =>
+export const getTournamentTeamsWithStatistics = async (tournamentId: string) =>
   client
     .fetch(
-      `*[_type == "matchTournament" && _id == "62e7d07d-f59f-421d-a000-2e4d28ab89db"]{ teams[]{ _key, "statistics": statistics{ranking, point, matchCount}, ref->{${[
+      `*[_type == "matchTournament" && _id == "${tournamentId}"]{ teams[]{ _key, "statistics": statistics{ranking, point, matchCount}, ref->{${[
         '_id',
         ...TEAM_META_FIELDS,
       ].join(', ')}}, "overrided": overrided{${[...TEAM_META_FIELDS].join(
@@ -557,6 +598,9 @@ export const getRegularTeamsWithStatistics = async () =>
         team: mergeObject(ref, overrided),
       }))
     })
+
+export const getRegularTeamsWithStatistics = async () =>
+  getTournamentTeamsWithStatistics('62e7d07d-f59f-421d-a000-2e4d28ab89db')
 
 export const getRegularTeamsWithPlayers = () =>
   client
@@ -598,11 +642,11 @@ export const getRegularTeamsWithPlayersWithStatistics = (
         `"statistics": statistics[_key=="${tournamentId}"][0]`,
       ].join(
         ', '
-      )}}, "overrided": overrided{${[...PLAYER_META_FIELDS].join(', ')}} } } }`
+      )}}, "overrided": overrided{${[...PLAYER_META_FIELDS].join(', ')}} } } }[0]`
     )
-    .then((tournaments) => {
+    .then((tournament) => {
       return (
-        tournaments[0]?.teams as TournamentTeamWithPlayersWithStatistics[]
+        tournament?.teams as TournamentTeamWithPlayersWithStatistics[]
       ).map(({ ref, overrided, ...team }) => ({
         ...team,
         team: mergeObject(ref, overrided),
