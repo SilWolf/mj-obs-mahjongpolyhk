@@ -50,8 +50,8 @@ export default function CreateDefaultMatch() {
           yakuMax: '12',
           yakumanMax: '13',
         },
-        players: {
-          '0': {
+        players: [
+          {
             primaryName: defaultPlayers[0].name,
             secondaryName: defaultPlayers[0].name ?? '',
             nickname: defaultPlayers[0].name ?? '',
@@ -60,7 +60,7 @@ export default function CreateDefaultMatch() {
             propicUrl: '',
             largeLogoUrl: '',
           },
-          '1': {
+          {
             primaryName: defaultPlayers[1].name,
             secondaryName: defaultPlayers[1].name ?? '',
             nickname: defaultPlayers[1].name ?? '',
@@ -69,7 +69,7 @@ export default function CreateDefaultMatch() {
             propicUrl: '',
             largeLogoUrl: '',
           },
-          '2': {
+          {
             primaryName: defaultPlayers[2].name,
             secondaryName: defaultPlayers[2].name ?? '',
             nickname: defaultPlayers[2].name ?? '',
@@ -78,7 +78,7 @@ export default function CreateDefaultMatch() {
             propicUrl: '',
             largeLogoUrl: '',
           },
-          '3': {
+          {
             primaryName: defaultPlayers[3].name,
             secondaryName: defaultPlayers[3].name ?? '',
             nickname: defaultPlayers[3].name ?? '',
@@ -87,6 +87,10 @@ export default function CreateDefaultMatch() {
             propicUrl: '',
             largeLogoUrl: '',
           },
+        ],
+        database: {
+          _id: '',
+          tournamentId: '',
         },
         activeResultDetail: null,
       }

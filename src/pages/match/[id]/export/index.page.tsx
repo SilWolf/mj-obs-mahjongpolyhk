@@ -44,9 +44,9 @@ export default function MatchExportPage({ params: { matchId } }: Props) {
   //   })
   // }, [rtMatch, matchId, rtMatchRounds])
 
-  // if (!rtMatch || !rtMatchCurrentRound) {
-  //   return <div>對局讀取失敗。</div>
-  // }
+  if (!rtMatch || !rtMatchCurrentRound) {
+    return <div>對局讀取失敗。</div>
+  }
 
   return (
     <div>

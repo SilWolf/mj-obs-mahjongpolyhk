@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 const useDbMatchWithStatistics = (matchId: string | null | undefined) =>
   useQuery({
     queryKey: ['matches', matchId],
-    queryFn: async ({ queryKey }) => apiGetMatchByIdWithStatistics(queryKey[1]),
+    queryFn: async () => apiGetMatchByIdWithStatistics(matchId!),
     enabled: !!matchId,
   })
 

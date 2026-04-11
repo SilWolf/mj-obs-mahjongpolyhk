@@ -20,7 +20,7 @@ export type PlayersViewAction =
   | 'waiting-tile-remain'
 
 export type PlayersViewProps = {
-  players: Record<PlayerIndex, RealtimePlayer>
+  players: RealtimePlayer[]
   currentRound: RealtimeMatchRound
 
   onAction: (

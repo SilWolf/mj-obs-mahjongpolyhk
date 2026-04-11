@@ -19,7 +19,7 @@ const PlayerDiv = ({ player }: { player: RealtimePlayer }) => {
 }
 
 type Props = TableHTMLAttributes<HTMLTableElement> & {
-  players: Record<PlayerIndex, RealtimePlayer>
+  players: RealtimePlayer[]
   matchRounds: Record<string, RealtimeMatchRound> | undefined
 }
 

@@ -180,7 +180,7 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
     toggleEditPlayersDialog(true)
   }, [toggleEditPlayersDialog])
   const handleSubmitPlayersForm = useCallback(
-    (newPlayers: Record<PlayerIndex, RealtimePlayer>) => {
+    (newPlayers: RealtimePlayer[]) => {
       setMatchPlayers(newPlayers)
       toggleEditPlayersDialog(false)
     },

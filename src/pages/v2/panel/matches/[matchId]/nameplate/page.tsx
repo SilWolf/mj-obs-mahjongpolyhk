@@ -176,7 +176,8 @@ export default function MatchNameplatesPage() {
   const { data } = useCurrentTournament()
   const { data: match } = useQuery({
     queryKey: ['v2-matches', matchId],
-    queryFn: ({ queryKey }) => apiGetMatchById(queryKey[1]),
+    queryFn: () => apiGetMatchById(matchId!),
+    enabled: !!matchId,
   })
 
   if (!match) {

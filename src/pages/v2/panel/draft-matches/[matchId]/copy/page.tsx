@@ -25,7 +25,6 @@ export default function V2PanelMatchDraftByIdEditPage() {
         name: newMatch.data.name.official.primary,
         nameDisplay: (newMatch.data.name.display ?? newMatch.data.name.official)
           .primary,
-        databaseId: newMatchId,
         remark: '',
         createdAt: new Date().toISOString(),
         createdBy: 'Dicky',
@@ -39,8 +38,8 @@ export default function V2PanelMatchDraftByIdEditPage() {
           yakuMax: '12',
           yakumanMax: '13',
         },
-        players: {
-          '0': {
+        players: [
+          {
             primaryName: newMatch.data.players[0].name.display.primary,
             secondaryName:
               newMatch.data.players[0].name.display.secondary ?? '',
@@ -54,7 +53,7 @@ export default function V2PanelMatchDraftByIdEditPage() {
               newMatch.data.players[0].image.logo?.default.url ??
               '',
           },
-          '1': {
+          {
             primaryName: newMatch.data.players[1].name.display.primary,
             secondaryName:
               newMatch.data.players[1].name.display.secondary ?? '',
@@ -68,7 +67,7 @@ export default function V2PanelMatchDraftByIdEditPage() {
               newMatch.data.players[1].image.logo?.default.url ??
               '',
           },
-          '2': {
+          {
             primaryName: newMatch.data.players[2].name.display.primary,
             secondaryName:
               newMatch.data.players[2].name.display.secondary ?? '',
@@ -82,7 +81,7 @@ export default function V2PanelMatchDraftByIdEditPage() {
               newMatch.data.players[2].image.logo?.default.url ??
               '',
           },
-          '3': {
+          {
             primaryName: newMatch.data.players[3].name.display.primary,
             secondaryName:
               newMatch.data.players[3].name.display.secondary ?? '',
@@ -96,6 +95,10 @@ export default function V2PanelMatchDraftByIdEditPage() {
               newMatch.data.players[3].image.logo?.default.url ??
               '',
           },
+        ],
+        database: {
+          _id: newMatchId,
+          tournamentId: '',
         },
         activeResultDetail: null,
       }

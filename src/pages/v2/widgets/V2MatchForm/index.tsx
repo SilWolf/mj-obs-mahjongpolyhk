@@ -40,17 +40,18 @@ const themes = [
 ]
 
 const formSchema = zod.object({
-  name: zod.string({ required_error: '必須填寫對局名稱。' }),
+  name: zod.string().min(1, { error: '必須填寫對局名稱。' }),
   nameAlt: zod.string().optional(),
-  rulesetId: zod.string({ required_error: '必須選擇其中一套規則。' }),
-  themeId: zod.string({ required_error: '必須選擇其中一套風格。' }),
+  rulesetId: zod.string().min(1, { error: '必須選擇其中一套規則。' }),
+  themeId: zod.string().min(1, { error: '必須選擇其中一套風格。' }),
   players: zod.array(
     zod.object({
-      namePrimary: zod.string({ required_error: '玩家必須有名稱' }),
+      namePrimary: zod.string().min(1, { error: '玩家必須有名稱' }),
       nameSecondary: zod.string(),
       nameThird: zod.string(),
       colorPrimary: zod
-        .string({ required_error: '玩家必須有主要顏色' })
+        .string()
+        .min(1, { error: '玩家必須有主要顏色' })
         .regex(/^#[0-9A-F]{6}$/i, '顏色必須是 #ABCDEF 格式。'),
       colorSecondary: zod
         .string()

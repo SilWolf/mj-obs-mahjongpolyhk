@@ -3,7 +3,7 @@ import useRealtimeMatches from '@/hooks/useRealtimeMatches'
 import { RealtimePlayer } from '@/models'
 import { renderDate } from '@/utils/string.util'
 import { useCallback } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 
 function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
   return (
@@ -29,7 +29,7 @@ function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
 
 export default function RecentRealtimeMatchesSection() {
   const { rtMatches = [] } = useRealtimeMatches()
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const handleClickImportToStreaming = useCallback(
     (e: React.MouseEvent) => {

@@ -49,7 +49,6 @@ const ControlNewMatch = ({ match }: Props) => {
     const newMatch: RealtimeMatch = {
       code: match._id,
       name: match.name,
-      databaseId: match._id,
       remark: '',
       createdAt: new Date().toISOString(),
       createdBy: 'Dicky',
@@ -63,23 +62,27 @@ const ControlNewMatch = ({ match }: Props) => {
         yakuMax: '12',
         yakumanMax: '13',
       },
-      players: {
-        '0': convertDbTeamPlayerToRealtimePlayer(
+      players: [
+        convertDbTeamPlayerToRealtimePlayer(
           match.playerEastTeam!,
           match.playerEast!
         ),
-        '1': convertDbTeamPlayerToRealtimePlayer(
+        convertDbTeamPlayerToRealtimePlayer(
           match.playerSouthTeam!,
           match.playerSouth!
         ),
-        '2': convertDbTeamPlayerToRealtimePlayer(
+        convertDbTeamPlayerToRealtimePlayer(
           match.playerWestTeam!,
           match.playerWest!
         ),
-        '3': convertDbTeamPlayerToRealtimePlayer(
+        convertDbTeamPlayerToRealtimePlayer(
           match.playerNorthTeam!,
           match.playerNorth!
         ),
+      ],
+      database: {
+        _id: match._id,
+        tournamentId: '',
       },
       activeResultDetail: null,
     }

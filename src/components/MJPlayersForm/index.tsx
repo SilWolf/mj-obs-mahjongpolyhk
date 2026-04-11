@@ -6,8 +6,8 @@ import MJUIButton from '../MJUI/MJUIButton'
 const indexes = ['0', '1', '2', '3'] as const
 
 type Props = {
-  defaultPlayers: Record<PlayerIndex, RealtimePlayer>
-  onSubmit?: (newValue: Record<PlayerIndex, RealtimePlayer>) => unknown
+  defaultPlayers: RealtimePlayer[]
+  onSubmit?: (newValue: RealtimePlayer[]) => unknown
 }
 
 const MJPlayersForm = ({ defaultPlayers, onSubmit }: Props) => {
@@ -63,20 +63,7 @@ const MJPlayersForm = ({ defaultPlayers, onSubmit }: Props) => {
   }, [getValues, onSubmit])
 
   useEffect(() => {
-    reset({
-      '0': {
-        ...defaultPlayers['0'],
-      },
-      '1': {
-        ...defaultPlayers['1'],
-      },
-      '2': {
-        ...defaultPlayers['2'],
-      },
-      '3': {
-        ...defaultPlayers['3'],
-      },
-    })
+    reset(defaultPlayers)
   }, [defaultPlayers, reset])
 
   return (

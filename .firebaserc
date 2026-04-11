@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "hkmjbs-streaming"
+  },
+  "targets": {
+    "hkmjbs-streaming": {
+      "hosting": {
+        "mahjongpolyhk": [
+          "mj-obs-mahjongpolyhk"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

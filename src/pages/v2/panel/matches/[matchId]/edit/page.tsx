@@ -22,7 +22,7 @@ export default function V2PanelMatchesByIdEditPage() {
 
   const { data: match } = useQuery({
     queryKey: ['v2-matches', matchId],
-    queryFn: ({ queryKey }) => apiGetMatchById(queryKey[1]),
+    queryFn: () => apiGetMatchById(matchId!),
   })
 
   const handleSubmit = useCallback(
@@ -44,7 +44,6 @@ export default function V2PanelMatchesByIdEditPage() {
         name: newMatch.data.name.official.primary,
         nameDisplay: (newMatch.data.name.display ?? newMatch.data.name.official)
           .primary,
-        databaseId: matchId,
         remark: '',
         createdAt: new Date().toISOString(),
         createdBy: 'Dicky',
@@ -58,8 +57,8 @@ export default function V2PanelMatchesByIdEditPage() {
           yakuMax: '12',
           yakumanMax: '13',
         },
-        players: {
-          '0': {
+        players: [
+          {
             primaryName: newMatch.data.players[0].name.display.primary,
             secondaryName:
               newMatch.data.players[0].name.display.secondary ?? '',
@@ -73,7 +72,7 @@ export default function V2PanelMatchesByIdEditPage() {
               newMatch.data.players[0].image.logo?.default.url ??
               '',
           },
-          '1': {
+          {
             primaryName: newMatch.data.players[1].name.display.primary,
             secondaryName:
               newMatch.data.players[1].name.display.secondary ?? '',
@@ -87,7 +86,7 @@ export default function V2PanelMatchesByIdEditPage() {
               newMatch.data.players[1].image.logo?.default.url ??
               '',
           },
-          '2': {
+          {
             primaryName: newMatch.data.players[2].name.display.primary,
             secondaryName:
               newMatch.data.players[2].name.display.secondary ?? '',
@@ -101,7 +100,7 @@ export default function V2PanelMatchesByIdEditPage() {
               newMatch.data.players[2].image.logo?.default.url ??
               '',
           },
-          '3': {
+          {
             primaryName: newMatch.data.players[3].name.display.primary,
             secondaryName:
               newMatch.data.players[3].name.display.secondary ?? '',
@@ -115,6 +114,10 @@ export default function V2PanelMatchesByIdEditPage() {
               newMatch.data.players[3].image.logo?.default.url ??
               '',
           },
+        ],
+        database: {
+          _id: matchId!,
+          tournamentId: '',
         },
         activeResultDetail: null,
       }
