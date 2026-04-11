@@ -12,6 +12,8 @@ import ConfirmDialogProvider from './components/ConfirmDialog/provider'
 
 import './i18n'
 import V3AdminPage from './pages/v3/admin'
+import { Result } from 'antd'
+import MatchStartObsPage from './pages/v3/admin/tournaments/[tournamentId]/matches/[matchId]/start-obs'
 
 const V2PanelLayout = lazy(
   () => import('./pages/v2/layouts/V2PanelLayout.layout')
@@ -117,8 +119,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 >
                   <Route index element={<V2PanelPage />} />
 
-                  <Route path="matches">
-                    <Route path=":matchId">
+                  <Route path="matchups">
+                    <Route path=":matchupId">
                       <Route
                         path="edit"
                         element={<V2PanelMatchesByIdEditPage />}
@@ -128,6 +130,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         path="nameplate"
                         element={<V2PanelMatchesByIdNameplatePage />}
                       />
+
+                      <Route path="start-obs" element={<MatchStartObsPage />} />
                     </Route>
 
                     <Route
@@ -182,7 +186,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="master" element={<V2ObsSceneMasterPage />} />
               </Route>
 
-              <Route path="*" element={<Navigate to="/panel" />} />
+              <Route path="*" element={<Result status="404" />} />
             </Routes>
           </BrowserRouter>
         </ConfirmDialogProvider>

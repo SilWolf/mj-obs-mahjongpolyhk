@@ -81,7 +81,7 @@ export default function DraftMatchesTable() {
             dataIndex: ['database', '_id'],
             render: (id) => {
               return (
-                <>
+                <Link to={`./matchups/${id}/start-obs`}>
                   <Button
                     size="small"
                     variant="outlined"
@@ -90,7 +90,7 @@ export default function DraftMatchesTable() {
                   >
                     進行直播
                   </Button>
-                </>
+                </Link>
               )
             },
           },

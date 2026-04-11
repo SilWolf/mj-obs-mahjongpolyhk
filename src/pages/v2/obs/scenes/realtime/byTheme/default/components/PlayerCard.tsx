@@ -123,26 +123,24 @@ export default function PlayerCard({
                 background: `linear-gradient(180deg, ${player.color}, ${lightenedColor})`,
               }}
             >
-              {player.logoUrl && (
+              {player.logoImageUrl && (
                 <div className="absolute inset-[0.085em] overflow-hidden">
                   <img
                     className="absolute max-w-[none] h-[2.2em] w-[2.2em] opacity-30 animate-[scrollFromRightToLeft_12s_linear_infinite]"
-                    src={player.logoUrl}
-                    alt={player.primaryName}
+                    src={player.logoImageUrl}
                   />
                 </div>
               )}
-              {player.propicUrl && (
+              {player.portraitImageUrl && (
                 <img
                   className="relative z-10 w-full h-full rounded-[0.08em]"
-                  src={player.propicUrl}
-                  alt={player.primaryName}
+                  src={player.portraitImageUrl}
                 />
               )}
-              {player.nickname && (
+              {player.thirdName && (
                 <div className="absolute bottom-[0.085em] left-[0.085em] right-[0.085em] rounded-b-[0.08em] bg-[linear-gradient(to_top,#00000060,#00000050_70%,transparent)] text-white z-20">
                   <p className="text-center text-[0.25em] font-semibold pb-[0.25em] pt-[0.5em]">
-                    {player.nickname}
+                    {player.thirdName}
                   </p>
                 </div>
               )}
@@ -233,12 +231,12 @@ export default function PlayerCard({
                 style={{
                   transformOrigin: 'left',
                   transform:
-                    (player.primaryName || '').length >= 17
+                    (player.name || '').length >= 17
                       ? 'scaleX(0.9)'
                       : 'scaleX(1)',
                 }}
               >
-                {player.primaryName}
+                {player.name}
               </div>
             </div>
 

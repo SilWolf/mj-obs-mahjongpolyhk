@@ -74,10 +74,86 @@ const teamProject = q.fragmentForType<'team'>().project((teamRef) => ({
 }))
 
 export const matchupService = {
+  getOne: async (matchupId: string): Promise<IMatchup> => {
+    const query = q.star
+      .filterByType('match')
+      .filterRaw(`_id == "${matchupId}"`)
+      .slice(0)
+      .project((sub) => ({
+        _id: z.string(),
+        name: z.string().nullish(),
+        nameAlt: z.string().nullish(),
+        startAt: true,
+        playerEast: sub.field('playerEast').deref().project(playerProject),
+        playerSouth: sub.field('playerSouth').deref().project(playerProject),
+        playerWest: sub.field('playerWest').deref().project(playerProject),
+        playerNorth: sub.field('playerNorth').deref().project(playerProject),
+        playerEastTeam: sub
+          .field('playerEastTeam')
+          .deref()
+          .project(teamProject),
+        playerSouthTeam: sub
+          .field('playerSouthTeam')
+          .deref()
+          .project(teamProject),
+        playerWestTeam: sub
+          .field('playerWestTeam')
+          .deref()
+          .project(teamProject),
+        playerNorthTeam: sub
+          .field('playerNorthTeam')
+          .deref()
+          .project(teamProject),
+        _createdAt: true,
+        _updatedAt: true,
+      }))
+
+    return runQuery(query).then((matchup) => {
+      if (!matchup) {
+        throw new Error(`Matchup not found (id = ${matchupId})`)
+      }
+
+      const formatPlayer = (
+        player: (typeof matchup)['playerEast'],
+        team: (typeof matchup)['playerEastTeam']
+      ): IMatchupPlayer => ({
+        _id: player?._id ?? '',
+        teamId: team?._id ?? '',
+        name: player?.name ?? '',
+        secondaryName: team?.preferredName ?? player?.designation,
+        thirdName: player?.nickname,
+        color: team?.color ?? '#FFFF00',
+        secondaryColor: getLightColorOfColor(team?.color ?? '#FFFF00'),
+        portraitImageUrl: player?.portraitImage,
+        portraitAltImageUrl: player?.portraitAltImage,
+        fullBodyImageUrl: player?.fullBodyImage,
+        fullBodyAltImageUrl: player?.fullBodyAltImage,
+        riichiImageUrl: player?.riichiImage,
+        logoImageUrl: team?.squareLogoImage,
+      })
+
+      return {
+        name: matchup.name,
+        players: [
+          formatPlayer(matchup.playerEast, matchup.playerEastTeam),
+          formatPlayer(matchup.playerSouth, matchup.playerSouthTeam),
+          formatPlayer(matchup.playerWest, matchup.playerWestTeam),
+          formatPlayer(matchup.playerNorth, matchup.playerNorthTeam),
+        ],
+        startAt: matchup.startAt,
+        ruleset: { key: 'hkleague-4p' },
+        theme: { key: 'default' },
+        database: {
+          _id: matchup._id,
+        },
+      }
+    })
+  },
+
   getManyByTournamentId: async (
     tournamentId: string,
     options?: { recent?: boolean }
-  ) => {
+  ): Promise<IMatchup[]> => {
     const query = q.star
       .filterByType('match')
       .filterRaw(

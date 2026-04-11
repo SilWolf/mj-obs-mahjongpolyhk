@@ -8,6 +8,7 @@ import useAllRulesets from '../../hooks/useAllRulesets'
 import useRuleset from '../../hooks/useRuleset'
 import { V2Match } from '../../models/V2Match.model'
 import PlayerCardByTheme from '../../obs/scenes/realtime/PlayerCard/PlayerCardByTheme'
+import { Form, Input } from 'antd'
 
 const positionNames = ['東家', '南家', '西家', '北家']
 
@@ -245,36 +246,6 @@ export default function V2MatchForm({
             />
             <p className="fieldset-label text-error">
               {formState.errors['nameAlt']?.message}
-            </p>
-          </fieldset>
-        </div>
-        <div>
-          <label className="fieldset-label">規則</label>
-          <fieldset className="fieldset">
-            <select className="select w-full" {...register('rulesetId')}>
-              {rulesets.map((ruleset) => (
-                <option key={ruleset.id} value={ruleset.id}>
-                  {ruleset.metadata.name.display}
-                </option>
-              ))}
-            </select>
-            <p className="fieldset-label text-error">
-              {formState.errors['rulesetId']?.message}
-            </p>
-          </fieldset>
-        </div>
-        <div>
-          <label className="fieldset-label">佈局風格</label>
-          <fieldset className="fieldset">
-            <select className="select w-full" {...register('themeId')}>
-              {themes.map((theme) => (
-                <option key={theme.id} value={theme.id}>
-                  {theme.metadata.name.display}
-                </option>
-              ))}
-            </select>
-            <p className="fieldset-label text-error">
-              {formState.errors['themeId']?.message}
             </p>
           </fieldset>
         </div>
