@@ -73,7 +73,7 @@ export default function PlayerCard({
   console.log(hslColor)
 
   return (
-    <div className="w-[400px] h-[200px] relative">
+    <div className="w-[420px] h-[200px] relative">
       <div
         className="absolute bottom-0 right-0 w-[67%] h-[35%]"
         style={{
@@ -95,8 +95,12 @@ export default function PlayerCard({
         alt=""
       />
       <div
-        className="absolute -bottom-[3%] right-[2.5%] w-[60%] text-right font-kanit text-[0.75em]"
+        className="absolute -bottom-[3%] right-[2.5%] w-[60%] text-right font-kanit text-[0.75em] transition-[opacity,transform] duration-700"
         style={{
+          opacity: !showPointAndRanking ? 1 : 0,
+          transform: !showPointAndRanking
+            ? 'translateY(0px)'
+            : 'translateY(20px)',
           textShadow:
             '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
         }}
@@ -104,8 +108,29 @@ export default function PlayerCard({
         <MJAmountSpan animated value={storedScore} />
       </div>
       <div
-        className="absolute bottom-[37%] right-[3%] w-[60%] text-right text-[0.4em]"
+        className="absolute -bottom-[3%] right-[2.5%] w-[60%] text-right font-kanit text-[0.75em] transition-opacity duration-700"
         style={{
+          opacity: showPointAndRanking ? 1 : 0,
+          textShadow:
+            '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
+        }}
+      >
+        {renderPoint(point)}
+      </div>
+      <div
+        className="absolute bottom-[1%] right-[2.5%] w-[60%] text-left font-kanit text-[0.5em] transition-opacity duration-700"
+        style={{
+          opacity: showPointAndRanking ? 1 : 0,
+          textShadow:
+            '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
+        }}
+      >
+        {renderRanking(ranking)}
+      </div>
+      <div
+        className="absolute bottom-[37%] right-[3%] w-[60%] text-right text-[0.4em] transition-opacity"
+        style={{
+          opacity: storedScoreChanges ? 0 : 1,
           textShadow:
             '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
         }}
@@ -184,6 +209,27 @@ export default function PlayerCard({
           </div>
         </div>
       </div>
+
+      {storedScoreChanges && (
+        <div
+          className="absolute text-right w-[60%] text-[0.75em] bottom-[40%] right-[2.5%] leading-none animate-[drop_3s_ease-in-out] font-kanit"
+          style={{
+            textShadow:
+              '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
+          }}
+        >
+          {storedScoreChanges.map((scoreChange) => (
+            <div>
+              <MJAmountSpan
+                signed
+                value={scoreChange}
+                positiveClassName="text-[#09eb09]"
+                negativeClassName="text-[#eb0000]"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {isEast && (
         <div className="absolute -bottom-[12px] left-0 right-0 h-1 rounded-full bg-red-500" />

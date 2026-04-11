@@ -184,7 +184,7 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
         </div>
 
         <div
-          className="absolute bottom-0 left-0 right-0 px-10 pb-6 grid grid-cols-4 items-end gap-x-8 text-white animate-[fadeInFromBottom_1s_ease-in-out]"
+          className="absolute bottom-0 left-0 right-0 px-10 pb-8 grid grid-cols-4 items-end gap-x-8 text-white animate-[fadeInFromBottom_1s_ease-in-out]"
           style={{
             opacity: rtMatch.activeResultDetail || rtMatch.hidePlayers ? 0 : 1,
             bottom:
@@ -241,7 +241,7 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
                 }
               />
             </div>
-            <div className="col-span-3 mb-5 bg-black/50 py-6 px-8 text-[0.5em] min-h-[5.5em] flex items-stretch gap-x-4">
+            <div className="col-span-3 bg-black/50 rounded-[30px] py-6 px-8 text-[0.5em] min-h-[5.5em] flex items-stretch gap-x-4">
               <div
                 className={`flex-1 flex flex-wrap gap-x-[0.75em] ${
                   rtMatch.activeResultDetail.yakumanCount > 0
