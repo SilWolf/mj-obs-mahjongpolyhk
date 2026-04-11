@@ -9,11 +9,17 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    environment: 
-      name: firebase-hosting-production
+    environment: firebase-hosting-production
     steps:
-    - name: Check if secret exists
-      env:
-        MY_SECRET: ${{ secrets.VITE_DATA_PROVIDER }}
-      if: ${{ env.MY_SECRET == '' }}
-      run: echo "Secret is missing! Please configure it in Settings > Secrets."
+      - uses: actions/checkout@v4
+      - run: yarn install --frozen-lockfile && yarn build
+        env:
+          VITE_ORGANIZATION: ${{ secrets.VITE_ORGANIZATION }}
+          VITE_DATA_PROVIDER: ${{ secrets.VITE_DATA_PROVIDER }}
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_HKMJBS_STREAMING }}
+          channelId: live
+          projectId: hkmjbs-streaming
+          target: mahjongpolyhk
