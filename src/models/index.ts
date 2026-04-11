@@ -36,6 +36,7 @@ export type RawMatch = {
     logoUrl: string
     rulesetId?: string
     themeId?: string
+    statisticReferenceTournamentId: string | null
   }
 }
 
@@ -76,6 +77,7 @@ export type Player = {
   fullBodyImage: string | null
   introduction: string
   statistics?: PlayerStatistic
+  oldStatistics?: PlayerStatistic | null | undefined
 }
 
 export type PlayerStatistic = {
