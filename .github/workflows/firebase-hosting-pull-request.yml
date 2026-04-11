@@ -11,9 +11,13 @@ jobs:
   build_and_preview:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
+    environment: firebase-hosting-production
     steps:
       - uses: actions/checkout@v4
       - run: yarn build
+        env:
+          VITE_ORGANIZATION: ${{ secrets.VITE_ORGANIZATION }}
+          VITE_DATA_PROVIDER: ${{ secrets.VITE_DATA_PROVIDER }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
