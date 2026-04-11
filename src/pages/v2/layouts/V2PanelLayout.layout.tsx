@@ -20,10 +20,12 @@ import {
   Flex,
   Layout,
   Menu,
+  Popover,
+  QRCode,
   theme,
   Typography,
 } from 'antd'
-import { GlobalOutlined } from '@ant-design/icons'
+import { GlobalOutlined, QrcodeOutlined } from '@ant-design/icons'
 
 export default function V2PanelLayout({ children }: PropsWithChildren) {
   const {
@@ -73,9 +75,24 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
               {
                 key: 'matchupControl',
                 label: (
-                  <Link to="/admin/obs/match-control">
-                    {t('layout.menu.matchControl')}
-                  </Link>
+                  <Flex align="center">
+                    <Flex flex={1}>
+                      <Link to="/admin/obs/match-control">
+                        {t('layout.menu.matchControl')}
+                      </Link>
+                    </Flex>
+                    <Flex>
+                      <Popover
+                        content={
+                          <QRCode
+                            value={`${location.origin}/admin/obs/match-control`}
+                          />
+                        }
+                      >
+                        <Button type="text" icon={<QrcodeOutlined />} />
+                      </Popover>
+                    </Flex>
+                  </Flex>
                 ),
               },
               {
