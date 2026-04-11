@@ -1,4 +1,4 @@
-import { IMatchupPlayer } from '@/resources/matchups/entity'
+import { RealtimePlayer } from '@/models'
 import { HTMLAttributes } from 'react'
 
 export type PlayerCardBaseProps = HTMLAttributes<HTMLDivElement> & {
@@ -18,5 +18,5 @@ export type PlayerCardBaseProps = HTMLAttributes<HTMLDivElement> & {
   reveals?: string[]
   showPointAndRanking?: boolean | null
 
-  player: IMatchupPlayer
+  player: RealtimePlayer
 }

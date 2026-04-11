@@ -3,6 +3,7 @@ import { RealtimeMatch, RealtimeMatchRound } from '@/models'
 import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 import PlayerCard from '@/pages/v2/obs/scenes/realtime/byTheme/default/components/PlayerCard'
 import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
+import { IMatchupPlayer } from '@/resources/matchups/entity'
 import { useMatchupByCurrentRoute } from '@/resources/matchups/hook'
 import { getTimestampId } from '@/utils/string.util'
 import { CheckOutlined } from '@ant-design/icons'
@@ -19,6 +20,23 @@ import {
 } from 'antd'
 import { useCallback } from 'react'
 import { data, useNavigate } from 'react-router'
+
+const PlayerCardAlt = ({ player }: { player: IMatchupPlayer }) => {
+  return (
+    <PlayerCard
+      score={25000}
+      player={{
+        primaryName: player.name ?? '',
+        secondaryName: player.secondaryName ?? '',
+        nickname: player.thirdName ?? '',
+        color: player.color,
+        logoUrl: player.logoImageUrl ?? '',
+        propicUrl: player.portraitImageUrl ?? '',
+        largeLogoUrl: player.logoImageUrl ?? '',
+      }}
+    />
+  )
+}
 
 export default function MatchStartObsPage() {
   const navigate = useNavigate()
@@ -68,7 +86,7 @@ export default function MatchStartObsPage() {
       },
     }
 
-    await fb.set(`matchups/${newRTMatchupCode}`, newRTMatchup)
+    await fb.set(`matches/${newRTMatchupCode}`, newRTMatchup)
 
     const startingScore = 25000
 
@@ -162,11 +180,13 @@ export default function MatchStartObsPage() {
       doras: [],
     }
 
-    await fb.set(`matchups/${newRTMatchupCode}/rounds`, [matchRound])
+    await fb.push(`matchRounds`, matchRound)
     await updateObsRoom({
-      rtMatchupId: newRTMatchupCode,
+      matchId: newRTMatchupCode,
     })
-    navigate('/obs/match-control')
+
+    navigate('../../..')
+    window.open('/admin/obs/match-control')
   }, [matchup, data, fb, updateObsRoom, navigate])
 
   if (isLoading) {
@@ -188,25 +208,25 @@ export default function MatchStartObsPage() {
           <Row gutter={[16, 16]}>
             <Col span={12}>
               <div className="text-5xl relative pb-10 pr-10">
-                <PlayerCard score={25000} player={matchup.players[0]} />
+                <PlayerCardAlt player={matchup.players[0]} />
                 <p className="absolute bottom-0 right-0">東</p>
               </div>
             </Col>
             <Col span={12}>
               <div className="text-5xl relative pb-10 pl-10">
-                <PlayerCard score={25000} player={matchup.players[3]} />
+                <PlayerCardAlt player={matchup.players[3]} />
                 <p className="absolute bottom-0 left-0">北</p>
               </div>
             </Col>
             <Col span={12}>
               <div className="text-5xl relative pt-10 pr-10">
-                <PlayerCard score={25000} player={matchup.players[1]} />
+                <PlayerCardAlt player={matchup.players[1]} />
                 <p className="absolute top-0 right-0">南</p>
               </div>
             </Col>
             <Col span={12}>
               <div className="text-5xl relative pt-10 pl-10">
-                <PlayerCard score={25000} player={matchup.players[2]} />
+                <PlayerCardAlt player={matchup.players[2]} />
                 <p className="absolute top-0 left-0">西</p>
               </div>
             </Col>

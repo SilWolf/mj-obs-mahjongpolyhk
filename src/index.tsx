@@ -140,15 +140,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     />
                   </Route>
 
-                  <Route
-                    path="obs/match-control"
-                    element={<V2PanelObsMatchControlPage />}
-                  />
-                  <Route
-                    path="obs/scene-control"
-                    element={<V2PanelObsSceneControlPage />}
-                  />
-
                   <Route path="draft-matches">
                     <Route path=":matchId">
                       <Route
@@ -177,16 +168,28 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       element={<V2PanelDraftMatchesImportFromDatabasePage />}
                     />
                   </Route>
+                </Route>
 
-                  <Route path="obs/setup" element={<V2PanelObsSetupPage />} />
+                <Route path="obs">
+                  <Route
+                    path="match-control"
+                    element={<V2PanelObsMatchControlPage />}
+                  />
+                  <Route
+                    path="scene-control"
+                    element={<V2PanelObsSceneControlPage />}
+                  />
+                  <Route path="setup" element={<V2PanelObsSetupPage />} />
                 </Route>
               </Route>
 
-              <Route path="obs/scene">
-                <Route path="master" element={<V2ObsSceneMasterPage />} />
+              <Route path="/public">
+                <Route path="obs/scene">
+                  <Route path="master" element={<V2ObsSceneMasterPage />} />
+                </Route>
               </Route>
 
-              <Route path="*" element={<Result status="404" />} />
+              <Route path="*" element={<Navigate to="/admin" />} />
             </Routes>
           </BrowserRouter>
         </ConfirmDialogProvider>
