@@ -90,9 +90,11 @@ describe('distributeThousandsToPlayers', () => {
 
 describe('convertScoresToPointsAndRankings', () => {
   it('When a common match result', () => {
-    const results = convertScoresToPointsAndRankings([
-      45000, 25000, 15000, 5000,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [45000, 25000, 15000, 5000],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(65, 1)
     expect(results[1].point).toBeCloseTo(5, 1)
     expect(results[2].point).toBeCloseTo(-25, 1)
@@ -104,9 +106,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When a common match result with uneven scores', () => {
-    const results = convertScoresToPointsAndRankings([
-      9700, 17200, 32400, 40700,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [9700, 17200, 32400, 40700],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(-50.3, 1)
     expect(results[1].point).toBeCloseTo(-22.8, 1)
     expect(results[2].point).toBeCloseTo(+12.4, 1)
@@ -118,9 +122,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('common scores (1)', () => {
-    const results = convertScoresToPointsAndRankings([
-      60500, -21600, 2900, 58200,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [60500, -21600, 2900, 58200],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(+80.5, 1)
     expect(results[1].point).toBeCloseTo(-81.6, 1)
     expect(results[2].point).toBeCloseTo(-37.1, 1)
@@ -132,9 +138,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('common scores (2)', () => {
-    const results = convertScoresToPointsAndRankings([
-      20200, 30100, 33600, 16100,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [20200, 30100, 33600, 16100],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(-19.8, 1)
     expect(results[1].point).toBeCloseTo(+10.1, 1)
     expect(results[2].point).toBeCloseTo(+53.6, 1)
@@ -146,9 +154,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 4 players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([
-      25000, 25000, 25000, 25000,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [25000, 25000, 25000, 25000],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(0, 1)
     expect(results[1].point).toBeCloseTo(0, 1)
     expect(results[2].point).toBeCloseTo(0, 1)
@@ -160,7 +170,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 1st, 2nd, 3rd players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([33300, 33300, 100, 33300])
+    const results = convertScoresToPointsAndRankings(
+      [33300, 33300, 100, 33300],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(20.1, 1)
     expect(results[1].point).toBeCloseTo(19.9, 1)
     expect(results[2].point).toBeCloseTo(-59.9, 1)
@@ -172,9 +186,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 2nd, 3rd, 4th players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([
-      20000, 20000, 20000, 40000,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [20000, 20000, 20000, 40000],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(-20, 1)
     expect(results[1].point).toBeCloseTo(-20, 1)
     expect(results[2].point).toBeCloseTo(-20, 1)
@@ -186,7 +202,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 1st, 2nd players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([20000, 40000, 40000, 0])
+    const results = convertScoresToPointsAndRankings(
+      [20000, 40000, 40000, 0],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(-20, 1)
     expect(results[1].point).toBeCloseTo(40, 1)
     expect(results[2].point).toBeCloseTo(40, 1)
@@ -198,7 +218,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 2nd, 3rd players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([30000, 40000, 0, 30000])
+    const results = convertScoresToPointsAndRankings(
+      [30000, 40000, 0, 30000],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(0, 1)
     expect(results[1].point).toBeCloseTo(60, 1)
     expect(results[2].point).toBeCloseTo(-60, 1)
@@ -210,9 +234,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 3rd, 4th players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([
-      60000, -2000, -2000, 44000,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [60000, -2000, -2000, 44000],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(80, 1)
     expect(results[1].point).toBeCloseTo(-52, 1)
     expect(results[2].point).toBeCloseTo(-52, 1)
@@ -224,9 +250,11 @@ describe('convertScoresToPointsAndRankings', () => {
   })
 
   it('When 1st 2nd players are with same score && 3rd 4th players are with same score', () => {
-    const results = convertScoresToPointsAndRankings([
-      40000, 10000, 40000, 10000,
-    ])
+    const results = convertScoresToPointsAndRankings(
+      [40000, 10000, 40000, 10000],
+      30000,
+      [50, 10, -10, -30]
+    )
     expect(results[0].point).toBeCloseTo(40, 1)
     expect(results[1].point).toBeCloseTo(-40, 1)
     expect(results[2].point).toBeCloseTo(40, 1)
@@ -240,7 +268,8 @@ describe('convertScoresToPointsAndRankings', () => {
   it('When [25000, 25000, 25000, 25000] with weird origin score=28000', () => {
     const results = convertScoresToPointsAndRankings(
       [25000, 25000, 25000, 25000],
-      28000
+      28000,
+      [50, 10, -10, -30]
     )
     expect(results[0].point).toBeCloseTo(2, 1)
     expect(results[1].point).toBeCloseTo(2, 1)
