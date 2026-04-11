@@ -119,7 +119,8 @@ export default function MatchDetailPage({ params: { matchId } }: Props) {
               transition: 'width 0.3s, left 1.5s, opacity 1.5s',
               left: rtMatch.hideHeader ? '-100%' : '0',
               opacity: rtMatch.hideHeader ? '0' : '1',
-              background: `linear-gradient(280deg, transparent, transparent 0.5em, #00000080 0.5em, #00000080 100%)`,
+              background: `#00000080`,
+              borderBottomRightRadius: 30,
             }}
           >
             <div className="">

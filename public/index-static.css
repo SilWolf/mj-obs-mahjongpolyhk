@@ -33,6 +33,11 @@
   src: url('fonts/KdamThmorPro-Regular.ttf');
 }
 
+@font-face {
+  font-family: 'Kanit';
+  src: url('fonts/Kanit-Regular.ttf');
+}
+
 .mahjong-tile {
   background-image: url('images/mahjong-tiles.png');
   background-origin: padding-box;

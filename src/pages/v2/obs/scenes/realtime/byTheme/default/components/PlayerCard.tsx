@@ -12,6 +12,10 @@ import useDebounce from '@/hooks/useDebounce'
 import MJTileV2Div from '@/components/MJTileV2Div'
 import { PlayerCardBaseProps } from '../../../PlayerCard/type'
 
+import BgImage from './assets/bg.webp'
+import BgRiichiImage from './assets/bg-riichi2.webp'
+import { hexToHsl } from '@/utils/color.util'
+
 type Props = PlayerCardBaseProps
 
 export default function PlayerCard({
@@ -63,6 +67,130 @@ export default function PlayerCard({
       }, 3000)
     }
   }, [score, scoreChanges, storedScore])
+
+  const hslColor = useMemo(() => hexToHsl(player.color), [player.color])
+
+  console.log(hslColor)
+
+  return (
+    <div className="w-[400px] h-[200px] relative">
+      <div
+        className="absolute bottom-0 right-0 w-[67%] h-[35%]"
+        style={{
+          backgroundColor: player.color,
+          opacity: isRiichi ? 0.65 : 0.5,
+          borderTopLeftRadius: 40,
+        }}
+      />
+      <div
+        className="absolute bottom-0 right-0 w-[67%] h-[35%] animate-pulse"
+        style={{
+          borderBottom: isRiichi ? `6px solid ${player.color}` : '',
+          animationDuration: '4s',
+        }}
+      />
+      <img
+        className="absolute left-0 bottom-0 w-[33%] rounded-bl-[30%]"
+        src="https://cdn.sanity.io/images/0a9a4r26/production/31ab48d53a61100eb50f74a755f66db412b88f6c-360x500.png?auto=format&fit=max&q=75&w=360"
+        alt=""
+      />
+      <div
+        className="absolute -bottom-[3%] right-[2.5%] w-[60%] text-right font-kanit text-[0.75em]"
+        style={{
+          textShadow:
+            '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
+        }}
+      >
+        <MJAmountSpan animated value={storedScore} />
+      </div>
+      <div
+        className="absolute bottom-[37%] right-[3%] w-[60%] text-right text-[0.4em]"
+        style={{
+          textShadow:
+            '#00000048 2px 2px 3px, #00000048 -2px -2px 3px, #00000048 -2px 2px 3px, #00000048 2px -2px 3px, #00000048 0 0 6px',
+        }}
+      >
+        {player.primaryName}
+      </div>
+
+      <div
+        className="absolute right-0 bottom-[60%] rounded-r-[.125em] bg-black/50 data-[furiten=true]:bg-red-500/25 overflow-hidden origin-right"
+        style={{
+          transform:
+            waitingTiles && waitingTiles.length > 0
+              ? 'scale(100%, 100%)'
+              : 'scale(0, 100%)',
+          opacity: waitingTiles && waitingTiles.length > 0 ? 1 : 0,
+          transition: 'transform 1s, opacity 1s, background-color 1s',
+        }}
+        data-has-waiting-tiles={waitingTiles && waitingTiles.length > 0}
+        data-furiten={isFuriten}
+      >
+        <div className="text-[0.5em] flex gap-x-[0.2em] p-[0.2em] pl-[0.2em] pr-[0.2em]">
+          <div className="flex-1 leading-none flex flex-wrap gap-[0.1em] text-[0.85em]">
+            {waitingTiles?.map((tile) => (
+              <div
+                key={tile}
+                className="animate-[fadeInFromLeft_1s_ease-in-out]"
+              >
+                <MJTileV2Div value={tile} />
+              </div>
+            ))}
+          </div>
+          <div className="bg-[#FFFFFF] w-[4px]" />
+          <div className="text-[#FFFFFF] text-[0.4em] leading-[1.3em] flex items-center">
+            {typeof debouncedWaitingTileRemain === 'number' ? (
+              <div className="text-center">
+                <p
+                  className="pt-[0.1em] font-numeric"
+                  style={{
+                    fontSize:
+                      debouncedWaitingTileRemain > 9 ? '1.8em' : '2.2em',
+                    opacity: debouncedWaitingTileRemain === 0 ? 0.5 : 1,
+                  }}
+                >
+                  {debouncedWaitingTileRemain}
+                </p>
+              </div>
+            ) : (
+              <>
+                待<br />牌
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute -top-[16%] left-0 right-0">
+        <div
+          className="relative bg-black/50 rounded-[.125em] opacity-0 transition-opacity data-[has-reveals=true]:opacity-100 hide-if-changing overflow-visible origin-left"
+          style={{
+            transform:
+              reveals && reveals.length > 0
+                ? 'scale(100%, 100%)'
+                : 'scale(0, 100%)',
+            transition: 'transform 1s',
+          }}
+          data-has-reveals={reveals && reveals.length > 0}
+        >
+          <div className="flex flex-row-reverse items-end justify-end flex-wrap text-[0.28em] gap-x-2 p-2">
+            {reveals?.map((reveal, rI) => (
+              <div key={rI} className={styles['sakura-review-block']}>
+                <div>
+                  <MJTileCombinationDiv value={reveal} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {isEast && (
+        <div className="absolute -bottom-[12px] left-0 right-0 h-1 rounded-full bg-red-500" />
+      )}
+    </div>
+  )
+
   return (
     <div
       className="relative min-w-[5.35em] mx-auto [&_.hide-if-changing]:transition-opacity data-[score-changing='1']:[&_.hide-if-changing]:opacity-0 overflow-visible"
