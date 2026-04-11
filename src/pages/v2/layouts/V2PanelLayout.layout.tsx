@@ -98,7 +98,11 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
               {
                 key: 'obsSetup',
                 label: (
-                  <Link to="/admin/obs/setup">{t('layout.menu.obsSetup')}</Link>
+                  <Link
+                    to={`/admin/tournaments/${params.tournamentId}/obs-setup`}
+                  >
+                    {t('layout.menu.obsSetup')}
+                  </Link>
                 ),
               },
             ]}

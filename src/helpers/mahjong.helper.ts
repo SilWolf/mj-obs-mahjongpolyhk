@@ -667,7 +667,7 @@ export const distributeThousandsToPlayers = (
 export const convertScoresToPointsAndRankings = (
   scores: [number, number, number, number],
   originScore: number = 30000,
-  rankingRewards: [number, number, number, number] = [50, 10, -10, -30]
+  rankingRewards: [number, number, number, number] = [30, 10, -10, -30]
 ): [
   { point: number; ranking: number },
   { point: number; ranking: number },

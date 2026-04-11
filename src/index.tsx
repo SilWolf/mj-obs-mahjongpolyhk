@@ -134,6 +134,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       element={<V2PanelMatchCreateFromCachePage />}
                     />
                   </Route>
+
+                  <Route path="obs-setup" element={<V2PanelObsSetupPage />} />
                 </Route>
 
                 <Route
@@ -150,7 +152,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     path="scene-control"
                     element={<V2PanelObsSceneControlPage />}
                   />
-                  <Route path="setup" element={<V2PanelObsSetupPage />} />
                 </Route>
               </Route>
 

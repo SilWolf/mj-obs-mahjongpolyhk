@@ -24,7 +24,7 @@ import { data, useNavigate } from 'react-router'
 const PlayerCardAlt = ({ player }: { player: IMatchupPlayer }) => {
   return (
     <PlayerCard
-      score={25000}
+      score={30000}
       player={{
         primaryName: player.name ?? '',
         secondaryName: player.secondaryName ?? '',
@@ -65,7 +65,7 @@ export default function MatchStartObsPage() {
       rulesetRef: matchup.ruleset.key,
       themeRef: matchup.theme.key,
       setting: {
-        startingScore: '25000',
+        startingScore: '30000',
         isManganRoundUp: '1',
         yakuMax: '12',
         yakumanMax: '13',
@@ -88,7 +88,7 @@ export default function MatchStartObsPage() {
 
     await fb.set(`matches/${newRTMatchupCode}`, newRTMatchup)
 
-    const startingScore = 25000
+    const startingScore = 30000
 
     const matchRound: RealtimeMatchRound = {
       matchId: newRTMatchup.code,

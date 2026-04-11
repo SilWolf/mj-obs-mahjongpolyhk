@@ -1,3 +1,4 @@
+import { Typography } from 'antd'
 import { Link } from 'react-router'
 
 export default function V2PanelWikiSetupOBS() {
@@ -11,7 +12,10 @@ export default function V2PanelWikiSetupOBS() {
           <p>瀏覽器的設置如下（沒提及的默認即可）：</p>
           <ul className="list-disc pl-6 space-y-1 mt-2">
             <li>
-              網址：<strong>{location.origin}/#/obs/scene/master</strong>
+              網址：
+              <Typography.Text copyable strong>
+                {location.origin}/public/obs/scene/master
+              </Typography.Text>
             </li>
             <li>
               寬度：<strong>1920</strong>
