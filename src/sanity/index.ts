@@ -12,7 +12,7 @@ const sanityConfig = {
   projectId,
   dataset,
   useCdn: true,
-  apiVersion: '2023-05-03',
+  apiVersion: '2026-04-07',
   token,
 }
 

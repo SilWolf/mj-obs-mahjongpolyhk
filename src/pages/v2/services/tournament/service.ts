@@ -1,4 +1,4 @@
-import { q, runQuery, urlFor } from '@/pages/v2/adapters/sanity'
+import { q, runQuery, urlFor } from '@/sanity'
 import * as z from 'zod'
 import {
   V2Tournament,

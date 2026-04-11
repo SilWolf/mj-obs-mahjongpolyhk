@@ -3,7 +3,7 @@ import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { generateMatchRoundCode } from '@/helpers/mahjong.helper'
 import V2MatchForm from '../../widgets/V2MatchForm'
 import { useToggle } from 'react-use'
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router'
 import { apiGetRulesetById } from '../../services/ruleset.service'
 import { V2Match } from '../../models/V2Match.model'
 import { V2MatchRound } from '../../models/V2MatchRound.model'
@@ -11,7 +11,7 @@ import useObsRoom from '../../hooks/useObsRoom'
 
 export default function V2CreateMatchPage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, navigate] = useLocation()
+  const navigate = useNavigate()
   const fb = useFirebaseDatabase()
   const { update: updateObsRoom } = useObsRoom()
 

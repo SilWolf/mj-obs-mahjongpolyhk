@@ -6,7 +6,7 @@ import { getRandomId } from '@/utils/string.util'
 
 import { useCallback } from 'react'
 import useLocalStorage from 'react-use/lib/useLocalStorage'
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router'
 
 const defaultValues = {
   name: '新的對局',
@@ -64,7 +64,7 @@ export default function V2PanelDraftMatchCreatePage() {
 
   const fb = useFirebaseDatabase()
 
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const handleSubmit = useCallback(
     async (newMatch: V2Match) => {

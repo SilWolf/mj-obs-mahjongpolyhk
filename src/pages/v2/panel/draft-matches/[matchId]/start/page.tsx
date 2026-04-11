@@ -5,7 +5,7 @@ import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { getRandomId } from '@/utils/string.util'
 import { useCallback } from 'react'
-import { useLocation, useParams } from 'wouter'
+import { useNavigate, useParams } from 'react-router'
 
 function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
   return (
@@ -37,7 +37,7 @@ export default function V2PanelMatchDraftByIdStartPage() {
   const { matchId } = useParams<{ matchId: string }>()
   const { data: draftMatch } = useDraftMatch(matchId)
 
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const handleClickStart = useCallback(async () => {
     if (!draftMatch) {

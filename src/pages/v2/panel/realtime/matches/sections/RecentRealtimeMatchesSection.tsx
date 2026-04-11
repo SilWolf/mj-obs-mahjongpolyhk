@@ -3,7 +3,7 @@ import useRealtimeMatches from '@/hooks/useRealtimeMatches'
 import { RealtimePlayer } from '@/models'
 import { renderDate } from '@/utils/string.util'
 import { useCallback } from 'react'
-import { Link, useLocation } from 'wouter'
+import { Link, useLocation } from 'react-router'
 
 function RealtimePlayerMiniCard({ player }: { player: RealtimePlayer }) {
   return (
@@ -100,7 +100,7 @@ export default function RecentRealtimeMatchesSection() {
                   導入至直播系統
                 </a>
                 <Link
-                  href={`/matches/${rtMatch._id}/detail`}
+                  to={`/matches/${rtMatch._id}/detail`}
                   className="text-success"
                 >
                   詳細

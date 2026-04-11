@@ -1,7 +1,7 @@
 import { Player, RealtimePlayer, Team } from '@/models'
 import { getLightColorOfColor } from '@/utils/string.util'
 import { useMemo } from 'react'
-import { useParams } from 'wouter'
+import { useParams } from 'react-router'
 import useDraftMatch from '@/hooks/useDraftMatch'
 
 const MatchNameplateNarrow = ({

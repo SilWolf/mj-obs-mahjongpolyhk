@@ -8,12 +8,12 @@ import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { getRandomId } from '@/utils/string.util'
 import { useCallback, useMemo } from 'react'
 import { useLocalStorage } from 'react-use'
-import { useLocation } from 'wouter'
+import { useNavigate } from 'react-router'
 
 export default function V2PanelMatchesByIdEditPage() {
   const fb = useFirebaseDatabase()
   const { update: updateObsRoom } = useObsRoom()
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const [cachedRealtimeMatch] = useLocalStorage<RealtimeMatch>(
     'cachedRealtimeMatch'

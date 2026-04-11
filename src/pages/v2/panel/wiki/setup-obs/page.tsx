@@ -1,4 +1,4 @@
-import { Link } from 'wouter'
+import { Link } from 'react-router'
 
 export default function V2PanelWikiSetupOBS() {
   return (
@@ -25,7 +25,7 @@ export default function V2PanelWikiSetupOBS() {
         <li>將剛才新建的場景作為來源，添至東家、南家、西家及北家的場景中。</li>
         <li>
           OBS 設置完成。進一步的操作請見{' '}
-          <Link href="~/panel" className="text-primary">
+          <Link to="~/panel" className="text-primary">
             分數控制台
           </Link>{' '}
           。

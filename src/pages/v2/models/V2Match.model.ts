@@ -1,5 +1,5 @@
 import * as zod from 'zod'
-import { playerSchema } from '@/pages/v2/adapters/sanity/sanity.zod'
+import { playerSchema } from '@/sanity/sanity.zod'
 
 export const v2MatchPlayerSchema = zod.object({
   id: zod.string(),

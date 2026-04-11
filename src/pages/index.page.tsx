@@ -1,3 +1,5 @@
+import { Table } from 'antd'
+
 import MJUIButton from '@/components/MJUI/MJUIButton'
 import { apiGetMatches } from '@/helpers/sanity.helper'
 import { useQuery } from '@tanstack/react-query'
@@ -339,6 +341,7 @@ function IndexPage() {
                 <i className="bi bi-arrow-repeat"></i> 刷新
               </MJUIButton>
             </div>
+
             <table className="table w-full">
               <thead>
                 <tr>
@@ -383,8 +386,7 @@ function IndexPage() {
                         player={match.playerNorth}
                       />
                     </td>
-                    <td className="space-x-2 text-right">
-                    </td>
+                    <td className="space-x-2 text-right"></td>
                   </tr>
                 ))}
               </tbody>

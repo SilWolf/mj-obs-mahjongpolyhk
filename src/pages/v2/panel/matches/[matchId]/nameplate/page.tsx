@@ -3,7 +3,7 @@ import { Player, Team } from '@/models'
 import { getLightColorOfColor } from '@/utils/string.util'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { useParams } from 'wouter'
+import { useParams } from 'react-router'
 import useCurrentTournament from '@/pages/v2/hooks/useCurrentTournament'
 import { V2MatchPlayer } from '@/pages/v2/models/V2Match.model'
 

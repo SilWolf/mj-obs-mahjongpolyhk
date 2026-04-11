@@ -5,7 +5,7 @@ import { CurrentTournamentIdContext } from '../hooks/useCurrentTournament'
 import useAllTournaments from '../hooks/useAllTournaments'
 import { useLocalStorage } from 'react-use'
 import CurrentLiveMatchWidget from '../widgets/CurrentLiveMatchWidget'
-import { Link } from 'wouter'
+import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import GlobeIcon from '@/components/icons/GlobeIcon'
 
@@ -147,18 +147,18 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
             <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
               {/* Sidebar content here */}
               <li>
-                <Link href="~/panel">{t('layout.menu.matches')}</Link>
+                <Link to="~/panel">{t('layout.menu.matches')}</Link>
               </li>
               <li>
-                <Link href="/obs/match-control">
+                <Link to="/obs/match-control">
                   {t('layout.menu.matchControl')}
                 </Link>
               </li>
               <li>
-                <Link href="/obs/setup">{t('layout.menu.obsSetup')}</Link>
+                <Link to="/obs/setup">{t('layout.menu.obsSetup')}</Link>
               </li>
               {/* <li>
-                <Link href="/obs/scene-control">多合一場景控制台</Link>
+                <Link to="/obs/scene-control">多合一場景控制台</Link>
               </li> */}
             </ul>
 
@@ -170,7 +170,7 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
 
             <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
               <li>
-                <Link href="/realtime/matches">
+                <Link to="/realtime/matches">
                   {t('layout.menu.completedMatches')}
                 </Link>
               </li>

@@ -1,40 +1,23 @@
 import { useCallback } from 'react'
-import MatchesFromDatabaseDialog, {
-  openMatchesFromDatabaseDialog,
-} from './MatchesFromDatabaseDialog'
 import DraftMatchesTable from './DraftMatchesTable'
-import { Link } from 'wouter'
+import { Link } from 'react-router'
 import useCurrentTournament from '../../hooks/useCurrentTournament'
 
 export default function DraftMatchesSection() {
   const { data: currentTournament } = useCurrentTournament()
-
-  const handleClickOpenImportDialog = useCallback(() => {
-    openMatchesFromDatabaseDialog()
-  }, [])
 
   return (
     <>
       <div className="flex justify-between">
         <h2 className="text-2xl">對局</h2>
         <div className="space-x-2">
-          <Link href="/draft-matches/create">
+          <Link to="/draft-matches/create">
             <button className="btn btn-success">建立對局草稿</button>
           </Link>
-          {currentTournament && (
-            <button
-              className="btn btn-outline"
-              onClick={handleClickOpenImportDialog}
-            >
-              <i className="bi bi-cloud-download"></i> 從資料庫導入
-            </button>
-          )}
         </div>
       </div>
 
       <DraftMatchesTable />
-
-      <MatchesFromDatabaseDialog />
     </>
   )
 }

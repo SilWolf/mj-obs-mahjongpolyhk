@@ -7,12 +7,12 @@ import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { getRandomId } from '@/utils/string.util'
 import { useQuery } from '@tanstack/react-query'
 import { useCallback, useMemo } from 'react'
-import { useLocation, useParams } from 'wouter'
+import { useNavigate, useParams } from 'react-router'
 
 export default function V2PanelMatchesByIdEditPage() {
   const fb = useFirebaseDatabase()
   const { matchId } = useParams<{ matchId: string }>()
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const { data } = useCurrentTournament()
 

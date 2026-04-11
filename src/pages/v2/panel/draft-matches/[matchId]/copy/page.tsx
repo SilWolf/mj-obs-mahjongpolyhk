@@ -6,7 +6,7 @@ import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { getRandomId } from '@/utils/string.util'
 
 import { useCallback, useMemo } from 'react'
-import { useLocation, useParams } from 'wouter'
+import { useNavigate, useParams } from 'react-router'
 
 export default function V2PanelMatchDraftByIdEditPage() {
   const fb = useFirebaseDatabase()
@@ -14,7 +14,7 @@ export default function V2PanelMatchDraftByIdEditPage() {
   const { matchId } = useParams<{ matchId: string }>()
   const { data: draftMatch } = useDraftMatch(matchId)
 
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const handleSubmit = useCallback(
     async (newMatch: V2Match) => {

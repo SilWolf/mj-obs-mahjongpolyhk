@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 import { SCENES } from '../SCENES'
-import { useSearchParams } from 'wouter'
+import { useSearchParams } from 'react-router'
 
 export default function V2ObsSceneViewPage() {
   const { data: obsRoom } = useObsRoom()

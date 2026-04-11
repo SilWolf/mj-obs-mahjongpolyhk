@@ -45,7 +45,7 @@ import MJMatchRoundEditForm, {
 import MJPlayersForm from '@/components/MJPlayersForm'
 import MJTileKeyboardForWaitingTileDiv from '@/components/MJTileKeyboardForWaitingTileDiv'
 import useObsRoom from '@/pages/v2/hooks/useObsRoom'
-import { useLocation } from 'wouter'
+import { useLocation, useNavigate } from 'react-router'
 
 function MJMatchHistoryAmountSpan({ value }: { value: number }) {
   return (
@@ -1148,7 +1148,7 @@ export default function MatchControlPage({ params: { matchId } }: Props) {
     setMatchHidePlayersDisplay(false)
   }, [setMatchHidePlayersDisplay])
 
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
   const handleClickStartNewMatch = useCallback(() => {
     localStorage.setItem('cachedRealtimeMatch', JSON.stringify(rtMatch))
     navigate('~/panel/matches/createFromCache')

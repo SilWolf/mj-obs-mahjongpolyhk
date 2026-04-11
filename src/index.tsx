@@ -1,8 +1,7 @@
 import React, { lazy } from 'react'
 import ReactDOM from 'react-dom/client'
-import { Redirect, Route, Router, Switch } from 'wouter'
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router'
 
-import { useHashLocation } from 'wouter/use-hash-location'
 import './index.css'
 import FirebaseDatabaseProvider from './providers/firebaseDatabase.provider'
 
@@ -12,6 +11,7 @@ import { toast, ToastContainer } from 'react-toastify'
 import ConfirmDialogProvider from './components/ConfirmDialog/provider'
 
 import './i18n'
+import V3AdminPage from './pages/v3/admin'
 
 const V2PanelLayout = lazy(
   () => import('./pages/v2/layouts/V2PanelLayout.layout')
@@ -101,92 +101,90 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <FirebaseDatabaseProvider>
         <ConfirmDialogProvider>
-          <Router hook={useHashLocation}>
-            <Switch>
+          <BrowserRouter>
+            <Routes>
               {/* Pages for v2 site */}
-              <Route path="/panel" nest>
-                <V2PanelLayout>
-                  <Route path="/" component={V2PanelPage} />
+              <Route path="/admin">
+                <Route index element={<V3AdminPage />} />
 
-                  <Route
-                    path="/matches/createFromCache"
-                    component={V2PanelMatchCreateFromCachePage}
-                  />
+                <Route
+                  path="tournaments/:tournamentId"
+                  element={
+                    <V2PanelLayout>
+                      <Outlet />
+                    </V2PanelLayout>
+                  }
+                >
+                  <Route index element={<V2PanelPage />} />
 
-                  <Route
-                    path="/matches/:matchId/edit"
-                    component={V2PanelMatchesByIdEditPage}
-                  />
-
-                  <Route
-                    path="/matches/:matchId/nameplate"
-                    component={V2PanelMatchesByIdNameplatePage}
-                  />
-
-                  <Route
-                    path="/obs/match-control"
-                    component={V2PanelObsMatchControlPage}
-                  />
-                  <Route
-                    path="/obs/scene-control"
-                    component={V2PanelObsSceneControlPage}
-                  />
-
-                  <Route path="/draft-matches" nest>
-                    <Route path="/:matchId" nest>
+                  <Route path="matches">
+                    <Route path=":matchId">
                       <Route
-                        path="/edit"
-                        component={V2PanelDraftMatchEditPage}
+                        path="edit"
+                        element={<V2PanelMatchesByIdEditPage />}
                       />
+
                       <Route
-                        path="/copy"
-                        component={V2PanelDraftMatchCopyPage}
-                      />
-                      <Route
-                        path="/start"
-                        component={V2PanelDraftMatchStartPage}
-                      />
-                      <Route
-                        path="/nameplate"
-                        component={V2PanelDraftMatchNameplatePage}
+                        path="nameplate"
+                        element={<V2PanelMatchesByIdNameplatePage />}
                       />
                     </Route>
+
                     <Route
-                      path="/create"
-                      component={V2PanelDraftMatchesCreatePage}
-                    />
-                    <Route
-                      path="/import-from-database/:matchId"
-                      component={V2PanelDraftMatchesImportFromDatabasePage}
+                      path="createFromCache"
+                      element={<V2PanelMatchCreateFromCachePage />}
                     />
                   </Route>
 
-                  <Route path="/obs/setup" component={V2PanelObsSetupPage} />
+                  <Route
+                    path="obs/match-control"
+                    element={<V2PanelObsMatchControlPage />}
+                  />
+                  <Route
+                    path="obs/scene-control"
+                    element={<V2PanelObsSceneControlPage />}
+                  />
 
-                  <Route path="/realtime" nest>
-                    <Route
-                      path="/matches"
-                      component={V2PanelRealtimeMatchesPage}
-                    />
-                    <Route path="/matches/:matchId" nest>
+                  <Route path="draft-matches">
+                    <Route path=":matchId">
                       <Route
-                        path="/detail"
-                        component={V2PanelRealtimeMatchDetailPage}
+                        path="edit"
+                        element={<V2PanelDraftMatchEditPage />}
+                      />
+                      <Route
+                        path="copy"
+                        element={<V2PanelDraftMatchCopyPage />}
+                      />
+                      <Route
+                        path="start"
+                        element={<V2PanelDraftMatchStartPage />}
+                      />
+                      <Route
+                        path="nameplate"
+                        element={<V2PanelDraftMatchNameplatePage />}
                       />
                     </Route>
+                    <Route
+                      path="create"
+                      element={<V2PanelDraftMatchesCreatePage />}
+                    />
+                    <Route
+                      path="import-from-database/:matchId"
+                      element={<V2PanelDraftMatchesImportFromDatabasePage />}
+                    />
                   </Route>
-                </V2PanelLayout>
+
+                  <Route path="obs/setup" element={<V2PanelObsSetupPage />} />
+                </Route>
               </Route>
 
-              <Route path="/obs/scene" nest>
-                <Route path="/master" component={V2ObsSceneMasterPage} />
+              <Route path="obs/scene">
+                <Route path="master" element={<V2ObsSceneMasterPage />} />
               </Route>
 
-              <Route>
-                <Redirect to="/panel" />
-              </Route>
-            </Switch>
-          </Router>
+              <Route path="*" element={<Navigate to="/panel" />} />
+            </Routes>
+          </BrowserRouter>
         </ConfirmDialogProvider>
       </FirebaseDatabaseProvider>
     </QueryClientProvider>

@@ -4,18 +4,18 @@ import { V2Match } from '@/pages/v2/models/V2Match.model'
 import V2MatchForm from '@/pages/v2/widgets/V2MatchForm'
 
 import { useCallback, useMemo } from 'react'
-import { useLocation, useParams } from 'wouter'
+import { useNavigate, useParams } from 'react-router'
 
 export default function V2PanelMatchDraftByIdEditPage() {
   const { matchId } = useParams<{ matchId: string }>()
   const { data: draftMatch, update: updateDraftMatch } = useDraftMatch(matchId)
 
-  const [, navigate] = useLocation()
+  const navigate = useNavigate()
 
   const handleSubmit = useCallback(
     (newMatch: V2Match) => {
       const newRtMatch: RealtimeMatch = {
-        code: matchId,
+        code: matchId as string,
         name: newMatch.data.name.official.primary,
         nameDisplay: (newMatch.data.name.display ?? newMatch.data.name.official)
           .primary,
