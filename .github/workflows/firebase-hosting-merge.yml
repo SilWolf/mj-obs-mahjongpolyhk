@@ -9,7 +9,8 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    environment: firebase-hosting-production
+    environment: 
+      name: firebase-hosting-production
     steps:
       - uses: actions/checkout@v4
       - run: yarn install --frozen-lockfile && yarn build
