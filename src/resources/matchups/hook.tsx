@@ -11,7 +11,6 @@ export const useMatchups = (params: { tournamentId: string }) =>
 
 export const useMatchupByCurrentRoute = () => {
   const params = useParams<{ matchupId: string }>()
-  console.log(params.matchupId)
 
   return useQuery({
     queryKey: ['matchups', params],

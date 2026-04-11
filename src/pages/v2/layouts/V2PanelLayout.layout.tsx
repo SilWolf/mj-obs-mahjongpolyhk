@@ -5,179 +5,138 @@ import { CurrentTournamentIdContext } from '../hooks/useCurrentTournament'
 import useAllTournaments from '../hooks/useAllTournaments'
 import { useLocalStorage } from 'react-use'
 import CurrentLiveMatchWidget from '../widgets/CurrentLiveMatchWidget'
-import { Link } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import GlobeIcon from '@/components/icons/GlobeIcon'
+import {
+  useTournamentByCurrentRoute,
+  useTournaments,
+} from '@/resources/tournaments/hook'
+import {
+  Avatar,
+  Button,
+  ConfigProvider,
+  Dropdown,
+  Flex,
+  Layout,
+  Menu,
+  theme,
+  Typography,
+} from 'antd'
+import { GlobalOutlined } from '@ant-design/icons'
 
 export default function V2PanelLayout({ children }: PropsWithChildren) {
-  const { data: allTournaments = [] } = useAllTournaments()
-  const [currentTournamentId, setCurrentTournamentId] = useLocalStorage(
-    'v2-current-tournament-id',
-    ''
-  )
+  const {
+    token: { colorBgContainer, colorText },
+  } = theme.useToken()
+
+  const params = useParams<{ tournamentId: string }>()
+  const { data: tournament } = useTournamentByCurrentRoute()
 
   const { t, i18n } = useTranslation()
 
-  const handleClickChangeLanguage = useCallback(
-    (e: MouseEvent) => {
-      i18n.changeLanguage(
-        e.currentTarget.getAttribute('data-language') as string
-      )
-    },
-    [i18n]
-  )
-
-  useEffect(() => {
-    if (!currentTournamentId && allTournaments[0]) {
-      setCurrentTournamentId(allTournaments[0].id)
-    }
-  }, [allTournaments, currentTournamentId, setCurrentTournamentId])
-
   return (
-    <CurrentTournamentIdContext.Provider value={currentTournamentId!}>
-      <div className="drawer lg:drawer-open">
-        <input id="layout-drawer" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content">
-          <div className="navbar bg-base-100 w-full border-b-1 border-base-300 print:hidden">
-            <div>
-              {/* Page content here */}
-              <label
-                htmlFor="layout-drawer"
-                className="btn btn-ghost rounded-full text-lg drawer-button lg:hidden"
-              >
-                <i className="bi bi-list"></i>
-              </label>
-            </div>
+    <ConfigProvider
+      theme={{
+        algorithm: theme.defaultAlgorithm,
+        components: {
+          Layout: {
+            headerPadding: '0 24px',
+            headerBg: colorBgContainer,
+            siderBg: colorBgContainer,
+            triggerBg: colorBgContainer,
+            triggerColor: colorText,
+          },
+        },
+      }}
+    >
+      <Layout style={{ minHeight: '100vh' }}>
+        <Layout.Sider width="240px" collapsible>
+          <div className="p-4 w-full text-lg text-center">
+            {t('layout.menu.appName')}
+          </div>
 
-            <div className="mx-2 flex-1 px-2 flex gap-x-2 items-center">
-              {/* <div className="flex gap-x-2 items-center">
-                <img
-                  src={currentTournament?.image.logo?.default.url}
-                  className="w-8 h-8"
-                />
-                <span>{currentTournament?.name}</span>
+          <div className="px-4 py-2">
+            <CurrentLiveMatchWidget />
+          </div>
+          <Menu
+            defaultSelectedKeys={['matchups']}
+            items={[
+              {
+                key: 'matchups',
+                label: (
+                  <Link to={`/admin/tournaments/${params.tournamentId}`}>
+                    {t('layout.menu.matches')}
+                  </Link>
+                ),
+              },
+              {
+                key: 'matchupControl',
+                label: (
+                  <Link to="/admin/obs/match-control">
+                    {t('layout.menu.matchControl')}
+                  </Link>
+                ),
+              },
+              {
+                key: 'obsSetup',
+                label: (
+                  <Link to="/admin/obs/setup">{t('layout.menu.obsSetup')}</Link>
+                ),
+              },
+            ]}
+          />
+        </Layout.Sider>
+        <Layout>
+          <Layout.Header>
+            <Flex justify="space-between" align="center">
+              <div>
+                {tournament && (
+                  <Link to={`/admin/tournaments/${params.tournamentId}`}>
+                    <div className="flex gap-x-2 items-center">
+                      <Avatar
+                        shape="square"
+                        src={tournament.logoImageUrl}
+                        size={32}
+                      />
+                      <Typography.Text style={{ marginBottom: 0 }}>
+                        {tournament.name}
+                      </Typography.Text>
+                    </div>
+                  </Link>
+                )}
               </div>
               <div>
-                {allTournaments.length > 1 && (
-                  <button
-                    onClick={() => openDialog('tournament-selector-dialog')}
-                    className="btn btn-xs btn-ghost text-primary"
-                  >
-                    切換
-                  </button>
-                )}
-              </div> */}
-            </div>
-
-            <div>
-              <button
-                className="btn btn-ghost text-lg"
-                popoverTarget="i18n-dropdown"
-                style={
-                  {
-                    anchorName: '--anchor-i18n-dropdown',
-                  } as React.CSSProperties
-                }
-              >
-                <GlobeIcon />
-              </button>
-
-              <ul
-                className="dropdown dropdown-end menu rounded-box bg-base-100 shadow-sm"
-                popover="auto"
-                id="i18n-dropdown"
-                style={
-                  {
-                    positionAnchor: '--anchor-i18n-dropdown',
-                  } as React.CSSProperties
-                }
-              >
-                <li>
-                  <button
-                    className="btn btn-ghost"
-                    onClick={handleClickChangeLanguage}
-                    data-language="zhTW"
-                  >
-                    繁體中文
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="btn btn-ghost"
-                    onClick={handleClickChangeLanguage}
-                    data-language="zhCN"
-                  >
-                    简体中文
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="btn btn-ghost"
-                    onClick={handleClickChangeLanguage}
-                    data-language="en"
-                  >
-                    English
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <main>{children}</main>
-        </div>
-        <div className="drawer-side  border-r-1 bg-base-100 border-base-300">
-          <div className="w-60 p-2">
-            <label
-              htmlFor="layout-drawer"
-              className="btn btn-ghost rounded-full text-lg drawer-button lg:hidden"
-            >
-              <i className="bi bi-list"></i>
-            </label>
-            <div className="p-4 w-full text-lg text-center">
-              {t('layout.menu.appName')}
-            </div>
-
-            <h5 className="text-sm font-bold px-4">
-              {t('layout.menu.obsControl')}
-            </h5>
-
-            <div className="px-4 py-2">
-              <CurrentLiveMatchWidget />
-            </div>
-
-            <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
-              {/* Sidebar content here */}
-              <li>
-                <Link to="~/panel">{t('layout.menu.matches')}</Link>
-              </li>
-              <li>
-                <Link to="/obs/match-control">
-                  {t('layout.menu.matchControl')}
-                </Link>
-              </li>
-              <li>
-                <Link to="/obs/setup">{t('layout.menu.obsSetup')}</Link>
-              </li>
-              {/* <li>
-                <Link to="/obs/scene-control">多合一場景控制台</Link>
-              </li> */}
-            </ul>
-
-            <div className="divider"></div>
-
-            <h5 className="text-sm font-bold px-4">
-              {t('layout.menu.obsTempDB')}
-            </h5>
-
-            <ul className="menu bg-base-100 text-base-content min-h-full p-4 w-full">
-              <li>
-                <Link to="/realtime/matches">
-                  {t('layout.menu.completedMatches')}
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </CurrentTournamentIdContext.Provider>
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: 'zhTW',
+                        onClick: () => i18n.changeLanguage('zhTW'),
+                        label: '繁體中文',
+                      },
+                      {
+                        key: 'zhCN',
+                        onClick: () => i18n.changeLanguage('zhCN'),
+                        label: '简体中文',
+                      },
+                      {
+                        key: 'en',
+                        onClick: () => i18n.changeLanguage('en'),
+                        label: 'English',
+                      },
+                    ],
+                  }}
+                  placement="bottomRight"
+                >
+                  <Button icon={<GlobalOutlined />} type="text" size="large" />
+                </Dropdown>
+              </div>
+            </Flex>
+          </Layout.Header>
+          <Layout.Content>{children}</Layout.Content>
+        </Layout>
+      </Layout>
+    </ConfigProvider>
   )
 }

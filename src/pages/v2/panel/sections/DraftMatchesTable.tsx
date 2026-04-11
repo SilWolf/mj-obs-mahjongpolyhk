@@ -1,10 +1,14 @@
 import useDraftMatches from '@/hooks/useDraftMatches'
 import { Link, useParams } from 'react-router'
 import { RealtimePlayer } from '@/models'
-import { Avatar, Button, Table, Typography } from 'antd'
+import { Avatar, Button, Space, Table, Typography } from 'antd'
 import { useMatchups } from '@/resources/matchups/hook'
 import { IMatchupPlayer } from '@/resources/matchups/entity'
-import { VideoCameraOutlined } from '@ant-design/icons'
+import {
+  ExportOutlined,
+  ReloadOutlined,
+  VideoCameraOutlined,
+} from '@ant-design/icons'
 
 const renderMatchupPlayer = (player: IMatchupPlayer) => {
   if (!player) {
@@ -40,15 +44,39 @@ const renderMatchupPlayer = (player: IMatchupPlayer) => {
 
 export default function DraftMatchesTable() {
   const params = useParams<{ tournamentId: string }>()
-  const { data: matchups, isLoading } = useMatchups({
+  const {
+    data: matchups,
+    isLoading,
+    isRefetching,
+    refetch,
+  } = useMatchups({
     tournamentId: params.tournamentId!,
   })
 
-  console.log(matchups)
-
   return (
     <>
+      <div className="text-right">
+        <Space className="mb-2">
+          <Button
+            icon={<ReloadOutlined />}
+            onClick={() => refetch()}
+            loading={isRefetching}
+          >
+            刷新
+          </Button>
+          <Button
+            href="http://mahjongpolyhk.sanity.studio/"
+            target="_blank"
+            icon={<ExportOutlined />}
+            iconPlacement="end"
+          >
+            資料庫
+          </Button>
+        </Space>
+      </div>
+
       <Table
+        pagination={false}
         loading={isLoading}
         dataSource={matchups}
         columns={[

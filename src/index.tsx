@@ -139,35 +139,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       element={<V2PanelMatchCreateFromCachePage />}
                     />
                   </Route>
-
-                  <Route path="draft-matches">
-                    <Route path=":matchId">
-                      <Route
-                        path="edit"
-                        element={<V2PanelDraftMatchEditPage />}
-                      />
-                      <Route
-                        path="copy"
-                        element={<V2PanelDraftMatchCopyPage />}
-                      />
-                      <Route
-                        path="start"
-                        element={<V2PanelDraftMatchStartPage />}
-                      />
-                      <Route
-                        path="nameplate"
-                        element={<V2PanelDraftMatchNameplatePage />}
-                      />
-                    </Route>
-                    <Route
-                      path="create"
-                      element={<V2PanelDraftMatchesCreatePage />}
-                    />
-                    <Route
-                      path="import-from-database/:matchId"
-                      element={<V2PanelDraftMatchesImportFromDatabasePage />}
-                    />
-                  </Route>
                 </Route>
 
                 <Route path="obs">
