@@ -84,6 +84,12 @@ export const matchupService = {
         name: z.string().nullish(),
         nameAlt: z.string().nullish(),
         startAt: true,
+        tournament: sub
+          .field('tournament')
+          .deref()
+          .project(() => ({
+            _id: z.string(),
+          })),
         playerEast: sub.field('playerEast').deref().project(playerProject),
         playerSouth: sub.field('playerSouth').deref().project(playerProject),
         playerWest: sub.field('playerWest').deref().project(playerProject),
@@ -145,6 +151,7 @@ export const matchupService = {
         theme: { key: 'default' },
         database: {
           _id: matchup._id,
+          tournamentId: matchup.tournament?._id!,
         },
       }
     })
@@ -225,6 +232,7 @@ export const matchupService = {
           theme: { key: 'default' },
           database: {
             _id: matchup._id,
+            tournamentId,
           },
         } satisfies IMatchup
       })

@@ -10,6 +10,8 @@ dayjs.locale('zh-hk')
 
 export const getRandomId = (length = 12) => nanoid(length)
 
+export const getTimestampId = () => new Date().valueOf().toString(36)
+
 export const getYearString = () => {
   const date = new Date()
   return `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`

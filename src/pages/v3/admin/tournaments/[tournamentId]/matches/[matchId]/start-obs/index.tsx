@@ -1,5 +1,10 @@
+import { generateMatchRoundCode } from '@/helpers/mahjong.helper'
+import { RealtimeMatch, RealtimeMatchRound } from '@/models'
+import useObsRoom from '@/pages/v2/hooks/useObsRoom'
 import PlayerCard from '@/pages/v2/obs/scenes/realtime/byTheme/default/components/PlayerCard'
+import { useFirebaseDatabase } from '@/providers/firebaseDatabase.provider'
 import { useMatchupByCurrentRoute } from '@/resources/matchups/hook'
+import { getTimestampId } from '@/utils/string.util'
 import { CheckOutlined } from '@ant-design/icons'
 import {
   Alert,
@@ -12,9 +17,157 @@ import {
   Spin,
   Typography,
 } from 'antd'
+import { useCallback } from 'react'
+import { data, useNavigate } from 'react-router'
 
 export default function MatchStartObsPage() {
+  const navigate = useNavigate()
+
+  const fb = useFirebaseDatabase()
+  const { update: updateObsRoom } = useObsRoom()
+
   const { data: matchup, isLoading } = useMatchupByCurrentRoute()
+
+  const handleSubmit = useCallback(async () => {
+    if (!matchup) {
+      return
+    }
+
+    const newRTMatchupCode = `mu-${getTimestampId()}`
+
+    const newRTMatchup: RealtimeMatch = {
+      code: newRTMatchupCode,
+      name: matchup.name ?? '',
+      nameDisplay: matchup.name ?? '',
+      remark: '',
+      createdAt: new Date().toISOString(),
+      createdBy: 'Dicky',
+      updatedAt: new Date().toISOString(),
+      updatedBy: 'Dicky',
+      rulesetRef: matchup.ruleset.key,
+      themeRef: matchup.theme.key,
+      setting: {
+        startingScore: '25000',
+        isManganRoundUp: '1',
+        yakuMax: '12',
+        yakumanMax: '13',
+      },
+      players: matchup.players.map((player) => ({
+        primaryName: player.name ?? '',
+        secondaryName: player.secondaryName ?? '',
+        nickname: player.thirdName ?? '',
+        color: player.color ?? '',
+        logoUrl: player.logoImageUrl ?? '',
+        propicUrl: player.portraitImageUrl ?? '',
+        largeLogoUrl: player.logoImageUrl ?? '',
+      })),
+      activeResultDetail: null,
+      database: {
+        _id: matchup.database?._id!,
+        tournamentId: matchup.database?.tournamentId!,
+      },
+    }
+
+    await fb.set(`matchups/${newRTMatchupCode}`, newRTMatchup)
+
+    const startingScore = 25000
+
+    const matchRound: RealtimeMatchRound = {
+      matchId: newRTMatchup.code,
+      code: generateMatchRoundCode(newRTMatchup.code, 1, 0),
+      roundCount: 1,
+      extendedRoundCount: 0,
+      cumulatedThousands: 0,
+      nextRoundCumulatedThousands: 0,
+      resultType: 0,
+      nextRoundType: 0,
+      playerResults: {
+        '0': {
+          beforeScore: startingScore,
+          afterScore: startingScore,
+          type: 0,
+          scoreChanges: [],
+          prevScoreChanges: [],
+          detail: {
+            han: 1,
+            fu: 30,
+            yakumanCount: 0,
+            dora: 0,
+            redDora: 0,
+            innerDora: 0,
+            yakus: [],
+            raw: {},
+            isRevealed: false,
+            isRiichied: false,
+          },
+        },
+        '1': {
+          beforeScore: startingScore,
+          afterScore: startingScore,
+          type: 0,
+          scoreChanges: [],
+          prevScoreChanges: [],
+          detail: {
+            han: 1,
+            fu: 30,
+            yakumanCount: 0,
+            dora: 0,
+            redDora: 0,
+            innerDora: 0,
+            yakus: [],
+            raw: {},
+            isRevealed: false,
+            isRiichied: false,
+          },
+        },
+        '2': {
+          beforeScore: startingScore,
+          afterScore: startingScore,
+          type: 0,
+          scoreChanges: [],
+          prevScoreChanges: [],
+          detail: {
+            han: 1,
+            fu: 30,
+            yakumanCount: 0,
+            dora: 0,
+            redDora: 0,
+            innerDora: 0,
+            yakus: [],
+            raw: {},
+            isRevealed: false,
+            isRiichied: false,
+          },
+        },
+        '3': {
+          beforeScore: startingScore,
+          afterScore: startingScore,
+          type: 0,
+          scoreChanges: [],
+          prevScoreChanges: [],
+          detail: {
+            han: 1,
+            fu: 30,
+            yakumanCount: 0,
+            dora: 0,
+            redDora: 0,
+            innerDora: 0,
+            yakus: [],
+            raw: {},
+            isRevealed: false,
+            isRiichied: false,
+          },
+        },
+      },
+      doras: [],
+    }
+
+    await fb.set(`matchups/${newRTMatchupCode}/rounds`, [matchRound])
+    await updateObsRoom({
+      rtMatchupId: newRTMatchupCode,
+    })
+    navigate('/obs/match-control')
+  }, [matchup, data, fb, updateObsRoom, navigate])
 
   if (isLoading) {
     return <Spin />
@@ -66,6 +219,7 @@ export default function MatchStartObsPage() {
             variant="solid"
             color="green"
             icon={<CheckOutlined />}
+            onClick={handleSubmit}
           >
             以上資料正確，開始直播
           </Button>

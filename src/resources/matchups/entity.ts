@@ -10,6 +10,7 @@ export type IMatchup = {
   theme: { key: 'default' }
   database?: {
     _id: string
+    tournamentId: string
   }
 }
 

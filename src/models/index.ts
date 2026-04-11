@@ -237,7 +237,7 @@ export type RealtimeMatch = {
   updatedAt: string
   updatedBy: string
   setting: MatchSetting
-  players: Record<PlayerIndex, RealtimePlayer>
+  players: RealtimePlayer[]
   activeResultDetail: {
     winnerPlayerIndex: PlayerIndex
     han: number
@@ -253,6 +253,10 @@ export type RealtimeMatch = {
   }
   rulesetRef: string
   themeRef: string
+  database: {
+    _id: string
+    tournamentId: string
+  }
 }
 
 export type RealtimePlayer = {
