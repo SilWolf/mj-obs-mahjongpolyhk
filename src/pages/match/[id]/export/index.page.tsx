@@ -15,38 +15,38 @@ export default function MatchExportPage({ params: { matchId } }: Props) {
   const [isExported, setIsExported] = useState<boolean>(false)
   const [isExporting, setIsExporting] = useState<boolean>(false)
 
-  const handleClickExport = useCallback(() => {
-    if (!rtMatch || !rtMatchRounds) {
-      return
-    }
+  // const handleClickExport = useCallback(() => {
+  //   if (!rtMatch || !rtMatchRounds) {
+  //     return
+  //   }
 
-    const exportedMatch = {
-      _id: matchId,
-      ...convertMatchToExportedMatch(Object.values(rtMatchRounds)),
-    }
+  //   const exportedMatch = {
+  //     _id: matchId,
+  //     ...convertMatchToExportedMatch(Object.values(rtMatchRounds)),
+  //   }
 
-    setIsExporting(true)
-    fetch(
-      `${import.meta.env.VITE_HOMEPAGE_HOST}/api/match/${
-        exportedMatch._id
-      }/result`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(exportedMatch),
-        headers: {
-          Accept: 'application/json',
-        },
-      }
-    ).then(() => {
-      setIsExported(true)
-      setIsExporting(false)
-      alert('上傳完畢，請在資料庫上查看。')
-    })
-  }, [rtMatch, matchId, rtMatchRounds])
+  //   setIsExporting(true)
+  //   fetch(
+  //     `${import.meta.env.VITE_HOMEPAGE_HOST}/api/match/${
+  //       exportedMatch._id
+  //     }/result`,
+  //     {
+  //       method: 'PATCH',
+  //       body: JSON.stringify(exportedMatch),
+  //       headers: {
+  //         Accept: 'application/json',
+  //       },
+  //     }
+  //   ).then(() => {
+  //     setIsExported(true)
+  //     setIsExporting(false)
+  //     alert('上傳完畢，請在資料庫上查看。')
+  //   })
+  // }, [rtMatch, matchId, rtMatchRounds])
 
-  if (!rtMatch || !rtMatchCurrentRound) {
-    return <div>對局讀取失敗。</div>
-  }
+  // if (!rtMatch || !rtMatchCurrentRound) {
+  //   return <div>對局讀取失敗。</div>
+  // }
 
   return (
     <div>
@@ -63,12 +63,12 @@ export default function MatchExportPage({ params: { matchId } }: Props) {
         />
 
         <div className="text-center">
-          {!isExported && (
+          {/* {!isExported && (
             <MJUIButton disabled={isExporting} onClick={handleClickExport}>
               {isExporting ? '上傳中…' : '上傳成績'}
             </MJUIButton>
-          )}
-          {isExported && (
+          )} */}
+          {/* {isExported && (
             <a
               href={`${
                 import.meta.env.VITE_CMS_HOST
@@ -76,7 +76,7 @@ export default function MatchExportPage({ params: { matchId } }: Props) {
             >
               <MJUIButton color="secondary">在資料庫上查看</MJUIButton>
             </a>
-          )}
+          )} */}
         </div>
       </div>
     </div>

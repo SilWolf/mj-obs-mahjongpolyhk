@@ -13,7 +13,7 @@ export default function V2PanelObsSceneControlPage() {
     string,
     V2ObsRoom,
     Partial<V2ObsRoom>
-  >(`obs/${import.meta.env.VITE_OBS_ROOM_ID}`)
+  >(`obs/default`)
 
   const activeScene = useMemo(
     () => SCENES.find(({ id }) => id === obsInfo?.activeSceneId) ?? SCENES[0],

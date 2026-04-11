@@ -30,12 +30,16 @@ const TEAM_META_FIELDS = [
   'introduction',
 ]
 
+const [_, projectId, dataset, token] = import.meta.env.VITE_DATA_PROVIDER.split(
+  ':'
+)
+
 export const client = createClient({
-  projectId: '0a9a4r26',
-  dataset: 'production',
+  projectId,
+  dataset,
   useCdn: true,
   apiVersion: '2023-05-03',
-  token: import.meta.env.VITE_DATABASE_API_KEY,
+  token,
 })
 
 export type DB_Match = {

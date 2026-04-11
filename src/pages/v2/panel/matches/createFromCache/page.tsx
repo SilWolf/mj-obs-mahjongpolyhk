@@ -207,7 +207,7 @@ export default function V2PanelMatchesByIdEditPage() {
       await updateObsRoom({
         tournamentId: currentTournament?.tournament.id ?? '',
         matchId: newRTMatch.code,
-        themeId: import.meta.env.VITE_OBS_UI_THEME || 'default',
+        themeId: 'default',
       })
       navigate('/obs/match-control')
     },

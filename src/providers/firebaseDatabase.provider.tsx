@@ -53,7 +53,7 @@ const contextDefaultValue = {
   ): Promise<T | undefined> => {
     const ref = fbRef(
       firebaseDatabase,
-      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+      `organizations/${import.meta.env.VITE_ORGANIZATION}/${key}`
     )
     return fbGet(ref)
       .then((snapshot) => {
@@ -70,7 +70,7 @@ const contextDefaultValue = {
   set: (key: string, payload: unknown) => {
     const ref = fbRef(
       firebaseDatabase,
-      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+      `organizations/${import.meta.env.VITE_ORGANIZATION}/${key}`
     )
     return fbSet(ref, payload).catch((error) => {
       console.error(error)
@@ -80,7 +80,7 @@ const contextDefaultValue = {
   update: (key: string, payload: unknown) => {
     const ref = fbRef(
       firebaseDatabase,
-      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+      `organizations/${import.meta.env.VITE_ORGANIZATION}/${key}`
     )
     return fbUpdate(ref, payload as object).catch((error) => {
       console.error(error)
@@ -90,7 +90,7 @@ const contextDefaultValue = {
   push: (key: string, payload: unknown) => {
     const ref = fbRef(
       firebaseDatabase,
-      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+      `organizations/${import.meta.env.VITE_ORGANIZATION}/${key}`
     )
     return fbPush(ref, payload).catch((error) => {
       console.error(error)
@@ -140,7 +140,7 @@ export const useFirebaseDatabaseByKey = <
   const ref = useMemo(() => {
     return fbRef(
       database,
-      `organizations/${import.meta.env.VITE_ORGANIZATION_ID}/${key}`
+      `organizations/${import.meta.env.VITE_ORGANIZATION}/${key}`
     )
   }, [database, key])
 

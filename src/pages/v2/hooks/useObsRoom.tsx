@@ -5,7 +5,7 @@ import {
 import { V2ObsRoom } from '../models/V2ObsRoom.model'
 
 export default function useObsRoom() {
-  const obsRoomId = import.meta.env.VITE_OBS_ROOM_ID || 'default'
+  const obsRoomId = 'default'
 
   const fb = useFirebaseDatabase()
   const res = useFirebaseDatabaseByKey<string, V2ObsRoom>(`obs/${obsRoomId}`)

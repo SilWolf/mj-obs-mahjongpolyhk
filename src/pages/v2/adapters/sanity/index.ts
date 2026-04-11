@@ -5,12 +5,15 @@ import { createGroqBuilder, makeSafeQueryRunner } from 'groqd'
 import type * as SanityTypes from './sanity.types.ts'
 import { buildSrc, ImageSrcInputs } from '@sanity-image/url-builder'
 
+const [_, projectId, dataset, token] = import.meta.env.VITE_DATA_PROVIDER.split(
+  ':'
+)
 const sanityConfig = {
-  projectId: '0a9a4r26',
-  dataset: 'production',
+  projectId,
+  dataset,
   useCdn: true,
   apiVersion: '2023-05-03',
-  token: import.meta.env.VITE_DATABASE_API_KEY,
+  token,
 }
 
 const sanityClient = createClient(sanityConfig)

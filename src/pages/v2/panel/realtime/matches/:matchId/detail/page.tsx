@@ -19,36 +19,36 @@ export default function MatchExportPage({ params: { matchId } }: Props) {
   const [isExported, setIsExported] = useState<boolean>(false)
   const [isExporting, setIsExporting] = useState<boolean>(false)
 
-  const handleClickExport = useCallback(() => {
-    if (!rtMatch || !rtMatchRounds) {
-      return
-    }
+  // const handleClickExport = useCallback(() => {
+  //   if (!rtMatch || !rtMatchRounds) {
+  //     return
+  //   }
 
-    const exportedMatch = {
-      _id: rtMatch.databaseId || matchId,
-      ...convertMatchToExportedMatch(Object.values(rtMatchRounds)),
-    }
+  //   const exportedMatch = {
+  //     _id: rtMatch.databaseId || matchId,
+  //     ...convertMatchToExportedMatch(Object.values(rtMatchRounds)),
+  //   }
 
-    setIsExporting(true)
-    fetch(
-      `${import.meta.env.VITE_HOMEPAGE_HOST}/api/match/${
-        exportedMatch._id
-      }/result`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(exportedMatch),
-        headers: {
-          Accept: 'application/json',
-        },
-      }
-    ).then(() => {
-      setIsExported(true)
-      setIsExporting(false)
-      alert(
-        '上傳完畢。計算數據及更新官網需時幾分鐘，請等待一會後再到官網查看成績。\n\n（強調：不需要去資料庫點擊更新成績的按鈕，這已經自動化了。）'
-      )
-    })
-  }, [rtMatch, matchId, rtMatchRounds])
+  //   setIsExporting(true)
+  //   fetch(
+  //     `${import.meta.env.VITE_HOMEPAGE_HOST}/api/match/${
+  //       exportedMatch._id
+  //     }/result`,
+  //     {
+  //       method: 'PATCH',
+  //       body: JSON.stringify(exportedMatch),
+  //       headers: {
+  //         Accept: 'application/json',
+  //       },
+  //     }
+  //   ).then(() => {
+  //     setIsExported(true)
+  //     setIsExporting(false)
+  //     alert(
+  //       '上傳完畢。計算數據及更新官網需時幾分鐘，請等待一會後再到官網查看成績。\n\n（強調：不需要去資料庫點擊更新成績的按鈕，這已經自動化了。）'
+  //     )
+  //   })
+  // }, [rtMatch, matchId, rtMatchRounds])
 
   if (!rtMatch || !rtMatchCurrentRound) {
     return <div>對局讀取失敗。</div>

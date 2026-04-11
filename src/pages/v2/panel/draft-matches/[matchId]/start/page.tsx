@@ -152,8 +152,7 @@ export default function V2PanelMatchDraftByIdStartPage() {
     await updateObsRoom({
       tournamentId: newRTMatch.databaseTournamentId ?? '',
       matchId: newRTMatch.code,
-      themeId:
-        newRTMatch.themeRef || import.meta.env.VITE_OBS_UI_THEME || 'default',
+      themeId: newRTMatch.themeRef || 'default',
     })
     navigate('~/panel/obs/match-control')
   }, [draftMatch, fb, navigate, updateObsRoom])
