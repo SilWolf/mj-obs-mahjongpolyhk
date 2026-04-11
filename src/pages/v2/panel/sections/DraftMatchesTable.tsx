@@ -1,11 +1,13 @@
 import useDraftMatches from '@/hooks/useDraftMatches'
 import { Link, useParams } from 'react-router'
 import { RealtimePlayer } from '@/models'
-import { Avatar, Button, Space, Table, Typography } from 'antd'
+import { Avatar, Button, Flex, Space, Table, Typography } from 'antd'
 import { useMatchups } from '@/resources/matchups/hook'
 import { IMatchupPlayer } from '@/resources/matchups/entity'
 import {
+  EditOutlined,
   ExportOutlined,
+  IdcardOutlined,
   ReloadOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons'
@@ -107,18 +109,40 @@ export default function DraftMatchesTable() {
           {
             title: '操作',
             dataIndex: ['database', '_id'],
+            width: '240px',
             render: (id) => {
               return (
-                <Link to={`./matchups/${id}/start-obs`}>
+                <Flex wrap="wrap" gap={4}>
+                  <Link to={`./matchups/${id}/start-obs`}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      color="green"
+                      icon={<VideoCameraOutlined />}
+                    >
+                      進行直播
+                    </Button>
+                  </Link>
                   <Button
                     size="small"
                     variant="outlined"
-                    color="green"
-                    icon={<VideoCameraOutlined />}
+                    icon={<EditOutlined />}
+                    target="_blank"
+                    href={`http://mahjongpolyhk.sanity.studio/default/structure/general-list-matches-2weeks;${id}`}
                   >
-                    進行直播
+                    修改
                   </Button>
-                </Link>
+
+                  <Link to={`./matchups/${id}/nameplates`} target="_blank">
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      icon={<IdcardOutlined />}
+                    >
+                      名牌
+                    </Button>
+                  </Link>
+                </Flex>
               )
             },
           },

@@ -126,11 +126,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         element={<V2PanelMatchesByIdEditPage />}
                       />
 
-                      <Route
-                        path="nameplate"
-                        element={<V2PanelMatchesByIdNameplatePage />}
-                      />
-
                       <Route path="start-obs" element={<MatchStartObsPage />} />
                     </Route>
 
@@ -140,6 +135,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     />
                   </Route>
                 </Route>
+
+                <Route
+                  path="tournaments/:tournamentId/matchups/:matchupId/nameplates"
+                  element={<V2PanelMatchesByIdNameplatePage />}
+                />
 
                 <Route path="obs">
                   <Route

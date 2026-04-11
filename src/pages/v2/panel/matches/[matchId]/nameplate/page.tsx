@@ -6,6 +6,8 @@ import { useMemo } from 'react'
 import { useParams } from 'react-router'
 import useCurrentTournament from '@/pages/v2/hooks/useCurrentTournament'
 import { V2MatchPlayer } from '@/pages/v2/models/V2Match.model'
+import { useMatchupByCurrentRoute } from '@/resources/matchups/hook'
+import { IMatchupPlayer } from '@/resources/matchups/entity'
 
 const MatchNameplateNarrow = ({
   team,
@@ -92,9 +94,9 @@ const MatchNameplateNarrow = ({
   )
 }
 
-const MatchNameplate = ({ player }: { player: V2MatchPlayer }) => {
+const MatchNameplate = ({ player }: { player: IMatchupPlayer }) => {
   const lightenedColor = useMemo(
-    () => getLightColorOfColor(player.color.primary),
+    () => getLightColorOfColor(player.color),
     [player.color]
   )
 
@@ -102,14 +104,14 @@ const MatchNameplate = ({ player }: { player: V2MatchPlayer }) => {
     <div className="relative overflow-hidden">
       <table className="w-full">
         <tbody>
-          <tr style={{ background: player.color.primary }}>
+          <tr style={{ background: player.color }}>
             <td className="w-[8mm] h-[8mm]"></td>
             <td className="w-[2mm] border-r border-white"></td>
             <td></td>
             <td className="w-[2mm] border-l border-white"></td>
             <td className="w-[8mm] h-[8mm]"></td>
           </tr>
-          <tr style={{ background: player.color.primary }}>
+          <tr style={{ background: player.color }}>
             <td className="h-[2mm] border-b border-white"></td>
             <td></td>
             <td></td>
@@ -118,7 +120,7 @@ const MatchNameplate = ({ player }: { player: V2MatchPlayer }) => {
           </tr>
           <tr
             style={{
-              background: `linear-gradient(180deg, ${player.color.primary}, ${lightenedColor})`,
+              background: `linear-gradient(180deg, ${player.color}, ${lightenedColor})`,
             }}
           >
             <td></td>
@@ -146,7 +148,7 @@ const MatchNameplate = ({ player }: { player: V2MatchPlayer }) => {
       <div
         className="absolute left-0 top-[2.5mm] w-[55mm] h-[55mm] bg-contain opacity-50"
         style={{
-          backgroundImage: `url(${player.image.logo?.default.url})`,
+          backgroundImage: `url(${player.logoImageUrl})`,
         }}
       ></div>
       <div className="absolute top-[10mm] bottom-[10mm] left-[25mm] right-[12mm] flex flex-col items-center justify-center">
@@ -156,7 +158,7 @@ const MatchNameplate = ({ player }: { player: V2MatchPlayer }) => {
             textShadow: '0px 0px 3px #333333B0, 0px 0px 6px #333333B0',
           }}
         >
-          {player.name.display.primary}
+          {player.name}
         </p>
         <p
           className="text-[13mm] text-white leading-none font-semibold"
@@ -172,18 +174,9 @@ const MatchNameplate = ({ player }: { player: V2MatchPlayer }) => {
 }
 
 export default function MatchNameplatesPage() {
-  const { matchId } = useParams<{ matchId: string }>()
-  const { data } = useCurrentTournament()
-  const { data: match } = useQuery({
-    queryKey: ['v2-matches', matchId],
-    queryFn: () => apiGetMatchById(matchId!),
-    enabled: !!matchId,
-  })
+  const { data: matchup } = useMatchupByCurrentRoute()
 
-  if (!match) {
-    return <></>
-  }
-  if (!data) {
+  if (!matchup) {
     return <></>
   }
 
@@ -203,13 +196,8 @@ export default function MatchNameplatesPage() {
           </li>
         </ul>
       </div>
-      {[
-        data.playersMap[match.data.players[0].id] ?? match.data.players[0],
-        data.playersMap[match.data.players[1].id] ?? match.data.players[1],
-        data.playersMap[match.data.players[2].id] ?? match.data.players[2],
-        data.playersMap[match.data.players[3].id] ?? match.data.players[3],
-      ].map((player) => (
-        <div key={player.id} className="w-[170mm] h-[60mm] mx-auto">
+      {matchup.players.map((player) => (
+        <div key={player._id} className="w-[170mm] h-[60mm] mx-auto">
           <MatchNameplate player={player} />
         </div>
       ))}
