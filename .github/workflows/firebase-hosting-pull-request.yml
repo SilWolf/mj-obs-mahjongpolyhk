@@ -19,6 +19,7 @@ jobs:
         env:
           VITE_ORGANIZATION: ${{ secrets.VITE_ORGANIZATION }}
           VITE_DATA_PROVIDER: ${{ secrets.VITE_DATA_PROVIDER }}
+          VITE_UPLOAD_RESULT_ENDPOINT: ${{ secrets.VITE_UPLOAD_RESULT_ENDPOINT }}
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
