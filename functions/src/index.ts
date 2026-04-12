@@ -7,9 +7,11 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
+import { setGlobalOptions } from 'firebase-functions'
+import { onRequest } from 'firebase-functions/v2/https'
+import { defineSecret } from 'firebase-functions/params'
+
+import { createClient } from '@sanity/client'
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -24,9 +26,38 @@ import * as logger from "firebase-functions/logger";
 // functions should each use functions.runWith({ maxInstances: 10 }) instead.
 // In the v1 API, each function can only serve one request per container, so
 // this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({ maxInstances: 10 })
 
 // export const helloWorld = onRequest((request, response) => {
 //   logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+
+const sanityInfo = defineSecret('SANITY_INFO') ?? ''
+
+exports.uploadResult = onRequest(
+  { secrets: [sanityInfo] },
+  async (req, res) => {
+    const [_, projectId, dataset, token] = sanityInfo.value().split(':')
+
+    const client = createClient({
+      projectId,
+      dataset,
+      useCdn: true,
+      apiVersion: '2026-04-07',
+      token,
+    })
+
+    const matchup = req.body
+
+    try {
+      await client.patch(matchup._id).set(matchup).commit()
+    } catch (error: any) {
+      res.status(400).json({ success: false, errors: error.message })
+      return
+    }
+
+    res.status(200).json({ success: true })
+    return
+  }
+)

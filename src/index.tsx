@@ -14,6 +14,9 @@ import './i18n'
 import V3AdminPage from './pages/v3/admin'
 import { Result } from 'antd'
 import MatchStartObsPage from './pages/v3/admin/tournaments/[tournamentId]/matches/[matchId]/start-obs'
+const TournamentEndedMatchups = lazy(
+  () => import('./pages/v3/admin/tournaments/[tournamentId]/ended-matchups')
+)
 
 const V2PanelLayout = lazy(
   () => import('./pages/v2/layouts/V2PanelLayout.layout')
@@ -134,6 +137,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       element={<V2PanelMatchCreateFromCachePage />}
                     />
                   </Route>
+
+                  <Route
+                    path="ended-matchups"
+                    element={<TournamentEndedMatchups />}
+                  />
 
                   <Route path="obs-setup" element={<V2PanelObsSetupPage />} />
                 </Route>
