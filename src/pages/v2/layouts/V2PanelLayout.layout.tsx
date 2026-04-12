@@ -16,6 +16,7 @@ import {
   Avatar,
   Button,
   ConfigProvider,
+  Divider,
   Dropdown,
   Flex,
   Layout,
@@ -102,6 +103,23 @@ export default function V2PanelLayout({ children }: PropsWithChildren) {
                     to={`/admin/tournaments/${params.tournamentId}/obs-setup`}
                   >
                     {t('layout.menu.obsSetup')}
+                  </Link>
+                ),
+              },
+            ]}
+          />
+
+          <Divider />
+
+          <Menu
+            items={[
+              {
+                key: 'ended-matchups',
+                label: (
+                  <Link
+                    to={`/admin/tournaments/${params.tournamentId}/ended-matchups`}
+                  >
+                    已結束的對局
                   </Link>
                 ),
               },
