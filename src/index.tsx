@@ -12,8 +12,14 @@ import ConfirmDialogProvider from './components/ConfirmDialog/provider'
 
 import './i18n'
 import V3AdminPage from './pages/v3/admin'
-import { Result } from 'antd'
+import { App, Result } from 'antd'
 import MatchStartObsPage from './pages/v3/admin/tournaments/[tournamentId]/matches/[matchId]/start-obs'
+
+const TournamentEndedMatchupByIdShow = lazy(
+  () =>
+    import('./pages/v3/admin/tournaments/[tournamentId]/ended-matchups/[endedMatchupId]/show')
+)
+
 const TournamentEndedMatchups = lazy(
   () => import('./pages/v3/admin/tournaments/[tournamentId]/ended-matchups')
 )
@@ -103,78 +109,87 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <FirebaseDatabaseProvider>
-        <ConfirmDialogProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Pages for v2 site */}
-              <Route path="/admin">
-                <Route index element={<V3AdminPage />} />
+    <App>
+      <QueryClientProvider client={queryClient}>
+        <FirebaseDatabaseProvider>
+          <ConfirmDialogProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Pages for v2 site */}
+                <Route path="/admin">
+                  <Route index element={<V3AdminPage />} />
 
-                <Route
-                  path="tournaments/:tournamentId"
-                  element={
-                    <V2PanelLayout>
-                      <Outlet />
-                    </V2PanelLayout>
-                  }
-                >
-                  <Route index element={<V2PanelPage />} />
+                  <Route
+                    path="tournaments/:tournamentId"
+                    element={
+                      <V2PanelLayout>
+                        <Outlet />
+                      </V2PanelLayout>
+                    }
+                  >
+                    <Route index element={<V2PanelPage />} />
 
-                  <Route path="matchups">
-                    <Route path=":matchupId">
+                    <Route path="matchups">
+                      <Route path=":matchupId">
+                        <Route
+                          path="edit"
+                          element={<V2PanelMatchesByIdEditPage />}
+                        />
+
+                        <Route
+                          path="start-obs"
+                          element={<MatchStartObsPage />}
+                        />
+                      </Route>
+
                       <Route
-                        path="edit"
-                        element={<V2PanelMatchesByIdEditPage />}
+                        path="createFromCache"
+                        element={<V2PanelMatchCreateFromCachePage />}
                       />
-
-                      <Route path="start-obs" element={<MatchStartObsPage />} />
                     </Route>
 
-                    <Route
-                      path="createFromCache"
-                      element={<V2PanelMatchCreateFromCachePage />}
-                    />
+                    <Route path="ended-matchups">
+                      <Route index element={<TournamentEndedMatchups />} />
+
+                      <Route
+                        path=":endedMatchupId/show"
+                        element={<TournamentEndedMatchupByIdShow />}
+                      />
+                    </Route>
+
+                    <Route path="obs-setup" element={<V2PanelObsSetupPage />} />
                   </Route>
 
                   <Route
-                    path="ended-matchups"
-                    element={<TournamentEndedMatchups />}
+                    path="tournaments/:tournamentId/matchups/:matchupId/nameplates"
+                    element={<V2PanelMatchesByIdNameplatePage />}
                   />
 
-                  <Route path="obs-setup" element={<V2PanelObsSetupPage />} />
+                  <Route path="obs">
+                    <Route
+                      path="match-control"
+                      element={<V2PanelObsMatchControlPage />}
+                    />
+                    <Route
+                      path="scene-control"
+                      element={<V2PanelObsSceneControlPage />}
+                    />
+                  </Route>
                 </Route>
 
-                <Route
-                  path="tournaments/:tournamentId/matchups/:matchupId/nameplates"
-                  element={<V2PanelMatchesByIdNameplatePage />}
-                />
-
-                <Route path="obs">
-                  <Route
-                    path="match-control"
-                    element={<V2PanelObsMatchControlPage />}
-                  />
-                  <Route
-                    path="scene-control"
-                    element={<V2PanelObsSceneControlPage />}
-                  />
+                <Route path="/public">
+                  <Route path="obs/scene">
+                    <Route path="master" element={<V2ObsSceneMasterPage />} />
+                  </Route>
                 </Route>
-              </Route>
 
-              <Route path="/public">
-                <Route path="obs/scene">
-                  <Route path="master" element={<V2ObsSceneMasterPage />} />
-                </Route>
-              </Route>
-
-              <Route path="*" element={<Navigate to="/admin" />} />
-            </Routes>
-          </BrowserRouter>
-        </ConfirmDialogProvider>
-      </FirebaseDatabaseProvider>
-    </QueryClientProvider>
-    <ToastContainer />
+                <Route path="*" element={<Navigate to="/admin" />} />
+              </Routes>
+            </BrowserRouter>
+          </ConfirmDialogProvider>
+        </FirebaseDatabaseProvider>
+      </QueryClientProvider>
+      <ToastContainer />
+    </App>
   </React.StrictMode>
 )

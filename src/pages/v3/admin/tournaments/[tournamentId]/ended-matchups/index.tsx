@@ -53,9 +53,9 @@ export default function TournamentEndedMatchups() {
           dataSource={rtMatches}
           columns={[
             {
-              title: '時間',
-              dataIndex: 'createdAt',
-              render: renderDate,
+              title: '對局',
+              dataIndex: 'name',
+              width: 180,
             },
             {
               title: '東家',
@@ -84,12 +84,11 @@ export default function TournamentEndedMatchups() {
             },
             {
               title: '操作',
-              dataIndex: ['database', '_id'],
-              width: '240px',
+              dataIndex: ['code'],
               render: (id) => {
                 return (
                   <Flex wrap="wrap" gap={4}>
-                    <Link to={`./matchups/${id}/start-obs`}>
+                    <Link to={`./${id}/show`}>
                       <Button
                         size="small"
                         variant="outlined"

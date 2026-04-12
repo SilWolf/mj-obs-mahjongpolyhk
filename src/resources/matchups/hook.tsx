@@ -9,6 +9,21 @@ export const useMatchups = (params: { tournamentId: string }) =>
     enabled: !!params.tournamentId,
   })
 
+export const usePendingMatchups = (params: { tournamentId: string }) =>
+  useQuery({
+    queryKey: ['tournaments', params, 'matchups', 'pending'],
+    queryFn: () =>
+      matchupService.getManyPendingByTournamentId(params.tournamentId),
+    enabled: !!params.tournamentId,
+  })
+
+export const useMatchup = (params: { matchupId: string }) =>
+  useQuery({
+    queryKey: ['matchups', params],
+    queryFn: () => matchupService.getOne(params.matchupId),
+    enabled: !!params.matchupId,
+  })
+
 export const useMatchupByCurrentRoute = () => {
   const params = useParams<{ matchupId: string }>()
 

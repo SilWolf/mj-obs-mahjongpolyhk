@@ -83,10 +83,26 @@ export const apiGetMatchById = async (matchId: string) => {
       _id: z.string(),
       name: z.string().nullish(),
       nameAlt: z.string().nullish(),
-      playerEast: sub.field('playerEast').deref().project(playerProject),
-      playerSouth: sub.field('playerSouth').deref().project(playerProject),
-      playerWest: sub.field('playerWest').deref().project(playerProject),
-      playerNorth: sub.field('playerNorth').deref().project(playerProject),
+      playerEast: sub
+        .field('playerEast')
+        .deref()
+        .project(playerProject)
+        .nullable(true),
+      playerSouth: sub
+        .field('playerSouth')
+        .deref()
+        .project(playerProject)
+        .nullable(true),
+      playerWest: sub
+        .field('playerWest')
+        .deref()
+        .project(playerProject)
+        .nullable(true),
+      playerNorth: sub
+        .field('playerNorth')
+        .deref()
+        .project(playerProject)
+        .nullable(true),
       playerEastTeam: sub.field('playerEastTeam').deref().project(teamProject),
       playerSouthTeam: sub
         .field('playerSouthTeam')

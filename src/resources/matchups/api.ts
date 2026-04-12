@@ -90,10 +90,26 @@ export const matchupService = {
           .project(() => ({
             _id: z.string(),
           })),
-        playerEast: sub.field('playerEast').deref().project(playerProject),
-        playerSouth: sub.field('playerSouth').deref().project(playerProject),
-        playerWest: sub.field('playerWest').deref().project(playerProject),
-        playerNorth: sub.field('playerNorth').deref().project(playerProject),
+        playerEast: sub
+          .field('playerEast')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerSouth: sub
+          .field('playerSouth')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerWest: sub
+          .field('playerWest')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerNorth: sub
+          .field('playerNorth')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
         playerEastTeam: sub
           .field('playerEastTeam')
           .deref()
@@ -110,6 +126,7 @@ export const matchupService = {
           .field('playerNorthTeam')
           .deref()
           .project(teamProject),
+        roundsCount: sub.raw('count(rounds)', z.number().nullable()),
         _createdAt: true,
         _updatedAt: true,
       }))
@@ -153,6 +170,7 @@ export const matchupService = {
           _id: matchup._id,
           tournamentId: matchup.tournament?._id!,
         },
+        roundsCount: matchup.roundsCount,
       }
     })
   },
@@ -174,10 +192,26 @@ export const matchupService = {
         name: z.string().nullish(),
         nameAlt: z.string().nullish(),
         startAt: true,
-        playerEast: sub.field('playerEast').deref().project(playerProject),
-        playerSouth: sub.field('playerSouth').deref().project(playerProject),
-        playerWest: sub.field('playerWest').deref().project(playerProject),
-        playerNorth: sub.field('playerNorth').deref().project(playerProject),
+        playerEast: sub
+          .field('playerEast')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerSouth: sub
+          .field('playerSouth')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerWest: sub
+          .field('playerWest')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerNorth: sub
+          .field('playerNorth')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
         playerEastTeam: sub
           .field('playerEastTeam')
           .deref()
@@ -194,6 +228,7 @@ export const matchupService = {
           .field('playerNorthTeam')
           .deref()
           .project(teamProject),
+        roundsCount: sub.raw('count(rounds)', z.number().nullable()),
         _createdAt: true,
         _updatedAt: true,
       }))
@@ -234,6 +269,107 @@ export const matchupService = {
             _id: matchup._id,
             tournamentId,
           },
+          roundsCount: matchup.roundsCount,
+        } satisfies IMatchup
+      })
+    })
+  },
+
+  getManyPendingByTournamentId: async (
+    tournamentId: string,
+    options?: { recent?: boolean }
+  ): Promise<IMatchup[]> => {
+    const query = q.star
+      .filterByType('match')
+      .filterRaw(
+        `tournament._ref == "${tournamentId}" && !defined(count(rounds))` +
+          (options?.recent ? ' && !defined(resultUploadedAt)' : '')
+      )
+      .order('startAt asc')
+      .slice(0, 10)
+      .project((sub) => ({
+        _id: z.string(),
+        name: z.string().nullish(),
+        nameAlt: z.string().nullish(),
+        startAt: true,
+        playerEast: sub
+          .field('playerEast')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerSouth: sub
+          .field('playerSouth')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerWest: sub
+          .field('playerWest')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerNorth: sub
+          .field('playerNorth')
+          .deref()
+          .project(playerProject)
+          .nullable(true),
+        playerEastTeam: sub
+          .field('playerEastTeam')
+          .deref()
+          .project(teamProject),
+        playerSouthTeam: sub
+          .field('playerSouthTeam')
+          .deref()
+          .project(teamProject),
+        playerWestTeam: sub
+          .field('playerWestTeam')
+          .deref()
+          .project(teamProject),
+        playerNorthTeam: sub
+          .field('playerNorthTeam')
+          .deref()
+          .project(teamProject),
+        roundsCount: sub.raw('count(rounds)', z.number().nullable()),
+        _createdAt: true,
+        _updatedAt: true,
+      }))
+
+    return runQuery(query).then((matchupes) => {
+      const formatPlayer = (
+        player: (typeof matchupes)[number]['playerEast'],
+        team: (typeof matchupes)[number]['playerEastTeam']
+      ): IMatchupPlayer => ({
+        _id: player?._id ?? '',
+        teamId: team?._id ?? '',
+        name: player?.name ?? '',
+        secondaryName: team?.preferredName ?? player?.designation,
+        thirdName: player?.nickname,
+        color: team?.color ?? '#FFFF00',
+        secondaryColor: getLightColorOfColor(team?.color ?? '#FFFF00'),
+        portraitImageUrl: player?.portraitImage,
+        portraitAltImageUrl: player?.portraitAltImage,
+        fullBodyImageUrl: player?.fullBodyImage,
+        fullBodyAltImageUrl: player?.fullBodyAltImage,
+        riichiImageUrl: player?.riichiImage,
+        logoImageUrl: team?.squareLogoImage,
+      })
+
+      return matchupes.map((matchup) => {
+        return {
+          name: matchup.name,
+          players: [
+            formatPlayer(matchup.playerEast, matchup.playerEastTeam),
+            formatPlayer(matchup.playerSouth, matchup.playerSouthTeam),
+            formatPlayer(matchup.playerWest, matchup.playerWestTeam),
+            formatPlayer(matchup.playerNorth, matchup.playerNorthTeam),
+          ],
+          startAt: matchup.startAt,
+          ruleset: { key: 'hkleague-4p' },
+          theme: { key: 'default' },
+          database: {
+            _id: matchup._id,
+            tournamentId,
+          },
+          roundsCount: matchup.roundsCount,
         } satisfies IMatchup
       })
     })

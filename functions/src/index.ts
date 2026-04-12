@@ -36,7 +36,7 @@ setGlobalOptions({ maxInstances: 10 })
 const sanityInfo = defineSecret('SANITY_INFO') ?? ''
 
 exports.uploadResult = onRequest(
-  { secrets: [sanityInfo] },
+  { secrets: [sanityInfo], cors: true },
   async (req, res) => {
     const [_, projectId, dataset, token] = sanityInfo.value().split(':')
 
@@ -53,7 +53,9 @@ exports.uploadResult = onRequest(
     try {
       await client.patch(matchup._id).set(matchup).commit()
     } catch (error: any) {
-      res.status(400).json({ success: false, errors: error.message })
+      res
+        .status(400)
+        .json({ success: false, errors: error.message, payload: matchup })
       return
     }
 

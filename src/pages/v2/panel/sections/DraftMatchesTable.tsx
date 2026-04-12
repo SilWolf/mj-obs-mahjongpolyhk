@@ -2,7 +2,7 @@ import useDraftMatches from '@/hooks/useDraftMatches'
 import { Link, useParams } from 'react-router'
 import { RealtimePlayer } from '@/models'
 import { Avatar, Button, Flex, Space, Table, Typography } from 'antd'
-import { useMatchups } from '@/resources/matchups/hook'
+import { usePendingMatchups } from '@/resources/matchups/hook'
 import { IMatchupPlayer } from '@/resources/matchups/entity'
 import {
   EditOutlined,
@@ -13,7 +13,7 @@ import {
 } from '@ant-design/icons'
 
 const renderMatchupPlayer = (player: IMatchupPlayer) => {
-  if (!player) {
+  if (!player || !player.name) {
     return (
       <Typography.Text disabled italic>
         [空]
@@ -51,7 +51,7 @@ export default function DraftMatchesTable() {
     isLoading,
     isRefetching,
     refetch,
-  } = useMatchups({
+  } = usePendingMatchups({
     tournamentId: params.tournamentId!,
   })
 

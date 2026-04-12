@@ -12,6 +12,7 @@ export type IMatchup = {
     _id: string
     tournamentId: string
   }
+  roundsCount: number | null
 }
 
 export type IMatchupPlayer = {
