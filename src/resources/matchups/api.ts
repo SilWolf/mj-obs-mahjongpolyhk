@@ -1,135 +1,201 @@
 import { q, runQuery, urlFor } from '@/sanity'
 import * as z from 'zod'
 import { IMatchup, IMatchupPlayer } from './entity'
-import { getLightColorOfColor } from '@/utils/string.util'
 
-const playerProject = q.fragmentForType<'player'>().project((playerRef) => ({
-  _id: z.string(),
-  name: z.string().nullish(),
-  nickname: z.string().nullish(),
-  designation: z.string().nullish(),
-  introduction: z.string().nullish(),
-  portraitImage: playerRef.field('portraitImage.asset').field(
+const playerFragment = q.fragmentForType<'player'>().project((sub) => ({
+  _id: true,
+  name: true,
+  designation: true,
+  nickname: true,
+  color: sub.field('color.hex'),
+  image: sub.field('image.asset').field(
     '_ref',
     z
       .string()
       .nullish()
       .transform((assetId) =>
-        urlFor(assetId, { mode: 'cover', width: 720, height: 1000 })
+        urlFor(assetId, {
+          mode: 'cover',
+          width: 720,
+          height: 1000,
+        })
       )
   ),
-  portraitAltImage: playerRef.field('portraitAltImage.asset').field(
+  riichiImage: sub.field('riichiImage.asset').field(
     '_ref',
     z
       .string()
       .nullish()
       .transform((assetId) =>
-        urlFor(assetId, { mode: 'cover', width: 720, height: 1000 })
-      )
-  ),
-  fullBodyImage: playerRef.field('fullBodyImage.asset').field(
-    '_ref',
-    z
-      .string()
-      .nullish()
-      .transform((assetId) =>
-        urlFor(assetId, { mode: 'contain', height: 1200 })
-      )
-  ),
-  fullBodyAltImage: playerRef.field('fullBodyAltImage.asset').field(
-    '_ref',
-    z
-      .string()
-      .nullish()
-      .transform((assetId) =>
-        urlFor(assetId, { mode: 'contain', height: 1200 })
-      )
-  ),
-  riichiImage: playerRef.field('riichiImage.asset').field(
-    '_ref',
-    z
-      .string()
-      .nullish()
-      .transform((assetId) =>
-        urlFor(assetId, { mode: 'cover', width: 800, height: 800 })
+        urlFor(assetId, {
+          mode: 'cover',
+          width: 800,
+          height: 800,
+        })
       )
   ),
 }))
 
-const teamProject = q.fragmentForType<'team'>().project((teamRef) => ({
-  _id: z.string(),
-  name: z.string().nullish(),
-  secondaryName: z.string().nullish(),
-  thirdName: z.string().nullish(),
-  preferredName: z.string().nullish(),
-  squareLogoImage: teamRef.field('squareLogoImage.asset').field(
+const teamFragment = q.fragmentForType<'team'>().project((sub) => ({
+  _id: true,
+  name: true,
+  color: sub.field('color.hex'),
+  image: sub.field('image.asset').field(
     '_ref',
     z
       .string()
       .nullish()
-      .transform((assetId) => urlFor(assetId, { width: 1000, height: 1000 }))
+      .transform((assetId) =>
+        urlFor(assetId, {
+          mode: 'cover',
+          width: 800,
+          height: 800,
+        })
+      )
   ),
-  color: teamRef.field('color.hex', z.string().nullish()),
-  introduction: z.string().nullish(),
+  riichiImage: sub.field('riichiImage.asset').field(
+    '_ref',
+    z
+      .string()
+      .nullish()
+      .transform((assetId) =>
+        urlFor(assetId, {
+          mode: 'cover',
+          width: 800,
+          height: 800,
+        })
+      )
+  ),
+}))
+
+const tournamentTeamFragment = q
+  .fragmentForType<'tournament-team'>()
+  .project((sub) => ({
+    _id: true,
+    name: true,
+    color: sub.field('color.hex'),
+    image: sub.field('image.asset').field(
+      '_ref',
+      z
+        .string()
+        .nullish()
+        .transform((assetId) =>
+          urlFor(assetId, {
+            mode: 'cover',
+            width: 800,
+            height: 800,
+          })
+        )
+    ),
+    riichiImage: sub.field('riichiImage.asset').field(
+      '_ref',
+      z
+        .string()
+        .nullish()
+        .transform((assetId) =>
+          urlFor(assetId, {
+            mode: 'cover',
+            width: 800,
+            height: 800,
+          })
+        )
+    ),
+    team: sub.field('team').deref().project(teamFragment),
+  }))
+
+const tournamentPlayerFragment = q
+  .fragmentForType<'tournament-player'>()
+  .project((sub) => ({
+    _id: true,
+    name: true,
+    designation: true,
+    nickname: true,
+    color: sub.field('color.hex'),
+    image: sub.field('image.asset').field(
+      '_ref',
+      z
+        .string()
+        .nullish()
+        .transform((assetId) =>
+          urlFor(assetId, {
+            mode: 'cover',
+            width: 720,
+            height: 1000,
+          })
+        )
+    ),
+    riichiImage: sub.field('riichiImage.asset').field(
+      '_ref',
+      z
+        .string()
+        .nullish()
+        .transform((assetId) =>
+          urlFor(assetId, {
+            mode: 'cover',
+            width: 800,
+            height: 800,
+          })
+        )
+    ),
+    player: sub.field('player').deref().project(playerFragment),
+    tournamentTeam: sub
+      .field('tournamentTeam')
+      .deref()
+      .project(tournamentTeamFragment)
+      .nullable(true),
+  }))
+
+const tournamentFragment = q.fragmentForType<'tournament'>().project((sub) => ({
+  _id: true,
+  name: true,
+  image: sub.field('image.asset').field(
+    '_ref',
+    z
+      .string()
+      .nullish()
+      .transform((assetId) =>
+        urlFor(assetId, {
+          mode: 'cover',
+          width: 800,
+          height: 800,
+        })
+      )
+  ),
+  participantType: true,
+  participantColor: sub.field('participantColor.hex'),
+  participantRiichiImage: sub.field('participantRiichiImage.asset').field(
+    '_ref',
+    z
+      .string()
+      .nullish()
+      .transform((assetId) =>
+        urlFor(assetId, {
+          mode: 'cover',
+          width: 800,
+          height: 800,
+        })
+      )
+  ),
+}))
+
+const matchupFragment = q.fragmentForType<'matchup'>().project((sub) => ({
+  _id: true,
+  name: true,
+  tournament: sub.field('tournament').deref().project(tournamentFragment),
+  players: sub.field('players[]').deref().project(tournamentPlayerFragment),
+  startAt: true,
+  roundsCount: sub.raw('count(result.rounds)', z.number().nullable()),
+  _createdAt: true,
+  _updatedAt: true,
 }))
 
 export const matchupService = {
   getOne: async (matchupId: string): Promise<IMatchup> => {
     const query = q.star
-      .filterByType('match')
-      .filterRaw(`_id == "${matchupId}"`)
+      .filterByType('matchup')
+      .filterBy(`_id == "${matchupId}"`)
       .slice(0)
-      .project((sub) => ({
-        _id: z.string(),
-        name: z.string().nullish(),
-        nameAlt: z.string().nullish(),
-        startAt: true,
-        tournament: sub
-          .field('tournament')
-          .deref()
-          .project(() => ({
-            _id: z.string(),
-          })),
-        playerEast: sub
-          .field('playerEast')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerSouth: sub
-          .field('playerSouth')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerWest: sub
-          .field('playerWest')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerNorth: sub
-          .field('playerNorth')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerEastTeam: sub
-          .field('playerEastTeam')
-          .deref()
-          .project(teamProject),
-        playerSouthTeam: sub
-          .field('playerSouthTeam')
-          .deref()
-          .project(teamProject),
-        playerWestTeam: sub
-          .field('playerWestTeam')
-          .deref()
-          .project(teamProject),
-        playerNorthTeam: sub
-          .field('playerNorthTeam')
-          .deref()
-          .project(teamProject),
-        roundsCount: sub.raw('count(rounds)', z.number().nullable()),
-        _createdAt: true,
-        _updatedAt: true,
-      }))
+      .project(matchupFragment)
 
     return runQuery(query).then((matchup) => {
       if (!matchup) {
@@ -137,32 +203,44 @@ export const matchupService = {
       }
 
       const formatPlayer = (
-        player: (typeof matchup)['playerEast'],
-        team: (typeof matchup)['playerEastTeam']
-      ): IMatchupPlayer => ({
-        _id: player?._id ?? '',
-        teamId: team?._id ?? '',
-        name: player?.name ?? '',
-        secondaryName: team?.preferredName ?? player?.designation,
-        thirdName: player?.nickname,
-        color: team?.color ?? '#FFFF00',
-        secondaryColor: getLightColorOfColor(team?.color ?? '#FFFF00'),
-        portraitImageUrl: player?.portraitImage,
-        portraitAltImageUrl: player?.portraitAltImage,
-        fullBodyImageUrl: player?.fullBodyImage,
-        fullBodyAltImageUrl: player?.fullBodyAltImage,
-        riichiImageUrl: player?.riichiImage,
-        logoImageUrl: team?.squareLogoImage,
-      })
+        tp: NonNullable<(typeof matchup)['players']>[number]
+      ): IMatchupPlayer => {
+        return {
+          _id: tp._id,
+          color:
+            tp.color ??
+            tp.tournamentTeam?.color ??
+            tp.tournamentTeam?.team?.color ??
+            matchup.tournament?.participantColor ??
+            tp.player?.color ??
+            '#FFFFFF',
+
+          name: tp.name ?? tp.player?.name,
+          secondaryName:
+            tp.designation ??
+            tp.tournamentTeam?.name ??
+            tp.tournamentTeam?.team?.name ??
+            tp.player?.designation,
+          thirdName: tp.nickname ?? tp.player?.nickname,
+
+          portraitImageUrl: tp.image ?? tp.player?.image,
+          riichiImageUrl:
+            tp.riichiImage ??
+            tp.tournamentTeam?.riichiImage ??
+            tp.tournamentTeam?.team?.riichiImage ??
+            matchup.tournament?.participantRiichiImage ??
+            tp.player?.riichiImage,
+          logoImageUrl:
+            tp.tournamentTeam?.image ??
+            tp.tournamentTeam?.team?.image ??
+            matchup.tournament?.participantRiichiImage ??
+            matchup.tournament?.image,
+        }
+      }
 
       return {
         name: matchup.name,
-        players: [
-          formatPlayer(matchup.playerEast, matchup.playerEastTeam),
-          formatPlayer(matchup.playerSouth, matchup.playerSouthTeam),
-          formatPlayer(matchup.playerWest, matchup.playerWestTeam),
-          formatPlayer(matchup.playerNorth, matchup.playerNorthTeam),
-        ],
+        players: matchup.players?.map(formatPlayer) ?? [],
         startAt: matchup.startAt,
         ruleset: { key: 'hkleague-4p' },
         theme: { key: 'default' },
@@ -177,201 +255,83 @@ export const matchupService = {
 
   getManyByTournamentId: async (
     tournamentId: string,
-    options?: { recent?: boolean }
+    options?: {
+      pending?: boolean
+      offset?: number
+      limit?: number
+    }
   ): Promise<IMatchup[]> => {
-    const query = q.star
-      .filterByType('match')
-      .filterRaw(
-        `tournament._ref == "${tournamentId}"` +
-          (options?.recent ? ' && !defined(resultUploadedAt)' : '')
-      )
-      .order('startAt asc')
-      .slice(0, 10)
-      .project((sub) => ({
-        _id: z.string(),
-        name: z.string().nullish(),
-        nameAlt: z.string().nullish(),
-        startAt: true,
-        playerEast: sub
-          .field('playerEast')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerSouth: sub
-          .field('playerSouth')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerWest: sub
-          .field('playerWest')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerNorth: sub
-          .field('playerNorth')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerEastTeam: sub
-          .field('playerEastTeam')
-          .deref()
-          .project(teamProject),
-        playerSouthTeam: sub
-          .field('playerSouthTeam')
-          .deref()
-          .project(teamProject),
-        playerWestTeam: sub
-          .field('playerWestTeam')
-          .deref()
-          .project(teamProject),
-        playerNorthTeam: sub
-          .field('playerNorthTeam')
-          .deref()
-          .project(teamProject),
-        roundsCount: sub.raw('count(rounds)', z.number().nullable()),
-        _createdAt: true,
-        _updatedAt: true,
-      }))
+    let query = q.star
+      .filterByType('matchup')
+      .filterRaw(`tournament._ref == "${tournamentId}"`)
 
-    return runQuery(query).then((matchupes) => {
-      const formatPlayer = (
-        player: (typeof matchupes)[number]['playerEast'],
-        team: (typeof matchupes)[number]['playerEastTeam']
-      ): IMatchupPlayer => ({
-        _id: player?._id ?? '',
-        teamId: team?._id ?? '',
-        name: player?.name ?? '',
-        secondaryName: team?.preferredName ?? player?.designation,
-        thirdName: player?.nickname,
-        color: team?.color ?? '#FFFF00',
-        secondaryColor: getLightColorOfColor(team?.color ?? '#FFFF00'),
-        portraitImageUrl: player?.portraitImage,
-        portraitAltImageUrl: player?.portraitAltImage,
-        fullBodyImageUrl: player?.fullBodyImage,
-        fullBodyAltImageUrl: player?.fullBodyAltImage,
-        riichiImageUrl: player?.riichiImage,
-        logoImageUrl: team?.squareLogoImage,
-      })
+    if (options?.pending) {
+      query = query.filterRaw('!defined(result)')
+    }
 
-      return matchupes.map((matchup) => {
-        return {
-          name: matchup.name,
-          players: [
-            formatPlayer(matchup.playerEast, matchup.playerEastTeam),
-            formatPlayer(matchup.playerSouth, matchup.playerSouthTeam),
-            formatPlayer(matchup.playerWest, matchup.playerWestTeam),
-            formatPlayer(matchup.playerNorth, matchup.playerNorthTeam),
-          ],
-          startAt: matchup.startAt,
-          ruleset: { key: 'hkleague-4p' },
-          theme: { key: 'default' },
-          database: {
-            _id: matchup._id,
-            tournamentId,
-          },
-          roundsCount: matchup.roundsCount,
-        } satisfies IMatchup
-      })
-    })
-  },
+    const sliceStart = options?.offset ?? 0
+    const sliceEnd = sliceStart + (options?.limit ?? 10)
 
-  getManyPendingByTournamentId: async (
-    tournamentId: string,
-    options?: { recent?: boolean }
-  ): Promise<IMatchup[]> => {
-    const query = q.star
-      .filterByType('match')
-      .filterRaw(
-        `tournament._ref == "${tournamentId}" && !defined(count(rounds))` +
-          (options?.recent ? ' && !defined(resultUploadedAt)' : '')
-      )
-      .order('startAt asc')
-      .slice(0, 10)
-      .project((sub) => ({
-        _id: z.string(),
-        name: z.string().nullish(),
-        nameAlt: z.string().nullish(),
-        startAt: true,
-        playerEast: sub
-          .field('playerEast')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerSouth: sub
-          .field('playerSouth')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerWest: sub
-          .field('playerWest')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerNorth: sub
-          .field('playerNorth')
-          .deref()
-          .project(playerProject)
-          .nullable(true),
-        playerEastTeam: sub
-          .field('playerEastTeam')
-          .deref()
-          .project(teamProject),
-        playerSouthTeam: sub
-          .field('playerSouthTeam')
-          .deref()
-          .project(teamProject),
-        playerWestTeam: sub
-          .field('playerWestTeam')
-          .deref()
-          .project(teamProject),
-        playerNorthTeam: sub
-          .field('playerNorthTeam')
-          .deref()
-          .project(teamProject),
-        roundsCount: sub.raw('count(rounds)', z.number().nullable()),
-        _createdAt: true,
-        _updatedAt: true,
-      }))
+    query = query.order('startAt asc').slice(sliceStart, sliceEnd)
 
-    return runQuery(query).then((matchupes) => {
-      const formatPlayer = (
-        player: (typeof matchupes)[number]['playerEast'],
-        team: (typeof matchupes)[number]['playerEastTeam']
-      ): IMatchupPlayer => ({
-        _id: player?._id ?? '',
-        teamId: team?._id ?? '',
-        name: player?.name ?? '',
-        secondaryName: team?.preferredName ?? player?.designation,
-        thirdName: player?.nickname,
-        color: team?.color ?? '#FFFF00',
-        secondaryColor: getLightColorOfColor(team?.color ?? '#FFFF00'),
-        portraitImageUrl: player?.portraitImage,
-        portraitAltImageUrl: player?.portraitAltImage,
-        fullBodyImageUrl: player?.fullBodyImage,
-        fullBodyAltImageUrl: player?.fullBodyAltImage,
-        riichiImageUrl: player?.riichiImage,
-        logoImageUrl: team?.squareLogoImage,
-      })
+    const queryProjected = query.project(matchupFragment)
 
-      return matchupes.map((matchup) => {
-        return {
-          name: matchup.name,
-          players: [
-            formatPlayer(matchup.playerEast, matchup.playerEastTeam),
-            formatPlayer(matchup.playerSouth, matchup.playerSouthTeam),
-            formatPlayer(matchup.playerWest, matchup.playerWestTeam),
-            formatPlayer(matchup.playerNorth, matchup.playerNorthTeam),
-          ],
-          startAt: matchup.startAt,
-          ruleset: { key: 'hkleague-4p' },
-          theme: { key: 'default' },
-          database: {
-            _id: matchup._id,
-            tournamentId,
-          },
-          roundsCount: matchup.roundsCount,
-        } satisfies IMatchup
-      })
+    const matchups = await runQuery(queryProjected)
+    if (matchups.length <= 0) {
+      return []
+    }
+
+    const tournament = matchups[0].tournament
+
+    const formatPlayer = (
+      tp: NonNullable<(typeof matchups)[number]['players']>[number]
+    ): IMatchupPlayer => {
+      return {
+        _id: tp._id,
+        color:
+          tp.color ??
+          tp.tournamentTeam?.color ??
+          tp.tournamentTeam?.team?.color ??
+          tournament?.participantColor ??
+          tp.player?.color ??
+          '#FFFFFF',
+
+        name: tp.name ?? tp.player?.name,
+        secondaryName:
+          tp.designation ??
+          tp.tournamentTeam?.name ??
+          tp.tournamentTeam?.team?.name ??
+          tp.player?.designation,
+        thirdName: tp.nickname ?? tp.player?.nickname,
+
+        portraitImageUrl: tp.image ?? tp.player?.image,
+        riichiImageUrl:
+          tp.riichiImage ??
+          tp.tournamentTeam?.riichiImage ??
+          tp.tournamentTeam?.team?.riichiImage ??
+          tournament?.participantRiichiImage ??
+          tp.player?.riichiImage,
+        logoImageUrl:
+          tp.tournamentTeam?.image ??
+          tp.tournamentTeam?.team?.image ??
+          tournament?.participantRiichiImage ??
+          tournament?.image,
+      }
+    }
+
+    return matchups.map((matchup) => {
+      return {
+        name: matchup.name,
+        players: matchup.players?.map(formatPlayer) ?? [],
+        startAt: matchup.startAt,
+        ruleset: { key: 'hkleague-4p' },
+        theme: { key: 'default' },
+        database: {
+          _id: matchup._id,
+          tournamentId,
+        },
+        roundsCount: matchup.roundsCount,
+      } satisfies IMatchup
     })
   },
 }

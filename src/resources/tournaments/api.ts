@@ -5,14 +5,14 @@ import { ITournament } from './entity'
 export const tournamentService = {
   getOne: async (tournamentId: string): Promise<ITournament> => {
     const query = q.star
-      .filterByType('matchTournament')
+      .filterByType('tournament')
       .filterRaw(`_id == "${tournamentId}"`)
-      .order('_createdAt desc')
+      .order('_updatedAt desc')
       .slice(0)
       .project((sub) => ({
-        _id: z.string(),
-        name: z.string().nullish(),
-        logoUrl: sub.field('logo.asset').field(
+        _id: true,
+        name: true,
+        logoUrl: sub.field('image.asset').field(
           '_ref',
           z
             .string()
@@ -21,8 +21,6 @@ export const tournamentService = {
               urlFor(assetId, { width: 1000, height: 1000 })
             )
         ),
-        rulesetId: z.string().nullish(),
-        themeId: z.string().nullish(),
       }))
 
     return runQuery(query).then((tournament) => {
@@ -34,21 +32,21 @@ export const tournamentService = {
         _id: tournament._id,
         name: tournament.name ?? '(未命名的聯賽)',
         logoImageUrl: tournament.logoUrl,
-        rulesetId: tournament.rulesetId ?? 'hkleague-4p',
-        themeId: tournament.themeId ?? 'default',
+        rulesetId: 'hkleague-4p',
+        themeId: 'default',
       }
     })
   },
 
   getMany: async (): Promise<ITournament[]> => {
     const query = q.star
-      .filterByType('matchTournament')
-      .order('_createdAt desc')
+      .filterByType('tournament')
+      .order('_updatedAt desc')
       .slice(0, 10)
       .project((sub) => ({
-        _id: z.string(),
-        name: z.string().nullish(),
-        logoUrl: sub.field('logo.asset').field(
+        _id: true,
+        name: true,
+        logoUrl: sub.field('image.asset').field(
           '_ref',
           z
             .string()
@@ -57,8 +55,6 @@ export const tournamentService = {
               urlFor(assetId, { width: 1000, height: 1000 })
             )
         ),
-        rulesetId: z.string().nullish(),
-        themeId: z.string().nullish(),
       }))
 
     return runQuery(query).then((tournaments) =>
@@ -68,8 +64,8 @@ export const tournamentService = {
             _id: item._id,
             name: item.name ?? '(未命名的聯賽)',
             logoImageUrl: item.logoUrl,
-            rulesetId: item.rulesetId ?? 'hkleague-4p',
-            themeId: item.themeId ?? 'default',
+            rulesetId: 'hkleague-4p',
+            themeId: 'default',
           }) satisfies ITournament
       )
     )

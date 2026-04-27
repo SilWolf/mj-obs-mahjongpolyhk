@@ -1,17 +1,10 @@
 'use client'
 
-import { MouseEvent, PropsWithChildren, useCallback, useEffect } from 'react'
-import { CurrentTournamentIdContext } from '../hooks/useCurrentTournament'
-import useAllTournaments from '../hooks/useAllTournaments'
-import { useLocalStorage } from 'react-use'
+import { PropsWithChildren } from 'react'
 import CurrentLiveMatchWidget from '../widgets/CurrentLiveMatchWidget'
 import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import GlobeIcon from '@/components/icons/GlobeIcon'
-import {
-  useTournamentByCurrentRoute,
-  useTournaments,
-} from '@/resources/tournaments/hook'
+import { useTournamentByCurrentRoute } from '@/resources/tournaments/hook'
 import {
   Avatar,
   Button,
