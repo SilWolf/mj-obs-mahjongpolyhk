@@ -1,7 +1,3 @@
-import { Match } from '@/sanity/sanity.types'
-
-export type IDBMatchup = Match
-
 export type IMatchup = {
   name?: string | null
   players: IMatchupPlayer[]

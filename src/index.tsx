@@ -12,7 +12,7 @@ import ConfirmDialogProvider from './components/ConfirmDialog/provider'
 
 import './i18n'
 import V3AdminPage from './pages/v3/admin'
-import { App, Result } from 'antd'
+import { App } from 'antd'
 import MatchStartObsPage from './pages/v3/admin/tournaments/[tournamentId]/matches/[matchId]/start-obs'
 
 const TournamentEndedMatchupByIdShow = lazy(
@@ -28,14 +28,8 @@ const V2PanelLayout = lazy(
   () => import('./pages/v2/layouts/V2PanelLayout.layout')
 )
 const V2PanelPage = lazy(() => import('./pages/v2/panel/page'))
-const V2PanelMatchesByIdEditPage = lazy(
-  () => import('./pages/v2/panel/matches/[matchId]/edit/page')
-)
 const V2PanelMatchesByIdNameplatePage = lazy(
   () => import('./pages/v2/panel/matches/[matchId]/nameplate/page')
-)
-const V2PanelMatchCreateFromCachePage = lazy(
-  () => import('./pages/v2/panel/matches/createFromCache/page')
 )
 
 const V2PanelObsSetupPage = lazy(
@@ -47,39 +41,6 @@ const V2PanelObsMatchControlPage = lazy(
 )
 const V2PanelObsSceneControlPage = lazy(
   () => import('./pages/v2/panel/obs/scene-control/page')
-)
-
-const V2PanelRealtimeMatchesPage = lazy(
-  () => import('./pages/v2/panel/realtime/matches/page')
-)
-
-const V2PanelRealtimeMatchDetailPage = lazy(
-  () => import('./pages/v2/panel/realtime/matches/:matchId/detail/page')
-)
-
-const V2PanelDraftMatchesCreatePage = lazy(
-  () => import('./pages/v2/panel/draft-matches/create/page')
-)
-
-const V2PanelDraftMatchesImportFromDatabasePage = lazy(
-  () =>
-    import('./pages/v2/panel/draft-matches/import-from-database/[matchId]/page')
-)
-
-const V2PanelDraftMatchEditPage = lazy(
-  () => import('./pages/v2/panel/draft-matches/[matchId]/edit/page')
-)
-
-const V2PanelDraftMatchCopyPage = lazy(
-  () => import('./pages/v2/panel/draft-matches/[matchId]/copy/page')
-)
-
-const V2PanelDraftMatchStartPage = lazy(
-  () => import('./pages/v2/panel/draft-matches/[matchId]/start/page')
-)
-
-const V2PanelDraftMatchNameplatePage = lazy(
-  () => import('./pages/v2/panel/draft-matches/[matchId]/nameplate/page')
 )
 
 const V2ObsSceneMasterPage = lazy(
@@ -132,20 +93,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     <Route path="matchups">
                       <Route path=":matchupId">
                         <Route
-                          path="edit"
-                          element={<V2PanelMatchesByIdEditPage />}
-                        />
-
-                        <Route
                           path="start-obs"
                           element={<MatchStartObsPage />}
                         />
                       </Route>
-
-                      <Route
-                        path="createFromCache"
-                        element={<V2PanelMatchCreateFromCachePage />}
-                      />
                     </Route>
 
                     <Route path="ended-matchups">

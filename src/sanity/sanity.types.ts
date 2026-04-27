@@ -12,389 +12,68 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol
+
 // Source: schema.json
-export type SanityImagePaletteSwatch = {
-  _type: 'sanity.imagePaletteSwatch'
-  background?: string
-  foreground?: string
-  population?: number
-  title?: string
+export type TournamentReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'tournament'
 }
 
-export type SanityImagePalette = {
-  _type: 'sanity.imagePalette'
-  darkMuted?: SanityImagePaletteSwatch
-  lightVibrant?: SanityImagePaletteSwatch
-  darkVibrant?: SanityImagePaletteSwatch
-  vibrant?: SanityImagePaletteSwatch
-  dominant?: SanityImagePaletteSwatch
-  lightMuted?: SanityImagePaletteSwatch
-  muted?: SanityImagePaletteSwatch
+export type PlayerReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'player'
 }
 
-export type SanityImageDimensions = {
-  _type: 'sanity.imageDimensions'
-  height?: number
-  width?: number
-  aspectRatio?: number
+export type TournamentTeamReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'tournament-team'
 }
 
-export type SanityFileAsset = {
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type TournamentPlayer = {
   _id: string
-  _type: 'sanity.fileAsset'
+  _type: 'tournament-player'
   _createdAt: string
   _updatedAt: string
   _rev: string
-  originalFilename?: string
-  label?: string
-  title?: string
-  description?: string
-  altText?: string
-  sha1hash?: string
-  extension?: string
-  mimeType?: string
-  size?: number
-  assetId?: string
-  uploadId?: string
-  path?: string
-  url?: string
-  source?: SanityAssetSourceData
-}
-
-export type Geopoint = {
-  _type: 'geopoint'
-  lat?: number
-  lng?: number
-  alt?: number
-}
-
-export type Activity = {
-  _id: string
-  _type: 'activity'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  slug?: Slug
+  tournament?: TournamentReference
+  player?: PlayerReference
+  tournamentTeam?: TournamentTeamReference
+  tpIndex?: number
+  internal_participantType?: 'individual' | 'team'
+  color?: Color
   name?: string
-  briefDescription?: string
-  description?: Array<{
-    children?: Array<{
-      marks?: Array<string>
-      text?: string
-      _type: 'span'
-      _key: string
-    }>
-    style?: 'normal' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'blockquote'
-    listItem?: 'bullet' | 'number'
-    markDefs?: Array<{
-      href?: string
-      _type: 'link'
-      _key: string
-    }>
-    level?: number
-    _type: 'block'
-    _key: string
-  }>
-  startAt?: string
-  endAt?: string
-  tournament?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'matchTournament'
-  }
-  attendees?: Array<{
-    player: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'player'
-    }
-    attendOn: string
-    _key: string
-  }>
-}
-
-export type Match = {
-  _id: string
-  _type: 'match'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  tournament?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'matchTournament'
-  }
-  name?: string
-  nameAlt?: string
-  playerEastTeam?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'team'
-  }
-  playerEast?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'player'
-  }
-  playerSouthTeam?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'team'
-  }
-  playerSouth?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'player'
-  }
-  playerWestTeam?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'team'
-  }
-  playerWest?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'player'
-  }
-  playerNorthTeam?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'team'
-  }
-  playerNorth?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'player'
-  }
-  startAt?: string
-  resultUploadedAt?: string
-  status?: 'initialized' | 'completed'
-  youtubeUrl?: string
-  bilibiliUrl?: string
-  result?: {
-    playerEast?: {
-      score?: number
-      ranking?: '1' | '2' | '3' | '4'
-      point?: number
-      penalty?: number
-      penaltyReason?: string
-    }
-    playerSouth?: {
-      score?: number
-      ranking?: '1' | '2' | '3' | '4'
-      point?: number
-      penalty?: number
-      penaltyReason?: string
-    }
-    playerWest?: {
-      score?: number
-      ranking?: '1' | '2' | '3' | '4'
-      point?: number
-      penalty?: number
-      penaltyReason?: string
-    }
-    playerNorth?: {
-      score?: number
-      ranking?: '1' | '2' | '3' | '4'
-      point?: number
-      penalty?: number
-      penaltyReason?: string
-    }
-  }
-  rounds?: Array<{
-    code?: string
-    type?: 'unknown' | 'ron' | 'tsumo' | 'exhausted' | 'hotfix'
-    playerEast?: {
-      position?: 'east' | 'south' | 'west' | 'north'
-      status?: 'none' | 'isRiichied' | 'isRevealed'
-      isWaited?: boolean
-      type?: 'none' | 'win' | 'lose'
-      beforeScore?: number
-      afterScore?: number
-      dora?: number
-      redDora?: number
-      innerDora?: number
-      han?: number
-      fu?: number
-      pureScore?: number
-      yaku?: string
-    }
-    playerSouth?: {
-      position?: 'east' | 'south' | 'west' | 'north'
-      status?: 'none' | 'isRiichied' | 'isRevealed'
-      isWaited?: boolean
-      type?: 'none' | 'win' | 'lose'
-      beforeScore?: number
-      afterScore?: number
-      dora?: number
-      redDora?: number
-      innerDora?: number
-      han?: number
-      fu?: number
-      pureScore?: number
-      yaku?: string
-    }
-    playerWest?: {
-      position?: 'east' | 'south' | 'west' | 'north'
-      status?: 'none' | 'isRiichied' | 'isRevealed'
-      isWaited?: boolean
-      type?: 'none' | 'win' | 'lose'
-      beforeScore?: number
-      afterScore?: number
-      dora?: number
-      redDora?: number
-      innerDora?: number
-      han?: number
-      fu?: number
-      pureScore?: number
-      yaku?: string
-    }
-    playerNorth?: {
-      position?: 'east' | 'south' | 'west' | 'north'
-      status?: 'none' | 'isRiichied' | 'isRevealed'
-      isWaited?: boolean
-      type?: 'none' | 'win' | 'lose'
-      beforeScore?: number
-      afterScore?: number
-      dora?: number
-      redDora?: number
-      innerDora?: number
-      han?: number
-      fu?: number
-      pureScore?: number
-      yaku?: string
-    }
-    tenhouReplayUrl?: string
-    _key: string
-  }>
-}
-
-export type TeamPlayer = {
-  _id: string
-  _type: 'teamPlayer'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  team?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'team'
-  }
-  player?: {
-    _ref: string
-    _type: 'reference'
-    _weak?: boolean
-    [internalGroqTypeReferenceTo]?: 'player'
-  }
-  introduction?: string
-  overridedDesignation?: string
-  overridedName?: string
-  overridedColor?: Color
-  overridedPortraitImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
+  image?: {
+    asset?: SanityImageAssetReference
     media?: unknown
     hotspot?: SanityImageHotspot
     crop?: SanityImageCrop
     _type: 'image'
   }
-  overridedNickname?: string
-  isHideNickname?: boolean
-}
-
-export type Player = {
-  _id: string
-  _type: 'player'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  name?: string
-  portraitImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  fullBodyImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  portraitAltImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  fullBodyAltImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  riichiImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  designation?: string
   nickname?: string
-  introduction?: string
-  statistics?: Array<{
-    tournament?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'matchTournament'
-    }
+  designation?: string
+  riichiImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  internal_presetTournament?: boolean
+  stats?: {
     matchCount?: number
     roundCount?: number
     point?: number
@@ -449,183 +128,7 @@ export type Player = {
     revealPRanking?: number
     ronPureScoreAvgRanking?: number
     chuckPureScoreAvgRanking?: number
-    _key: string
-  }>
-}
-
-export type MatchTournament = {
-  _id: string
-  _type: 'matchTournament'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  name?: string
-  logo?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
   }
-  rulesetId?: string
-  themeId?: string
-  startingScore?: '25000' | '30000' | '35000' | '50000' | '100000'
-  isManganRoundUp?: boolean
-  yakuMax?: '12' | '13'
-  yakumanMax?: '13' | '26' | '39' | '130'
-  teams?: Array<{
-    ref?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'team'
-    }
-    players?: Array<{
-      ref?: {
-        _ref: string
-        _type: 'reference'
-        _weak?: boolean
-        [internalGroqTypeReferenceTo]?: 'player'
-      }
-      overrided?: {
-        name?: string
-        portraitImage?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-          }
-          media?: unknown
-          hotspot?: SanityImageHotspot
-          crop?: SanityImageCrop
-          _type: 'image'
-        }
-        fullBodyImage?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-          }
-          media?: unknown
-          hotspot?: SanityImageHotspot
-          crop?: SanityImageCrop
-          _type: 'image'
-        }
-        portraitAltImage?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-          }
-          media?: unknown
-          hotspot?: SanityImageHotspot
-          crop?: SanityImageCrop
-          _type: 'image'
-        }
-        fullBodyAltImage?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-          }
-          media?: unknown
-          hotspot?: SanityImageHotspot
-          crop?: SanityImageCrop
-          _type: 'image'
-        }
-        riichiImage?: {
-          asset?: {
-            _ref: string
-            _type: 'reference'
-            _weak?: boolean
-            [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-          }
-          media?: unknown
-          hotspot?: SanityImageHotspot
-          crop?: SanityImageCrop
-          _type: 'image'
-        }
-        designation?: string
-        nickname?: string
-        introduction?: string
-      }
-      _key: string
-    }>
-    overrided?: {
-      name?: string
-      secondaryName?: string
-      thirdName?: string
-      preferredName?: string
-      symbol?: string
-      squareLogoImage?: {
-        asset?: {
-          _ref: string
-          _type: 'reference'
-          _weak?: boolean
-          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-        }
-        media?: unknown
-        hotspot?: SanityImageHotspot
-        crop?: SanityImageCrop
-        _type: 'image'
-      }
-      color?: Color
-      introduction?: string
-      slug?: Slug
-    }
-    statistics?: {
-      matchCount?: number
-      ranking?: number
-      initialPoint?: number
-      point?: number
-      rankingHistories?: Array<number>
-      pointHistories?: Array<number>
-    }
-    _key: string
-  }>
-}
-
-export type Team = {
-  _id: string
-  _type: 'team'
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  name?: string
-  secondaryName?: string
-  thirdName?: string
-  preferredName?: string
-  symbol?: string
-  squareLogoImage?: {
-    asset?: {
-      _ref: string
-      _type: 'reference'
-      _weak?: boolean
-      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
-    }
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: 'image'
-  }
-  color?: Color
-  introduction?: string
-  slug?: Slug
-}
-
-export type Slug = {
-  _type: 'slug'
-  current?: string
-  source?: string
 }
 
 export type SanityImageCrop = {
@@ -642,6 +145,306 @@ export type SanityImageHotspot = {
   y?: number
   height?: number
   width?: number
+}
+
+export type Color = {
+  _type: 'color'
+  hex?: string
+  rgba?: string
+  hsl?: string
+  isGradient?: boolean
+  hex2?: string
+  angle?: number
+  css?: string
+}
+
+export type TeamReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'team'
+}
+
+export type TournamentTeam = {
+  _id: string
+  _type: 'tournament-team'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  tournament?: TournamentReference
+  team?: TeamReference
+  tpIndex?: number
+  color?: Color
+  name?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  riichiImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  stats?: {
+    matchCount?: number
+    roundCount?: number
+    point?: number
+    scoreMax?: number
+    scoreMin?: number
+    firstCount?: number
+    secondCount?: number
+    thirdCount?: number
+    fourthCount?: number
+    riichiCount?: number
+    riichiCountWhenEast?: number
+    riichiCountWhenNonEast?: number
+    revealCount?: number
+    revealCountWhenEast?: number
+    revealCountWhenNonEast?: number
+    waitingCount?: number
+    ronCount?: number
+    ronCountWhenEast?: number
+    ronCountWhenNonEast?: number
+    waitingWhenExhaustedCount?: number
+    ronPureScoreAvg?: number
+    ronPureScoreAvgWhenEast?: number
+    ronPureScoreAvgWhenNonEast?: number
+    ronHighYakuCount?: number
+    chuckCount?: number
+    chuckCountWhenEast?: number
+    chuckCountWhenNonEast?: number
+    chuckPureScoreAvg?: number
+    chuckPureScoreAvgWhenEast?: number
+    chuckPureScoreAvgWhenNonEast?: number
+    chuckHighYakuCount?: number
+    ronAfterRiichiCount?: number
+    ronAfterRiichiPureScoreAvg?: number
+    ronAfterRevealCount?: number
+    ronAfterRevealPureScoreAvg?: number
+    chuckAfterRiichiCount?: number
+    chuckAfterRiichiPureScoreAvg?: number
+    chuckAfterRevealCount?: number
+    chuckAfterRevealPureScoreAvg?: number
+    pointRanking?: number
+    nonFourthP?: number
+    nonFourthPRanking?: number
+    firstAndSecondP?: number
+    firstAndSecondPRanking?: number
+    riichiP?: number
+    riichiPRanking?: number
+    ronP?: number
+    ronPRanking?: number
+    chuckP?: number
+    chuckPRanking?: number
+    revealP?: number
+    revealPRanking?: number
+    ronPureScoreAvgRanking?: number
+    chuckPureScoreAvgRanking?: number
+  }
+}
+
+export type Team = {
+  _id: string
+  _type: 'team'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  riichiImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  description?: string
+  color?: Color
+}
+
+export type Player = {
+  _id: string
+  _type: 'player'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  description?: string
+  color?: Color
+  nickname?: string
+  designation?: string
+  riichiImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
+export type TournamentPlayerReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'tournament-player'
+}
+
+export type Matchup = {
+  _id: string
+  _type: 'matchup'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  tournament?: TournamentReference
+  name?: string
+  players?: Array<
+    {
+      _key: string
+    } & TournamentPlayerReference
+  >
+  startAt?: string
+  result?: {
+    players?: Array<{
+      score?: number
+      ranking?: '1' | '2' | '3' | '4'
+      point?: number
+      penalty?: number
+      penaltyReason?: string
+      _key: string
+    }>
+    rounds?: Array<{
+      code?: string
+      type?: 'unknown' | 'ron' | 'tsumo' | 'exhausted' | 'hotfix'
+      players?: Array<{
+        position?: 'east' | 'south' | 'west' | 'north'
+        status?: 'none' | 'isRiichied' | 'isRevealed'
+        isWaited?: boolean
+        type?: 'none' | 'win' | 'lose'
+        beforeScore?: number
+        afterScore?: number
+        dora?: number
+        redDora?: number
+        innerDora?: number
+        han?: number
+        fu?: number
+        pureScore?: number
+        yaku?: string
+        _key: string
+      }>
+      _key: string
+    }>
+  }
+}
+
+export type Tournament = {
+  _id: string
+  _type: 'tournament'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  description?: string
+  participantType?: 'individual' | 'team'
+  participantColor?: Color
+  participantRiichiImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+}
+
+export type SanityImagePaletteSwatch = {
+  _type: 'sanity.imagePaletteSwatch'
+  background?: string
+  foreground?: string
+  population?: number
+  title?: string
+}
+
+export type SanityImagePalette = {
+  _type: 'sanity.imagePalette'
+  darkMuted?: SanityImagePaletteSwatch
+  lightVibrant?: SanityImagePaletteSwatch
+  darkVibrant?: SanityImagePaletteSwatch
+  vibrant?: SanityImagePaletteSwatch
+  dominant?: SanityImagePaletteSwatch
+  lightMuted?: SanityImagePaletteSwatch
+  muted?: SanityImagePaletteSwatch
+}
+
+export type SanityImageDimensions = {
+  _type: 'sanity.imageDimensions'
+  height?: number
+  width?: number
+  aspectRatio?: number
+}
+
+export type SanityImageMetadata = {
+  _type: 'sanity.imageMetadata'
+  location?: Geopoint
+  dimensions?: SanityImageDimensions
+  palette?: SanityImagePalette
+  lqip?: string
+  blurHash?: string
+  thumbHash?: string
+  hasAlpha?: boolean
+  isOpaque?: boolean
+}
+
+export type SanityFileAsset = {
+  _id: string
+  _type: 'sanity.fileAsset'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  originalFilename?: string
+  label?: string
+  title?: string
+  description?: string
+  altText?: string
+  sha1hash?: string
+  extension?: string
+  mimeType?: string
+  size?: number
+  assetId?: string
+  uploadId?: string
+  path?: string
+  url?: string
+  source?: SanityAssetSourceData
+}
+
+export type SanityAssetSourceData = {
+  _type: 'sanity.assetSourceData'
+  name?: string
+  id?: string
+  url?: string
 }
 
 export type SanityImageAsset = {
@@ -667,77 +470,41 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData
 }
 
-export type SanityAssetSourceData = {
-  _type: 'sanity.assetSourceData'
-  name?: string
-  id?: string
-  url?: string
+export type Geopoint = {
+  _type: 'geopoint'
+  lat?: number
+  lng?: number
+  alt?: number
 }
 
-export type SanityImageMetadata = {
-  _type: 'sanity.imageMetadata'
-  location?: Geopoint
-  dimensions?: SanityImageDimensions
-  palette?: SanityImagePalette
-  lqip?: string
-  blurHash?: string
-  hasAlpha?: boolean
-  isOpaque?: boolean
-}
-
-export type Color = {
-  _type: 'color'
-  hex?: string
-  alpha?: number
-  hsl?: HslaColor
-  hsv?: HsvaColor
-  rgb?: RgbaColor
-}
-
-export type RgbaColor = {
-  _type: 'rgbaColor'
-  r?: number
-  g?: number
-  b?: number
-  a?: number
-}
-
-export type HsvaColor = {
-  _type: 'hsvaColor'
-  h?: number
-  s?: number
-  v?: number
-  a?: number
-}
-
-export type HslaColor = {
-  _type: 'hslaColor'
-  h?: number
-  s?: number
-  l?: number
-  a?: number
+export type Slug = {
+  _type: 'slug'
+  current?: string
+  source?: string
 }
 
 export type AllSanitySchemaTypes =
+  | TournamentReference
+  | PlayerReference
+  | TournamentTeamReference
+  | SanityImageAssetReference
+  | TournamentPlayer
+  | SanityImageCrop
+  | SanityImageHotspot
+  | Color
+  | TeamReference
+  | TournamentTeam
+  | Team
+  | Player
+  | TournamentPlayerReference
+  | Matchup
+  | Tournament
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
-  | SanityFileAsset
-  | Geopoint
-  | Activity
-  | Match
-  | TeamPlayer
-  | Player
-  | MatchTournament
-  | Team
-  | Slug
-  | SanityImageCrop
-  | SanityImageHotspot
-  | SanityImageAsset
-  | SanityAssetSourceData
   | SanityImageMetadata
-  | Color
-  | RgbaColor
-  | HsvaColor
-  | HslaColor
-export declare const internalGroqTypeReferenceTo: unique symbol
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint
+  | Slug

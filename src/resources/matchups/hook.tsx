@@ -13,7 +13,9 @@ export const usePendingMatchups = (params: { tournamentId: string }) =>
   useQuery({
     queryKey: ['tournaments', params, 'matchups', 'pending'],
     queryFn: () =>
-      matchupService.getManyPendingByTournamentId(params.tournamentId),
+      matchupService.getManyByTournamentId(params.tournamentId, {
+        pending: true,
+      }),
     enabled: !!params.tournamentId,
   })
 

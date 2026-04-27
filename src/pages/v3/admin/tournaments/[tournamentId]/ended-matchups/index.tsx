@@ -50,12 +50,25 @@ export default function TournamentEndedMatchups() {
       </div>
       <div>
         <Table
+          pagination={false}
           dataSource={rtMatches}
           columns={[
             {
               title: '對局',
               dataIndex: 'name',
               width: 180,
+              render: (value, row) => {
+                return (
+                  <div>
+                    <div>{value}</div>
+                    <div>
+                      <Typography.Text copyable style={{ fontSize: '0.75em' }}>
+                        {row._id}
+                      </Typography.Text>
+                    </div>
+                  </div>
+                )
+              },
             },
             {
               title: '東家',
