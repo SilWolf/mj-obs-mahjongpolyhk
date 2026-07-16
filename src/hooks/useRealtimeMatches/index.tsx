@@ -12,7 +12,7 @@ export default function useRealtimeMatches() {
       byChild: 'createdAt',
     },
     filter: {
-      limitToLast: 10,
+      limitToLast: 20,
     },
   })
 
@@ -25,7 +25,7 @@ export default function useRealtimeMatches() {
       byChild: 'createdAt',
     },
     filter: {
-      limitToLast: 150,
+      limitToLast: 100,
     },
   })
 

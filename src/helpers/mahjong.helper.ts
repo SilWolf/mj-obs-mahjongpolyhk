@@ -575,48 +575,56 @@ export const convertMatchToExportedMatch = (
     lastRound.playerResults[3].afterScore,
   ])
 
-  const result = {
-    playerEast: {
+  const players = [
+    {
+      key: 'e',
       score: lastRound.playerResults[0].afterScore,
       ranking: pointsAndRankings[0].ranking.toString(),
       point: pointsAndRankings[0].point,
       penalty: lastRound.playerResults[0].isRedCarded ? -30 : 0,
       penaltyReason: lastRound.playerResults[0].isRedCarded ? '紅牌' : '',
     },
-    playerSouth: {
+    {
+      key: 's',
       score: lastRound.playerResults[1].afterScore,
       ranking: pointsAndRankings[1].ranking.toString(),
       point: pointsAndRankings[1].point,
       penalty: lastRound.playerResults[1].isRedCarded ? -30 : 0,
       penaltyReason: lastRound.playerResults[1].isRedCarded ? '紅牌' : '',
     },
-    playerWest: {
+    {
+      key: 'w',
       score: lastRound.playerResults[2].afterScore,
       ranking: pointsAndRankings[2].ranking.toString(),
       point: pointsAndRankings[2].point,
       penalty: lastRound.playerResults[2].isRedCarded ? -30 : 0,
       penaltyReason: lastRound.playerResults[2].isRedCarded ? '紅牌' : '',
     },
-    playerNorth: {
+    {
+      key: 'n',
       score: lastRound.playerResults[3].afterScore,
       ranking: pointsAndRankings[3].ranking.toString(),
       point: pointsAndRankings[3].point,
       penalty: lastRound.playerResults[3].isRedCarded ? -30 : 0,
       penaltyReason: lastRound.playerResults[3].isRedCarded ? '紅牌' : '',
     },
-  }
+  ]
+
+  const rounds = matchRounds.map((round) => ({
+    _key: getRandomId(),
+    type: mapRoundType[round.resultType],
+    code: `${round.roundCount}.${round.extendedRoundCount}`,
+    playerEast: mapPlayerResult(round, '0'),
+    playerSouth: mapPlayerResult(round, '1'),
+    playerWest: mapPlayerResult(round, '2'),
+    playerNorth: mapPlayerResult(round, '3'),
+  }))
 
   const exportedMatch = {
-    result,
-    rounds: matchRounds.map((round) => ({
-      _key: getRandomId(),
-      type: mapRoundType[round.resultType],
-      code: `${round.roundCount}.${round.extendedRoundCount}`,
-      playerEast: mapPlayerResult(round, '0'),
-      playerSouth: mapPlayerResult(round, '1'),
-      playerWest: mapPlayerResult(round, '2'),
-      playerNorth: mapPlayerResult(round, '3'),
-    })),
+    result: {
+      players,
+      rounds,
+    },
   }
 
   return exportedMatch

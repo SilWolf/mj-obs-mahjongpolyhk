@@ -552,32 +552,32 @@ const MatchSummaryPage = ({
             team: match.playerEastTeam!,
             player: match.playerEast!,
             result: {
-              point: exportedMatch.result.playerEast.point,
-              ranking: exportedMatch.result.playerEast.ranking,
+              point: exportedMatch.result.players[0].point,
+              ranking: exportedMatch.result.players[0].ranking,
             },
           },
           playerSouth: {
             team: match.playerSouthTeam!,
             player: match.playerSouth!,
             result: {
-              point: exportedMatch.result.playerSouth.point,
-              ranking: exportedMatch.result.playerSouth.ranking,
+              point: exportedMatch.result.players[1].point,
+              ranking: exportedMatch.result.players[1].ranking,
             },
           },
           playerWest: {
             team: match.playerWestTeam!,
             player: match.playerWest!,
             result: {
-              point: exportedMatch.result.playerWest.point,
-              ranking: exportedMatch.result.playerWest.ranking,
+              point: exportedMatch.result.players[2].point,
+              ranking: exportedMatch.result.players[2].ranking,
             },
           },
           playerNorth: {
             team: match.playerNorthTeam!,
             player: match.playerNorth!,
             result: {
-              point: exportedMatch.result.playerNorth.point,
-              ranking: exportedMatch.result.playerNorth.ranking,
+              point: exportedMatch.result.players[3].point,
+              ranking: exportedMatch.result.players[3].ranking,
             },
           },
         },
@@ -587,36 +587,36 @@ const MatchSummaryPage = ({
 
     const playersStat = {
       playerEast: {
-        score: exportedMatch.result.playerEast?.score ?? 25000,
-        point: exportedMatch.result.playerEast?.point ?? 0,
-        ranking: exportedMatch.result.playerEast?.ranking ?? '1',
+        score: exportedMatch.result.players[0]?.score ?? 25000,
+        point: exportedMatch.result.players[0]?.point ?? 0,
+        ranking: exportedMatch.result.players[0]?.ranking ?? '1',
         ronCount: 0,
         riichiCount: 0,
         chuckCount: 0,
         scores: [25000],
       },
       playerSouth: {
-        score: exportedMatch.result.playerSouth?.score ?? 25000,
-        point: exportedMatch.result.playerSouth?.point ?? 0,
-        ranking: exportedMatch.result.playerSouth?.ranking ?? '1',
+        score: exportedMatch.result.players[1]?.score ?? 25000,
+        point: exportedMatch.result.players[1]?.point ?? 0,
+        ranking: exportedMatch.result.players[1]?.ranking ?? '1',
         ronCount: 0,
         riichiCount: 0,
         chuckCount: 0,
         scores: [25000],
       },
       playerWest: {
-        score: exportedMatch.result.playerWest?.score ?? 25000,
-        point: exportedMatch.result.playerWest?.point ?? 0,
-        ranking: exportedMatch.result.playerWest?.ranking ?? '1',
+        score: exportedMatch.result.players[2]?.score ?? 25000,
+        point: exportedMatch.result.players[2]?.point ?? 0,
+        ranking: exportedMatch.result.players[2]?.ranking ?? '1',
         ronCount: 0,
         riichiCount: 0,
         chuckCount: 0,
         scores: [25000],
       },
       playerNorth: {
-        score: exportedMatch.result.playerNorth?.score ?? 25000,
-        point: exportedMatch.result.playerNorth?.point ?? 0,
-        ranking: exportedMatch.result.playerNorth?.ranking ?? '1',
+        score: exportedMatch.result.players[3]?.score ?? 25000,
+        point: exportedMatch.result.players[3]?.point ?? 0,
+        ranking: exportedMatch.result.players[3]?.ranking ?? '1',
         ronCount: 0,
         riichiCount: 0,
         chuckCount: 0,
@@ -624,7 +624,7 @@ const MatchSummaryPage = ({
       },
     }
 
-    for (const round of exportedMatch.rounds) {
+    for (const round of exportedMatch.result.rounds) {
       playersStat.playerEast.scores.push(round.playerEast.afterScore)
       playersStat.playerSouth.scores.push(round.playerSouth.afterScore)
       playersStat.playerWest.scores.push(round.playerWest.afterScore)
@@ -702,16 +702,17 @@ const MatchSummaryPage = ({
       _id: 'players',
       teamAndPlayers: sortedTeamPlayers,
       roundCount:
-        exportedMatch.rounds?.filter((round) => round.type !== 'hotfix')
+        exportedMatch.result.rounds?.filter((round) => round.type !== 'hotfix')
           .length ?? 0,
       exhaustedRoundCount:
-        exportedMatch.rounds?.filter((round) => round.type === 'exhausted')
-          .length ?? 0,
+        exportedMatch.result.rounds?.filter(
+          (round) => round.type === 'exhausted'
+        ).length ?? 0,
       subslide: 1,
     })
 
-    const firstSouthRoundIndex = exportedMatch.rounds.findIndex((round) =>
-      round.code.startsWith('5.')
+    const firstSouthRoundIndex = exportedMatch.result.rounds.findIndex(
+      (round) => round.code.startsWith('5.')
     )
 
     resultSlides.push({
@@ -725,7 +726,7 @@ const MatchSummaryPage = ({
           playerWest: 25000,
           playerNorth: 25000,
         },
-        ...exportedMatch.rounds.map((round, roundIndex) => ({
+        ...exportedMatch.result.rounds.map((round, roundIndex) => ({
           name: roundIndex === firstSouthRoundIndex ? '南' : '',
           playerEast: round.playerEast.afterScore,
           playerSouth: round.playerSouth.afterScore,
@@ -772,8 +773,8 @@ const MatchSummaryPage = ({
         matchCount: number
       }
     }[] = regularTeams.map((team) => {
-      for (const playerKey of playerKeys) {
-        if (team.team._id === match[`${playerKey}Team`]!._id) {
+      for (let i = 0; i < exportedMatch.result.players.length; i++) {
+        if (team.team._id === match[`${playerKeys[i]}Team`]!._id) {
           return {
             _id: team.team._id,
             point: team.statistics.point,
@@ -783,8 +784,8 @@ const MatchSummaryPage = ({
             newResult: {
               point:
                 team.statistics.point +
-                exportedMatch.result[playerKey].point +
-                exportedMatch.result[playerKey].penalty,
+                exportedMatch.result.players[i].point +
+                exportedMatch.result.players[i].penalty,
               matchCount: team.statistics.matchCount + 1,
             },
           }
